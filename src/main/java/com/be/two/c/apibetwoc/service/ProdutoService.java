@@ -22,13 +22,13 @@ public class ProdutoService {
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto produto){
-        return produtoRepository.save(new Produto(null, produto.getNome(), produto.getDescricao(), produto.getPrecoCompra(), produto.getPrecoVenda(), produto.getUrlImagem(), produto.getCategoria(), produto.getCodigoGtin()));
+        return produtoRepository.save(new Produto(null, produto.getNome(), produto.getDescricao(), produto.getPrecoCompra(), produto.getPrecoVenda(), produto.getUrlImagem(), produto.getCategoria(), false ,null,null));
     }
 
     public Produto atualizarProduto(Long id, CadastroProdutoDto produto){
         Produto produtoOptional = produtoRepository.findById(id).get();
 
-        return produtoRepository.save(new Produto(produtoOptional.getId(), produto.getNome(), produto.getDescricao(), produto.getPrecoCompra(), produto.getPrecoVenda(), produto.getUrlImagem(), produto.getCategoria(), produto.getCodigoGtin()));
+        return produtoRepository.save(new Produto(produtoOptional.getId(), produto.getNome(), produto.getDescricao(), produto.getPrecoCompra(), produto.getPrecoVenda(), produto.getUrlImagem(), produto.getCategoria(), false ,null,null));
     }
 
     public void deletarProduto(Long id){

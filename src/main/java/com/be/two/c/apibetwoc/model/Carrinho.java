@@ -1,0 +1,25 @@
+package com.be.two.c.apibetwoc.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@EqualsAndHashCode(of = "id")
+public class Carrinho {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private LocalDateTime dataHoraAlocacao;
+    private Integer quantidade;
+    @ManyToOne
+    @JoinColumn(name = "fk_produto")
+    private Produto produto;
+    @ManyToOne
+    @JoinColumn(name = "fk_consumidor")
+    private Consumidor consumidor;
+}
