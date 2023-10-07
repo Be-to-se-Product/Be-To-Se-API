@@ -23,14 +23,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @PostMapping
-    public ResponseEntity<Usuario> cadastrar(@RequestBody @Valid UsuarioCriacaoDTO usuarioCriacaoDTO, UriComponentsBuilder uriBuilder){
-
-        Usuario usuario = usuarioService.cadastrar(usuarioCriacaoDTO);
-        URI uri = uriBuilder.path("usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
-         return ResponseEntity.created(uri).body(usuario);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<UsuarioTokenDTO> login(@RequestBody UsuarioLoginDTO usuarioLoginDTO){
         UsuarioTokenDTO usuarioToken = usuarioService.autenticar(usuarioLoginDTO);

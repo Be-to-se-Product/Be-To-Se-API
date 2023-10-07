@@ -8,21 +8,16 @@ import java.util.Collection;
 
 public class UsuarioDetalhes implements UserDetails {
 
-    private final String nome;
 
     private final String email;
 
     private final String senha;
 
     public UsuarioDetalhes(Usuario usuario) {
-        this.nome = usuario.getNome();
         this.email = usuario.getEmail();
         this.senha = usuario.getSenha();
     }
 
-    public String getNome() {
-        return nome;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
