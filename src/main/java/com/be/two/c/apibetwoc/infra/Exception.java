@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.infra;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,6 +29,11 @@ public class Exception {
         }
 
         return problemDetail;
+    }
+
+    @ExceptionHandler(EntidadeNaoExisteException.class)
+    public ResponseEntity<Void> entidadeNotFound(){
+        return ResponseEntity.notFound().build();
     }
 
 }
