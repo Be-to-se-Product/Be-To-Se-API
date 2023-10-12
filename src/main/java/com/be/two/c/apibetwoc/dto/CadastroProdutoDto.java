@@ -1,7 +1,11 @@
 package com.be.two.c.apibetwoc.dto;
 
+import com.be.two.c.apibetwoc.model.Secao;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Getter
@@ -9,20 +13,27 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CadastroProdutoDto {
-    @NotBlank(message = "O nome do produto é obrigatório")
+
+    @NotBlank
     private String nome;
-    @NotBlank(message = "A descrição do produto é obrigatória")
+    @NotBlank
+    private String codigoSku;
+    @Positive
+    private Double preco;
+    @NotBlank
     private String descricao;
-    @NotNull(message = "O preço de compra do produto é obrigatório")
-    private Double precoCompra;
-    @NotNull(message = "O preço de venda do produto é obrigatório")
-    private Double precoVenda;
-    @NotBlank(message = "A url da imagem do produto é obrigatória")
-    private String urlImagem;
-    @NotBlank(message = "A tag do produto é obrigatória")
-    private String tag;
-    @NotBlank(message = "A categoria do produto é obrigatória")
+    @NotNull
+    private Double precoOferta;
+    @NotBlank
+    private String codigoBarras;
+    @NotBlank
     private String categoria;
-    @NotBlank(message = "O código GTIN do produto é obrigatório")
-    private String codigoGtin;
+    @NotNull
+    private boolean isAtivo;
+    @NotNull
+    private boolean isPromocaoAtiva;
+    @NotNull
+    private Long secao;
+    @NotNull
+    private Long tag;
 }

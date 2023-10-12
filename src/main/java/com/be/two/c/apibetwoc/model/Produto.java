@@ -17,16 +17,15 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private String descricao;
-    private Double preco;
-    private Double precoOferta;
-    private String categoria;
     private String codigoSku;
+    private Double preco;
+    private String descricao;
+    private Double precoOferta;
+    private String codigoBarras;
+    private String categoria;
     private boolean isAtivo;
+    private boolean isPromocaoAtiva;
     @ManyToOne
     @JoinColumn(name = "fk_secao")
     private Secao secao;
-    @JsonIgnore
-    @OneToMany
-    private List<Imagem> imagens;
 }
