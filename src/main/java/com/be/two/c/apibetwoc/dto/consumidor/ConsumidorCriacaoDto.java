@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,5 +28,5 @@ public class ConsumidorCriacaoDto {
     private LocalDate dataNascimento;
     @Valid
     private UsuarioCriacaoDTO usuarioCriacaoDTO;
-    private List<InteresseCriacaoDto> interesses;
+    private List<@Valid InteresseCriacaoDto> interesses;
 }

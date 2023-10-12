@@ -39,4 +39,9 @@ public class ConsumidorController {
     public ResponseEntity<ResponseConsumidorDto> buscarPorId(Long id) {
         return ResponseEntity.ok(consumidorService.buscarPorId(id));
     }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<Void> atualizar(){
+        return null;
+    }
 }

@@ -16,8 +16,9 @@ public class Endereco {
     private Long id;
     private String cep;
     private String rua;
+    private String bairro;
     private Integer numero;
-    private String geolocalizacaoX;
-    private String geolocalizacaoY;
+    private double geolocalizacaoX;
+    private double geolocalizacaoY;
 
 }

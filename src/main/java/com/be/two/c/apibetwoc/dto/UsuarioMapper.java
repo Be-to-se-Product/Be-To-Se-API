@@ -9,7 +9,7 @@ public class UsuarioMapper {
 
         usuario.setEmail(usuarioCriacaoDTO.email());
         usuario.setSenha(usuarioCriacaoDTO.senha());
-
+        usuario.setTipoUsuario(usuarioCriacaoDTO.tipoUsuario());
         return usuario;
     }
 
