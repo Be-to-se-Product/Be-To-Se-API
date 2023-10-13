@@ -20,7 +20,7 @@ public class Consumidor {
     private String genero;
     private LocalDate dataNascimento;
     private LocalDateTime dataCriacao;
-    private Boolean isAtivo;
+    private Boolean isAtivo = true;
     private LocalDate dataUltimaCompra;
 
     @OneToOne
