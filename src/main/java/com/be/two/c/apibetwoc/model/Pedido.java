@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,5 +20,7 @@ public class Pedido {
     private LocalDateTime dataHoraRetirada;
     @ManyToOne
     @JoinColumn(name = "fk_metodo_aceito")
-    private MetodoPagamento metodoPagamento;
+    private MetodoPagamentoAceito metodoPagamentoAceito;
+    @OneToMany
+    private List<ItemVenda> itens;
 }

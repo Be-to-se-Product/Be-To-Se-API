@@ -5,4 +5,8 @@ insert into estabelecimento(email_contato, enquadramento_juridico, is_ativo, nom
 insert into secao(descricao, fk_estabelecimento) values('carregador', 1);
 insert into secao(descricao, fk_estabelecimento) values('outros', 1);
 insert into tag(descricao)values('teste');
+insert into tag(descricao)values('teste2');
+insert into tag(descricao)values('teste3');
+insert into tag(descricao)values('teste4');
+insert into tag(descricao)values('teste5');
 insert into produto( preco, fk_secao, nome, is_ativo, is_promocao_ativa, preco_oferta,categoria, codigo_barras, codigo_sku, descricao)values(10.0, 2,'Power Bank', true,false,7.5,'categoria teste','123456cb','codigoskuteste','descricaoteste');

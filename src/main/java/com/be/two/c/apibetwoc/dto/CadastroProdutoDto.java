@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,5 +37,5 @@ public class CadastroProdutoDto {
     @NotNull
     private Long secao;
     @NotNull
-    private Long tag;
+    private List<Long> tag;
 }
