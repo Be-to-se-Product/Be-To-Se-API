@@ -31,9 +31,9 @@ public class CadastroProdutoDto {
     @NotBlank
     private String categoria;
     @NotNull
-    private boolean isAtivo;
+    private Boolean isAtivo;
     @NotNull
-    private boolean isPromocaoAtiva;
+    private Boolean isPromocaoAtiva;
     @NotNull
     private Long secao;
     @NotNull
