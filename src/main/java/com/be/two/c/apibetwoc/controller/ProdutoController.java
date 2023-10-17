@@ -1,6 +1,6 @@
 package com.be.two.c.apibetwoc.controller;
 
-import com.be.two.c.apibetwoc.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.ProdutoService;
 import jakarta.validation.Valid;
@@ -30,7 +30,7 @@ public class ProdutoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Produto> listarProdutoPorId(@PathVariable Long id){
-        return ResponseEntity.ok(produtoService.listarProdutoPorId(id));
+        return ResponseEntity.ok(produtoService.buscarPorId(id));
     }
 
     @PostMapping
@@ -39,7 +39,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizarProduto(@PathVariable Long id, @RequestBody CadastroProdutoDto produto){
+    public ResponseEntity<Produto> atualizarProduto(@PathVariable Long id, @Valid @RequestBody CadastroProdutoDto produto){
         return ResponseEntity.ok(produtoService.atualizarProduto(id, produto));
     }
 

@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.dto;
+package com.be.two.c.apibetwoc.dto.produto;
 
 import com.be.two.c.apibetwoc.model.Secao;
 import jakarta.persistence.JoinColumn;

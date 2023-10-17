@@ -1,12 +1,14 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.dto.produto.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,10 +26,9 @@ public class ProdutoService {
     @Autowired
     private EstabelecimentoRepository estabelecimentoRepository;
     public Produto buscarPorId(Long id){
-        Produto produto = produtoRepository.findById(id).orElseThrow(
-                ()->new EntidadeNaoExisteException("Produto não encontrado")
+       return produtoRepository.findById(id).orElseThrow(
+                ()->new NoSuchElementException("Produto não encontrado")
         );
-        return produto;
     }
     public List<Produto> listarProdutos(){
         List<Produto> produtos = produtoRepository.findAll();
@@ -44,26 +45,25 @@ public class ProdutoService {
         }
         return produtos;
     }
-    public Produto listarProdutoPorId(Long id){
-        Produto produto = buscarPorId(id);
-        return produtoRepository.findById(id).get();
-    }
-    public Produto cadastrarProduto(CadastroProdutoDto produto){
-        Secao secao = secaoRepository.findById(produto.getSecao()).get();
-        Produto novoProduto =produtoRepository.save(new Produto(null,produto.getNome(),produto.getCodigoSku(),produto.getPreco(),produto.getDescricao(),produto.getPrecoOferta(),produto.getCodigoBarras(),produto.getCategoria(),produto.getIsAtivo(),produto.getIsPromocaoAtiva(),secao));
-        for (Long tagId : produto.getTag()) {
+    public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto){
+        Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).get();
+        Produto produto = ProdutoMapper.of(cadastroProdutoDto);
+        produto.setSecao(secao);
+        Produto produtoSalvo = produtoRepository.save(produto);
+        for (Long tagId : cadastroProdutoDto.getTag()) {
             Tag tag = tagRepository.findById(tagId).get();
-                produtoTagRepository.save(new ProdutoTag(null, tag, novoProduto));
+                produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
         }
-        return novoProduto;
+        return produtoSalvo;
     }
-    public Produto atualizarProduto(Long id, CadastroProdutoDto produto){
-        Produto produtoOptional = buscarPorId(id);
-        Secao secao = secaoRepository.findById(produto.getSecao()).get();
-        //List<Tag> tag = tagRepository.findById(produto.getTag());
-        Produto produtoEditado =produtoRepository.save(new Produto(produtoOptional.getId(),produto.getNome(),produto.getCodigoSku(),produto.getPreco(),produto.getDescricao(),produto.getPrecoOferta(),produto.getCodigoBarras(),produto.getCategoria(),produto.getIsAtivo(),produto.getIsPromocaoAtiva(),secao));
-        List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produtoOptional.getId());
-        List<Long> tagEdicao = produto.getTag();
+    public Produto atualizarProduto(Long id, CadastroProdutoDto cadastroProdutoDto){
+        Produto produto = buscarPorId(id);
+        Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).get();
+        produto = ProdutoMapper.of(cadastroProdutoDto);
+        produto.setSecao(secao);
+        Produto produtoSalvo = produtoRepository.save(produto);
+        List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produto.getId());
+        List<Long> tagEdicao = cadastroProdutoDto.getTag();
 
         for (ProdutoTag produtoTag : tagsProduto) {
             boolean encontrada = false;
@@ -92,15 +92,15 @@ public class ProdutoService {
                 Tag tag = tagRepository.findById(tagIdEdicao).orElse(null);
 
                 if (tag != null) {
-                    ProdutoTag novaProdutoTag = new ProdutoTag(null, tag, produtoEditado);
+                    ProdutoTag novaProdutoTag = new ProdutoTag(null, tag, produtoSalvo);
                     produtoTagRepository.save(novaProdutoTag);
                 }
             }
         }
-        return produtoEditado;
+        return produtoSalvo;
     }
     public void deletarProduto(Long id){
-        Produto produtoOptional = buscarPorId(id);
+        Produto produto = buscarPorId(id);
         List<ProdutoTag> tags = produtoTagRepository.buscarPorProduto(id);
         List<Long> produtoTagIds = tags.stream().map(ProdutoTag::getId).collect(Collectors.toList());
         for(Long tagDeletar : produtoTagIds){
@@ -122,9 +122,7 @@ public class ProdutoService {
         );
         return produtoRepository.buscaProdutosPorLoja(id);
     }
-    public List<Produto> barraDePesquisa(String pesquisa){
-        return produtoRepository.buscarProdutoPorNomeOuTag(pesquisa);
-    }
+    public List<Produto> barraDePesquisa(String pesquisa){return produtoRepository.buscarProdutoPorNomeOuTag(pesquisa);}
     public List<Produto> produtoEmPromocao(){
         return produtoRepository.findByIsPromocaoAtivaTrue();
     }

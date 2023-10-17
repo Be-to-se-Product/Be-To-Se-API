@@ -23,7 +23,6 @@ public class CarrinhoService {
     private ConsumidorRepository consumidorRepository;
     @Autowired
     private ProdutoRepository produtoRepository;
-
     public Carrinho adicionar(CarrinhoDTO carrinho, LocalDateTime dtH){
         System.out.println(carrinho.getConsumidor());
         System.out.println(carrinho.getProduto());
@@ -41,10 +40,9 @@ public class CarrinhoService {
 
         return carrinho;
     }
-
     public void editar(Long id, Integer quantidade){
         Carrinho carrinho = carrinhoRepository.findById(id).orElseThrow(
-                ()->new EntidadeNaoExisteException("Carrinhoa não existe")
+                ()->new EntidadeNaoExisteException("Carrinho não encontrado")
         );
         LocalDateTime dtH = LocalDateTime.now();
         carrinhoRepository.editarCarrinho(id,dtH,quantidade);
@@ -55,7 +53,6 @@ public class CarrinhoService {
         );
         carrinhoRepository.esvaziarCarrinho(consumidor);
     }
-
     public void removerProduto(Long id){
         Carrinho carrinho = carrinhoRepository.findById(id).orElseThrow(
                 ()-> new EntidadeNaoExisteException("Carrinho não encontrado")
