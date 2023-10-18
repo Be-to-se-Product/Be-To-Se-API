@@ -8,13 +8,11 @@ import com.be.two.c.apibetwoc.service.ComercianteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("comerciantes")
@@ -29,5 +27,20 @@ public class ComercianteController {
         ResponseComercianteDto responseComercianteDto = ComercianteMapper.of(comerciante);
         URI uri = UriComponentsBuilder.fromPath("{id}").buildAndExpand(responseComercianteDto.getId()).toUri();
         return ResponseEntity.created(uri).body(responseComercianteDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResponseComercianteDto>> listar(){
+        List<ResponseComercianteDto> comerciantes = comercianteService.listar();
+        if(comerciantes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(comerciantes);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id){
+        comercianteService.excluir(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -24,4 +24,5 @@ public class Comerciante {
     @OneToOne
     @JoinColumn(name = "fk_endereco")
     private Endereco endereco;
+    private Boolean isAtivo;
 }

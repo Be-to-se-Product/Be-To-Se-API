@@ -52,4 +52,5 @@ public class ConsumidorService {
         consumidor.setIsAtivo(false);
         consumidorRepository.save(consumidor);
     }
+
 }

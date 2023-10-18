@@ -44,4 +44,10 @@ public class ConsumidorController {
     public ResponseEntity<Void> atualizar(){
         return null;
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id){
+        consumidorService.excluir(id);
+        return ResponseEntity.noContent().build();
+    }
 }

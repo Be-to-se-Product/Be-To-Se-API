@@ -3,6 +3,7 @@ package com.be.two.c.apibetwoc.service;
 import com.be.two.c.apibetwoc.dto.comerciante.ComercianteCriacaoDto;
 import com.be.two.c.apibetwoc.dto.comerciante.ComercianteMapper;
 import com.be.two.c.apibetwoc.dto.comerciante.ResponseComercianteDto;
+import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Endereco;
 import com.be.two.c.apibetwoc.model.Usuario;
@@ -38,5 +39,19 @@ public class ComercianteService {
                 .toList();
     }
 
-    
+    public ResponseComercianteDto buscarPorId(Long id){
+        return comercianteRepository
+                .findById(id)
+                .map(ComercianteMapper :: of)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
+    }
+
+    public void excluir(Long id){
+        if(!comercianteRepository.existsById(id)){
+            throw new EntidadeNaoExisteException("O comerciante procurado não existe.");
+        }
+        Comerciante comerciante = comercianteRepository.getReferenceById(id);
+        comerciante.setIsAtivo(false);
+        comercianteRepository.save(comerciante);
+    }
 }

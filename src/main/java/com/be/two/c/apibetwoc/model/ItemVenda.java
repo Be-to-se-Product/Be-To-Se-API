@@ -21,4 +21,6 @@ public class ItemVenda {
     @ManyToOne
     @JoinColumn(name = "fk_produto")
     private Produto produto;
+
+    private boolean isPromocaoAtiva;
 }
