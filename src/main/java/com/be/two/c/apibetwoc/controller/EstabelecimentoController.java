@@ -1,10 +1,13 @@
 package com.be.two.c.apibetwoc.controller;
 
-import com.be.two.c.apibetwoc.dto.CadastroEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.AtualizarEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.CadastroEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.CoordenadaDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.ResponseEstabelecimentoDto;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,37 +16,53 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/estabelecimentos")
+@RequiredArgsConstructor
 public class EstabelecimentoController {
 
-
-    @Autowired
-    private EstabelecimentoService estabelecimentoService;
+    private final EstabelecimentoService estabelecimentoService;
 
     @GetMapping
-    public ResponseEntity<List<Estabelecimento>> listar() {
+    public ResponseEntity<List<Estabelecimento>> listarTodos() {
         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarTodos();
-        if (estabelecimentos.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
 
-        return ResponseEntity.status(200).body(estabelecimentos);
+        return estabelecimentos.isEmpty()
+                ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(estabelecimentos);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Estabelecimento> listarPorId(@PathVariable Long id){
+        return ResponseEntity.status(200).body(estabelecimentoService.listarPorId(id));
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<ResponseEstabelecimentoDto> listarPorId2(@PathVariable Long id){
+        return ResponseEntity.status(200).body(estabelecimentoService.listarPorId2(id));
+    }
+
+    @GetMapping("/segmento")
+    public ResponseEntity<List<Estabelecimento>> listarPorSegmento(@RequestParam String segmento){
+        List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorSegmento(segmento);
+
+        return estabelecimentos.isEmpty()
+                ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(estabelecimentos);
     }
 
     @PostMapping()
-    public ResponseEntity<Estabelecimento> cadastrarEstabelecimento(@Valid @RequestBody CadastroEstabelecimentoDto estabelecimento)//, @PathVariable Comerciante comerciante)
-    {
-        //estabelecimento.setComerciante(comerciante);// Em processo de criação; aguardando criação de Controllers para listagem a partir deles, aomente assim para fazer validações.
+    public ResponseEntity<Estabelecimento> cadastrarEstabelecimento(@Valid @RequestBody CadastroEstabelecimentoDto estabelecimento) {
         return ResponseEntity.status(201).body(estabelecimentoService.cadastroEstabelecimento(estabelecimento));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Estabelecimento> atualizarEstabelecimento(@Valid @RequestBody CadastroEstabelecimentoDto estabelecimentoDto, @PathVariable Long id) {
-        return estabelecimentoService.atualizar(estabelecimentoDto,id);
+    public ResponseEntity<Estabelecimento> atualizarEstabelecimento(@Valid @RequestBody AtualizarEstabelecimentoDto estabelecimentoDto, @PathVariable Long id) {
+        return ResponseEntity.status(200).body(estabelecimentoService.atualizarEstabelecimento(estabelecimentoDto,id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Estabelecimento> deletarEstabelecimento(@PathVariable Long id){
-        return estabelecimentoService.deletar(id);
+    public ResponseEntity<Void> deletarEstabelecimento(@PathVariable Long id){
+        estabelecimentoService.deletar(id);
+        return ResponseEntity.status(204).build();
     }
 
 

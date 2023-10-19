@@ -1,62 +1,102 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.CadastroEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.agenda.AgendaMapper;
+import com.be.two.c.apibetwoc.dto.estabelecimento.AtualizarEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.CadastroEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.CoordenadaDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.EstabelecimentoMapper;
+import com.be.two.c.apibetwoc.dto.estabelecimento.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
+import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
+import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
+import com.be.two.c.apibetwoc.repository.AgendaRepository;
+import com.be.two.c.apibetwoc.repository.ComercianteRepository;
 import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class EstabelecimentoService {
 
-    @Autowired
-    private EstabelecimentoRepository estabelecimentoRepository;
-    public Estabelecimento cadastroEstabelecimento(@RequestBody CadastroEstabelecimentoDto estabelecimento){
-        return estabelecimentoRepository.save(new Estabelecimento(null,estabelecimento.getNome(),estabelecimento.getSegmento(),estabelecimento.getDataCriacao(),estabelecimento.getTelefoneContato(),estabelecimento.getEnquadramentoJuridico(),estabelecimento.getReferenciaInstagram(),estabelecimento.getReferenciaFacebook(),estabelecimento.getEmailContato(),estabelecimento.getIsAtivo(),estabelecimento.getComerciante(),estabelecimento.getEndereco()));
+    private final EstabelecimentoRepository estabelecimentoRepository;
+    private final ComercianteRepository comercianteRepository;
+    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
+    private final AgendaRepository agendaRepository;
+
+    public Estabelecimento listarPorId(Long id){
+        return estabelecimentoRepository
+                .findById(id)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
     }
+
+    public ResponseEstabelecimentoDto listarPorId2(Long id){
+        Estabelecimento estabelecimento = estabelecimentoRepository
+                .findById(id)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
+
+        List<Agenda> agenda = agendaRepository.findByEstabelecimentoId(id);
+        List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);
+
+        return EstabelecimentoMapper.of(estabelecimento, agenda, metodos);
+    }
+
     public List<Estabelecimento> listarTodos(){
-        List<Estabelecimento> lista = estabelecimentoRepository.findAll();
-        return lista;
+        return estabelecimentoRepository.findAll();
     }
-    public ResponseEntity<Estabelecimento> atualizar(@RequestBody CadastroEstabelecimentoDto estabelecimentoDto, @PathVariable Long id){
-        Estabelecimento cadastravel= new Estabelecimento(id,estabelecimentoDto.getNome(),estabelecimentoDto.getSegmento(),estabelecimentoDto.getDataCriacao(),estabelecimentoDto.getTelefoneContato(),estabelecimentoDto.getEnquadramentoJuridico(),estabelecimentoDto.getReferenciaInstagram(),estabelecimentoDto.getReferenciaFacebook(),estabelecimentoDto.getEmailContato(),estabelecimentoDto.getIsAtivo(),estabelecimentoDto.getComerciante(),estabelecimentoDto.getEndereco());
-        if (this.estabelecimentoRepository.existsById(id)){
-            estabelecimentoRepository.save(cadastravel);
-            return ResponseEntity.ok(cadastravel);
-        };
 
-        return ResponseEntity.notFound().build();
+    public List<Estabelecimento> listarPorSegmento(String segmento){
+        return estabelecimentoRepository.findBySegmento(segmento);
     }
-    public ResponseEntity<Estabelecimento> deletar(@PathVariable Long id){
-        if (this.estabelecimentoRepository.existsById(id)){
-            estabelecimentoRepository.deleteById(id);
-            return ResponseEntity.ok().build();
+
+    public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto estabelecimento){
+        Comerciante comerciante = comercianteRepository
+                .findById(estabelecimento.getIdComerciante())
+                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
+
+        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(EstabelecimentoMapper.of(estabelecimento, comerciante));
+
+        metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimento.getIdMetodoPagamento());
+
+        agendaRepository.saveAll(AgendaMapper.of(estabelecimento.getAgenda(), estabelecimentoCriado));
+
+        return estabelecimentoCriado;
+    }
+
+    public Estabelecimento atualizarEstabelecimento(AtualizarEstabelecimentoDto estabelecimentoDto, Long id){
+        Estabelecimento estabelecimento = listarPorId(id);
+
+        return estabelecimentoRepository.save(EstabelecimentoMapper.of(estabelecimentoDto, estabelecimento)) ;
+    }
+
+    public void deletar(Long id){
+        if (!estabelecimentoRepository.existsById(id)){
+            throw new EntidadeNaoExisteException("O estabelecimento procurado não existe.");
         }
-        return ResponseEntity.notFound().build();
+        Estabelecimento estabelecimento = estabelecimentoRepository.getReferenceById(id);
+        estabelecimento.setIsAtivo(false);
+        estabelecimentoRepository.save(estabelecimento);
     }
 
 
-    public Long calcularRotaPessoa(@RequestBody CoordenadaDto coordenadaDto) {
+    public Long calcularRotaPessoa(CoordenadaDto coordenadaDto) {
         Pessoa pessoa = new Pessoa();
 
         return pessoa.calcularTempoDeslocamento(coordenadaDto.getX(), coordenadaDto.getY(), coordenadaDto.getToX(), coordenadaDto.getToY());
     }
 
-    public Long calcularRotaBicicleta(@RequestBody CoordenadaDto coordenadaDto) {
+    public Long calcularRotaBicicleta(CoordenadaDto coordenadaDto) {
         Bicicleta bicleta = new Bicicleta();
 
         return bicleta.calcularTempoDeslocamento(coordenadaDto.getX(), coordenadaDto.getY(), coordenadaDto.getToX(), coordenadaDto.getToY());
     }
 
-    public Long calcularRotaCarro(@RequestBody CoordenadaDto coordenadaDto) {
+    public Long calcularRotaCarro(CoordenadaDto coordenadaDto) {
         Carro carro = new Carro();
 
         return carro.calcularTempoDeslocamento(coordenadaDto.getX(), coordenadaDto.getY(), coordenadaDto.getToX(), coordenadaDto.getToY());

@@ -7,10 +7,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(of="id")
 public class Estabelecimento {
     @Id
@@ -28,7 +25,7 @@ public class Estabelecimento {
     @ManyToOne
     @JoinColumn(name = "fk_comerciante")
     private Comerciante comerciante;
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "fk_endereco")
     private Endereco endereco;
 }

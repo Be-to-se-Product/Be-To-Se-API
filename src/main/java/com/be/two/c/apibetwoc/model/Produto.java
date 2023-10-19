@@ -23,6 +23,8 @@ public class Produto {
     private String categoria;
     private String codigoSku;
     private boolean isAtivo;
+    private boolean isPromocaoAtiva;
+    private Integer qtdVendas;
     @ManyToOne
     @JoinColumn(name = "fk_secao")
     private Secao secao;

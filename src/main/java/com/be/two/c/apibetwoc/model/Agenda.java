@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.sql.Time;
+import java.time.LocalTime;
 
 @Entity
 @Data
@@ -12,8 +12,8 @@ import java.sql.Time;
 public class Agenda {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Time horarioInicio;
-    private Time horarioFim;
+    private LocalTime horarioInicio;
+    private LocalTime horarioFim;
     private String dia;
     @ManyToOne
     @JoinColumn(name = "fk_estabelecimento")

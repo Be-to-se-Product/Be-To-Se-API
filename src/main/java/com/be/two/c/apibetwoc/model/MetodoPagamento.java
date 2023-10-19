@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of="id")
 public class MetodoPagamento {
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String descricao;
