@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.dto.secao.CadastroSecaoDto;
 import com.be.two.c.apibetwoc.dto.secao.SecaoMapper;
+import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Secao;
 import com.be.two.c.apibetwoc.repository.SecaoRepository;
@@ -18,6 +19,11 @@ public class SecaoService {
 
     public List<Secao> listarSecoes(){
         return secaoRepository.findAll();
+    }
+
+    public List<Secao> listarPorEstabelecimento(Long id){
+        estabelecimentoService.listarPorId(id);
+        return secaoRepository.findByEstabelecimentoId(id);
     }
 
     public Secao cadastrarSecao(CadastroSecaoDto secao){

@@ -6,6 +6,7 @@ import com.be.two.c.apibetwoc.dto.estabelecimento.CadastroEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.CoordenadaDto;
 import com.be.two.c.apibetwoc.dto.estabelecimento.EstabelecimentoMapper;
 import com.be.two.c.apibetwoc.dto.estabelecimento.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.secao.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Comerciante;
@@ -14,6 +15,7 @@ import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.repository.AgendaRepository;
 import com.be.two.c.apibetwoc.repository.ComercianteRepository;
 import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
+import com.be.two.c.apibetwoc.repository.SecaoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class EstabelecimentoService {
     private final ComercianteRepository comercianteRepository;
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
     private final AgendaRepository agendaRepository;
+    private final SecaoRepository secaoRepository;
 
     public Estabelecimento listarPorId(Long id){
         return estabelecimentoRepository
@@ -54,6 +57,7 @@ public class EstabelecimentoService {
         return estabelecimentoRepository.findBySegmento(segmento);
     }
 
+    @Transactional
     public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto estabelecimento){
         Comerciante comerciante = comercianteRepository
                 .findById(estabelecimento.getIdComerciante())
@@ -64,6 +68,8 @@ public class EstabelecimentoService {
         metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimento.getIdMetodoPagamento());
 
         agendaRepository.saveAll(AgendaMapper.of(estabelecimento.getAgenda(), estabelecimentoCriado));
+
+        secaoRepository.saveAll(SecaoMapper.of(estabelecimento.getSecao(), estabelecimentoCriado));
 
         return estabelecimentoCriado;
     }

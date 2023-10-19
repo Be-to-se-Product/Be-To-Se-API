@@ -25,6 +25,15 @@ public class SecaoController {
                 : ResponseEntity.status(200).body(secoes);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<List<Secao>> listarPorEstabelecimento(@PathVariable Long id){
+        List<Secao> secoes = secaoService.listarPorEstabelecimento(id);
+
+        return secoes.isEmpty()
+                ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(secoes);
+    }
+
     @PostMapping
     public ResponseEntity<Secao> cadastrarSecao(@Valid @RequestBody CadastroSecaoDto secao){
         Secao secaoCadastrada = secaoService.cadastrarSecao(secao);

@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.dto.estabelecimento;
 
 import com.be.two.c.apibetwoc.dto.agenda.CadastroAgendaDto;
 import com.be.two.c.apibetwoc.model.Endereco;
+import com.be.two.c.apibetwoc.model.Secao;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -34,6 +35,8 @@ public class CadastroEstabelecimentoDto {
     private List<Long> idMetodoPagamento;
     @NotNull
     private List<CadastroAgendaDto> agenda;
+    @NotNull
+    private List<String> secao;
 }
 
 
