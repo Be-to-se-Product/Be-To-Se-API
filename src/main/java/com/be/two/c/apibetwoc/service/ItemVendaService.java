@@ -33,15 +33,16 @@ public class ItemVendaService {
             ItemVenda itemVenda = ItemVendaMapper.of(i);
             Consumidor consumidor = consumidorRepository.findById(i.idConsumidor())
                     .orElseThrow(() -> new EntidadeNaoExisteException("Consumidor informado não existe"));
-            Produto produto = produtoRepository.findById(i.idConsumidor())
+            Produto produto = produtoRepository.findById(i.idProduto())
                     .orElseThrow(() -> new EntidadeNaoExisteException("produto informado não existe"));
             itemVenda.setConsumidor(consumidor);
             itemVenda.setProduto(produto);
             itemVenda.setPedido(pedido);
             itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
             itensSalvos.add(itemVenda);
+            itemVendaRepository.save(itemVenda);
         }
-        itemVendaRepository.saveAll(itensSalvos);
+//        itemVendaRepository.saveAll(itensSalvos);
         return pedido;
     }
 }

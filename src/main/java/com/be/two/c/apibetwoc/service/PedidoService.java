@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.dto.pedido.PedidoCriacaoDto;
 import com.be.two.c.apibetwoc.dto.pedido.PedidoMapper;
+import com.be.two.c.apibetwoc.dto.pedido.ResponsePedidoDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.model.Pedido;
@@ -52,8 +53,9 @@ public class PedidoService {
         throw new EntidadeNaoExisteException("Pedido não encontrado");
     }
 
-    public List<Pedido> listarPorConsumidor(Long idConsumidor) {
-        return pedidoRepository.searchByConsumidor(idConsumidor);
+    public List<ResponsePedidoDto> listarPorConsumidor(Long idConsumidor) {
+        List <Pedido> pedidos = pedidoRepository.searchByConsumidor(idConsumidor);
+        return pedidos.stream().map(PedidoMapper::of).toList();
     }
 
     public ListaObj<Pedido> listarPorEstabelecimento(Long idEstabelecimento) {
@@ -75,23 +77,19 @@ public class PedidoService {
         int tamanho = listaPedidos.getTamanho();
 
         for (int i = 0; i < tamanho - 1; i++) {
-            int indiceMaximo = i;
+            for (int j = 0; j < tamanho - 1 - i; j++) {
+                Pedido pedidoAtual = listaPedidos.getElemento(j);
+                Pedido proximoPedido = listaPedidos.getElemento(j + 1);
 
-            for (int j = i + 1; j < tamanho; j++) {
-                if (listaPedidos.getElemento(j).getDataHoraPedido().isAfter(listaPedidos.getElemento(indiceMaximo).getDataHoraPedido())) {
-                    indiceMaximo = j;
+                if (pedidoAtual.getDataHoraPedido().isBefore(proximoPedido.getDataHoraPedido())) {
+                    listaPedidos.troca(j, j + 1);
                 }
-            }
-
-            if (indiceMaximo != i) {
-                Pedido temp = listaPedidos.getElemento(i);
-                listaPedidos.adiciona(listaPedidos.getElemento(indiceMaximo));
-                listaPedidos.adiciona(temp);
             }
         }
 
         return listaPedidos;
     }
+
 
     public void deletar(Long id) {
     Pedido pedido = pedidoRepository.findById(id)

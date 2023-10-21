@@ -1,6 +1,8 @@
 package com.be.two.c.apibetwoc.controller;
 
 import com.be.two.c.apibetwoc.dto.pedido.ItemVendaCriacaoDto;
+import com.be.two.c.apibetwoc.dto.pedido.PedidoMapper;
+import com.be.two.c.apibetwoc.dto.pedido.ResponsePedidoDto;
 import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.service.ItemVendaService;
 import com.be.two.c.apibetwoc.service.PedidoService;
@@ -21,9 +23,9 @@ public class PedidoController {
     private final ItemVendaService itemVendaService;
 
     @PostMapping
-    public ResponseEntity<Pedido> cadastrar(@RequestBody @Valid List<ItemVendaCriacaoDto> itensVenda) {
+    public ResponseEntity<ResponsePedidoDto> cadastrar(@RequestBody @Valid List<ItemVendaCriacaoDto> itensVenda) {
         Pedido pedido = itemVendaService.cadastrarItensVenda(itensVenda);
-        return ResponseEntity.ok(pedido);
+        return ResponseEntity.ok(PedidoMapper.of(pedido));
     }
 
     @PatchMapping("{idPedido}/status")
@@ -33,8 +35,8 @@ public class PedidoController {
     }
 
     @GetMapping("/consumidor/{idConsumidor}")
-    public ResponseEntity<List<Pedido>> buscarPedidosPorConsumidor(@PathVariable Long idConsumidor) {
-        List<Pedido> pedidos = pedidoService.listarPorConsumidor(idConsumidor);
+    public ResponseEntity<List<ResponsePedidoDto>> buscarPedidosPorConsumidor(@PathVariable Long idConsumidor) {
+        List<ResponsePedidoDto> pedidos = pedidoService.listarPorConsumidor(idConsumidor);
         if (pedidos.isEmpty())
             return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidos);

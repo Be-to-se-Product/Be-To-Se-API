@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,6 @@ public class Pedido {
     @ManyToOne
     @JoinColumn(name = "fk_metodo_aceito")
     private MetodoPagamentoAceito metodoPagamentoAceito;
-    @OneToMany
+    @OneToMany(mappedBy = "pedido")
     private List<ItemVenda> itens;
 }

@@ -1,11 +1,15 @@
 package com.be.two.c.apibetwoc.infra;
 
+import com.be.two.c.apibetwoc.infra.erros.ErrosValidacao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -19,16 +23,9 @@ public class Exception {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail cadastroInvalido(MethodArgumentNotValidException exception) {
-        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problemDetail.setTitle("Json inválido");
-        problemDetail.setDetail(exception.getMessage());
-
-        if(exception.getMessage().contains("nome")){
-            problemDetail.setDetail("O nome do produto é obrigatório");
-        }
-
-        return problemDetail;
+    public ResponseEntity<List<ErrosValidacao>> tratarErrosValidacao(MethodArgumentNotValidException ex){
+        List<FieldError> erros =ex.getFieldErrors();
+        return ResponseEntity.badRequest().body(erros.stream().map(ErrosValidacao::new).toList());
     }
 
     @ExceptionHandler(EntidadeNaoExisteException.class)

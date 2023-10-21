@@ -1,5 +1,7 @@
 package com.be.two.c.apibetwoc.util;
 
+import org.springframework.stereotype.Component;
+
 public class ListaObj <T> {
 
     private T[] vetor;
@@ -76,4 +78,16 @@ public class ListaObj <T> {
     public void limpa() {
         nroElem = 0;
     }
+
+    public void troca(int indice1, int indice2) {
+        if (indice1 < 0 || indice1 >= nroElem || indice2 < 0 || indice2 >= nroElem) {
+            System.out.println("Índices inválidos.");
+            return;
+        }
+
+        T temp = vetor[indice1];
+        vetor[indice1] = vetor[indice2];
+        vetor[indice2] = temp;
+    }
+
 }
