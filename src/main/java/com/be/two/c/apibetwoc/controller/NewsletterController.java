@@ -51,9 +51,9 @@ public class NewsletterController {
         return ResponseEntity.status(201).build();
     }
 
-    @PostMapping("/{idNewsletter}/publicacao")
-    public ResponseEntity<Void> publicar(@PathVariable UUID idNewsletter) {
-        this.newsletterService.publicarNewsletter(idNewsletter);
-        return ResponseEntity.status(200).build();
-    }
+//    @PostMapping("/{idNewsletter}/publicacao")
+//    public ResponseEntity<Void> publicar(@PathVariable UUID idNewsletter) {
+//        this.newsletterService.publicarNewsletter(idNewsletter);
+//        return ResponseEntity.status(200).build();
+//    }
 }

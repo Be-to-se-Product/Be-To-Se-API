@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
+    private final NewsletterService newsletterService;
 
     private final ProdutoRepository produtoRepository;
     private final SecaoService secaoService;
@@ -30,7 +31,9 @@ public class ProdutoService {
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto produto){
-        return produtoRepository.save(new Produto(null, produto.getNome(), produto.getDescricao(), produto.getPrecoCompra(), produto.getPrecoOferta(), produto.getCategoria(), produto.getCodigoSku(), true, false, 0 ,null,null));
+        Produto produtoCadastrado=produtoRepository.save(new Produto(null, produto.getNome(), produto.getDescricao(), produto.getPrecoCompra(), produto.getPrecoOferta(), produto.getCategoria(), produto.getCodigoSku(), true, false, 0 ,null,null));
+        newsletterService.publicarNewsletter(produtoCadastrado);
+        return produtoCadastrado;
     }
 
     public Produto atualizarProduto(Long id, CadastroProdutoDto produto){

@@ -16,6 +16,11 @@ public class Newsletter {
 
     private List<Assinante> assinantes = new ArrayList<>();
 
+    public Newsletter(String titulo, String conteudo) {
+        this.titulo = titulo;
+        this.conteudo = conteudo;
+    }
+
     public void inscrever(Assinante assinante) {
         this.assinantes.add(assinante);
     }
