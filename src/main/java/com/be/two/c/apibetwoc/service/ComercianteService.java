@@ -6,6 +6,7 @@ import com.be.two.c.apibetwoc.dto.comerciante.ResponseComercianteDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Endereco;
+import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.ComercianteRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class ComercianteService {
 
     public Comerciante cadastrar(ComercianteCriacaoDto comercianteCriacaoDto){
         Usuario usuario = usuarioService.cadastrar(comercianteCriacaoDto.getUsuarioCriacaoDTO());
+        usuario.setTipoUsuario(TipoUsuario.COMERCIANTE);
         Endereco endereco = enderecoService.cadastrar(comercianteCriacaoDto.getCep());
         Comerciante comerciante = ComercianteMapper.of(comercianteCriacaoDto);
         comerciante.setUsuario(usuario);

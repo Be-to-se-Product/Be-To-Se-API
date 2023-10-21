@@ -38,7 +38,7 @@ public class ItemVendaService {
             itemVenda.setConsumidor(consumidor);
             itemVenda.setProduto(produto);
             itemVenda.setPedido(pedido);
-            itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
+            itemVenda.setPromocaoAtiva(produto.isPromocaoAtiva());
             itensSalvos.add(itemVenda);
             itemVendaRepository.save(itemVenda);
         }

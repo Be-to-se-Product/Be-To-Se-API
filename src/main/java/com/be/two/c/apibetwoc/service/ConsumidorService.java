@@ -6,6 +6,7 @@ import com.be.two.c.apibetwoc.dto.consumidor.ResponseConsumidorDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.model.Imagem;
+import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,10 @@ public class ConsumidorService {
     private final UsuarioService usuarioService;
     private final InteresseService interesseService;
     private final ArquivoService arquivoService;
-    public ResponseConsumidorDto cadastrar(ConsumidorCriacaoDto consumidorCriacaoDto) {
-       Usuario usuario = usuarioService.cadastrar(consumidorCriacaoDto.getUsuarioCriacaoDTO());
 
+    public ResponseConsumidorDto cadastrar(ConsumidorCriacaoDto consumidorCriacaoDto) {
+        Usuario usuario = usuarioService.cadastrar(consumidorCriacaoDto.getUsuarioCriacaoDTO());
+        usuario.setTipoUsuario(TipoUsuario.CONSUMIDOR);
         Consumidor consumidor = ConsumidorMapper.of(consumidorCriacaoDto);
         consumidor.setUsuario(usuario);
         Consumidor consumidorSalvo = consumidorRepository.save(consumidor);
@@ -44,9 +46,9 @@ public class ConsumidorService {
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum consumidor com esse id"));
     }
 
-    public void excluir(Long id){
-        if(!consumidorRepository.existsById(id)){
-           throw new EntidadeNaoExisteException("O consumidor procurado não existe.");
+    public void excluir(Long id) {
+        if (!consumidorRepository.existsById(id)) {
+            throw new EntidadeNaoExisteException("O consumidor procurado não existe.");
         }
         Consumidor consumidor = consumidorRepository.getReferenceById(id);
         consumidor.setIsAtivo(false);

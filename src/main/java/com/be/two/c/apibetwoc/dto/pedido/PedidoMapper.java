@@ -18,7 +18,7 @@ public class PedidoMapper {
         responsePedidoDto.setId(pedido.getId());
         responsePedidoDto.setNf(pedido.getNf());
         responsePedidoDto.setStatusDescricao(pedido.getStatusDescricao());
-        responsePedidoDto.setIsPagamentoOnline(pedido.getIsPagamentoOnline());
+        responsePedidoDto.setPagamentoOnline(pedido.getIsPagamentoOnline());
         responsePedidoDto.setItens(pedido
                 .getItens()
                 .stream()

@@ -1,6 +1,6 @@
 package com.be.two.c.apibetwoc.infra;
 
-import com.be.two.c.apibetwoc.infra.erros.ErrosValidacao;
+import com.be.two.c.apibetwoc.infra.security.ErrosValidacao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;

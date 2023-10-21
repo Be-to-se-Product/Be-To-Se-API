@@ -11,8 +11,6 @@ public record UsuarioCriacaoDTO(
         String email,
         @NotBlank
         @Size(min = 8, max = 40)
-        String senha,
-
-        TipoUsuario tipoUsuario
+        String senha
 ) {
 }
