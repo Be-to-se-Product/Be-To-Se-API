@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @EqualsAndHashCode(of="id")
-public class AvaliacaoConsumidor {
+public class Avaliacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer qtdEstrela;
