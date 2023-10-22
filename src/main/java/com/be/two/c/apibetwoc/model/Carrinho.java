@@ -1,16 +1,16 @@
 package com.be.two.c.apibetwoc.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 public class Carrinho {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,15 +1,11 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.dto.TagDTO;
+import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.dto.produto.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
-import com.be.two.c.apibetwoc.model.Estabelecimento;
-import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.model.ProdutoTag;
-import com.be.two.c.apibetwoc.model.Secao;
-import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
-import com.be.two.c.apibetwoc.repository.ProdutoRepository;
-import com.be.two.c.apibetwoc.repository.SecaoRepository;
-import com.be.two.c.apibetwoc.repository.TagRepository;
+import com.be.two.c.apibetwoc.model.*;
+import com.be.two.c.apibetwoc.repository.*;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +17,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

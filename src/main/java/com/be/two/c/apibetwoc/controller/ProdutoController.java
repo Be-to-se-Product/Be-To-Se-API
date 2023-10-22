@@ -1,6 +1,6 @@
 package com.be.two.c.apibetwoc.controller;
 
-import com.be.two.c.apibetwoc.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.ProdutoService;
 import jakarta.validation.Valid;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
