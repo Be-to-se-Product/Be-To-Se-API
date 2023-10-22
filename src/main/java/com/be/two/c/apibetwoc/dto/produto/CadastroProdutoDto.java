@@ -1,8 +1,10 @@
 package com.be.two.c.apibetwoc.dto.produto;
 
+import com.be.two.c.apibetwoc.dto.TagDTO;
 import com.be.two.c.apibetwoc.model.Secao;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -37,5 +39,5 @@ public class CadastroProdutoDto {
     @NotNull
     private Long secao;
     @NotNull
-    private List<Long> tag;
+    private List<@Valid TagDTO> tag;
 }

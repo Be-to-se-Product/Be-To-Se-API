@@ -8,8 +8,7 @@ import lombok.*;
 import java.util.List;
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(of = "id")
 public class Produto {
     @Id

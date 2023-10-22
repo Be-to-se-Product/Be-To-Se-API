@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.service;
 
+import com.be.two.c.apibetwoc.dto.TagDTO;
 import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.dto.produto.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
@@ -50,9 +51,16 @@ public class ProdutoService {
         Produto produto = ProdutoMapper.of(cadastroProdutoDto);
         produto.setSecao(secao);
         Produto produtoSalvo = produtoRepository.save(produto);
-        for (Long tagId : cadastroProdutoDto.getTag()) {
-            Tag tag = tagRepository.findById(tagId).get();
-                produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
+        for (TagDTO tags : cadastroProdutoDto.getTag()) {
+            Tag tag = tagRepository.findById(tags.getId()).orElse( null);
+
+            if (tag == null) {
+                tag = new Tag();
+                tag.setDescricao(tags.getDescricao());
+                tag = tagRepository.save(tag);
+            }
+
+            produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
         }
         return produtoSalvo;
     }
@@ -61,14 +69,38 @@ public class ProdutoService {
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).get();
         produto = ProdutoMapper.of(cadastroProdutoDto);
         produto.setSecao(secao);
+        produto.setId(id);
         Produto produtoSalvo = produtoRepository.save(produto);
         List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produto.getId());
-        List<Long> tagEdicao = cadastroProdutoDto.getTag();
+        List<TagDTO> tagEdicao = cadastroProdutoDto.getTag();
+
+        for (TagDTO tags : tagEdicao) {
+            boolean tagJaAssociada = false;
+            Tag tag = tagRepository.findById(tags.getId()).orElse(null);
+
+            if (tag!=null){
+                for (ProdutoTag produtoTag : tagsProduto) {
+                    if (produtoTag.getTag().getId().equals(tags.getId())) {
+                        tagJaAssociada = true;
+                        break;
+                    }
+                }
+            }else{
+                tag = new Tag();
+                tag.setDescricao(tags.getDescricao());
+                tag = tagRepository.save(tag);
+            }
+
+            if (!tagJaAssociada) {
+                ProdutoTag novaProdutoTag = new ProdutoTag(null, tag, produtoSalvo);
+                produtoTagRepository.save(novaProdutoTag);
+            }
+        }
 
         for (ProdutoTag produtoTag : tagsProduto) {
             boolean encontrada = false;
-            for (Long tagIdEdicao : tagEdicao) {
-                if (produtoTag.getTag().getId().equals(tagIdEdicao)) {
+            for (TagDTO tags : tagEdicao) {
+                if (produtoTag.getTag().getId().equals(tags.getId())) {
                     encontrada = true;
                     break;
                 }
@@ -78,25 +110,6 @@ public class ProdutoService {
             }
         }
 
-        for (Long tagIdEdicao : tagEdicao) {
-            boolean tagJaAssociada = false;
-
-            for (ProdutoTag produtoTag : tagsProduto) {
-                if (produtoTag.getTag().getId().equals(tagIdEdicao)) {
-                    tagJaAssociada = true;
-                    break;
-                }
-            }
-
-            if (!tagJaAssociada) {
-                Tag tag = tagRepository.findById(tagIdEdicao).orElse(null);
-
-                if (tag != null) {
-                    ProdutoTag novaProdutoTag = new ProdutoTag(null, tag, produtoSalvo);
-                    produtoTagRepository.save(novaProdutoTag);
-                }
-            }
-        }
         return produtoSalvo;
     }
     public void deletarProduto(Long id){
