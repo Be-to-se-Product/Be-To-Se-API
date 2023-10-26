@@ -7,9 +7,14 @@ import com.be.two.c.apibetwoc.dto.produto.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import com.opencsv.*;
+import com.opencsv.exceptions.CsvException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -163,77 +168,77 @@ public class ProdutoService {
         return produtoRepository.findByIsPromocaoAtivaTrue();
     }
 
-//    public List<Produto> uploadCsv(MultipartFile file, String secaoSelecionada){
-//        List<Produto> produtos = new ArrayList<>();
-//        Secao secao = secaoService.listarSecaoPorDescricao(secaoSelecionada);
-//
-//        try {
-//            CSVParser parser = new CSVParserBuilder()
-//                    .withSeparator(';')
-//                    .withIgnoreQuotations(true)
-//                    .build();
-//
-//            Reader reader = new InputStreamReader(file.getInputStream());
-//
-//            CSVReader csvReader = new CSVReaderBuilder(reader)
-//                    .withSkipLines(0)
-//                    .withCSVParser(parser)
-//                    .build();
-//
-//            List<String[]> linhas = csvReader.readAll();
-//
-//            for (String[] linha : linhas) {
-//                String valor = linha[2].replaceAll(",", ".")
-//                        .replaceAll("R\\$", "");
-//                String valorPromocao = linha[3].replaceAll(",", ".")
-//                        .replaceAll("R\\$", "");
-//
-//
-//                Produto produto = new Produto(null, linha[0], linha[1], Double.parseDouble(valor), Double.parseDouble(valorPromocao), linha[4], linha[5], true , false, Integer.valueOf(linha[6]), secao,null);
-//
-//                produtos.add(produto);
-//            }
-//
-//            produtoRepository.saveAll(produtos);
-//
-//        } catch (IOException e){
-//            throw new RuntimeException("Falha ao processar arquivo");
-//        } catch (CsvException e){
-//            throw new RuntimeException("Falha ao ler arquivo");
-//        }
-//
-//        return produtos;
-//    }
-//
-//    public byte[] downloadCsv(Long idEstabelecimento){
-//        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(idEstabelecimento);
-//
-//        try {
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
-//
-//            ICSVWriter csvWriter = new CSVWriterBuilder(outputStreamWriter)
-//                    .withSeparator(';')
-//                    .build();
-//
-//            String[] cabecalho = {"Nome", "Codigo SKU", "Preço", "Descrição", "Preco Oferta", "Categoria", "Seção", "Status", "Status Promoção", "Qtd Vendas"};
-//            csvWriter.writeNext(cabecalho);
-//
-//            for (Produto p : produtos){
-//                String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getPrecoOferta().toString(), p.getCategoria(), p.getSecao().getDescricao(), p.isAtivo() ? "Ativo" : "Inativo", p.isPromocaoAtiva() ? "Ativo" : "Inativo", String.valueOf(p.getQtdVendas())};
-//
-//                csvWriter.writeNext(linha);
-//            }
-//
-//            csvWriter.close();
-//            outputStreamWriter.close();
-//            byte[] csvBytes = byteArrayOutputStream.toByteArray();
-//
-//            return csvBytes;
-//
-//        }catch (IOException e){
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public List<Produto> uploadCsv(MultipartFile file, String secaoSelecionada){
+        List<Produto> produtos = new ArrayList<>();
+        Secao secao = secaoService.listarSecaoPorDescricao(secaoSelecionada);
+
+        try {
+            CSVParser parser = new CSVParserBuilder()
+                    .withSeparator(';')
+                    .withIgnoreQuotations(true)
+                    .build();
+
+            Reader reader = new InputStreamReader(file.getInputStream());
+
+            CSVReader csvReader = new CSVReaderBuilder(reader)
+                    .withSkipLines(0)
+                    .withCSVParser(parser)
+                    .build();
+
+            List<String[]> linhas = csvReader.readAll();
+
+            for (String[] linha : linhas) {
+                String valor = linha[2].replaceAll(",", ".")
+                        .replaceAll("R\\$", "");
+                String valorPromocao = linha[4].replaceAll(",", ".")
+                        .replaceAll("R\\$", "");
+
+
+                Produto produto = new Produto(linha[0], linha[1], Double.parseDouble(valor), linha[3], Double.parseDouble(valorPromocao), linha[5], linha[6], true , false, secao);
+
+                produtos.add(produto);
+            }
+
+            produtoRepository.saveAll(produtos);
+
+        } catch (IOException e){
+            throw new RuntimeException("Falha ao processar arquivo");
+        } catch (CsvException e){
+            throw new RuntimeException("Falha ao ler arquivo");
+        }
+
+        return produtos;
+    }
+
+    public byte[] downloadCsv(Long idEstabelecimento){
+        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(idEstabelecimento);
+
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+
+            ICSVWriter csvWriter = new CSVWriterBuilder(outputStreamWriter)
+                    .withSeparator(';')
+                    .build();
+
+            String[] cabecalho = {"Nome", "Codigo SKU", "Preço", "Descrição", "Preco Oferta", "Código de Barras", "Categoria", "Status", "Status Promoção", "Seção"};
+            csvWriter.writeNext(cabecalho);
+
+            for (Produto p : produtos){
+                String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getPrecoOferta().toString(), p.getCodigoBarras(), p.getCategoria(), p.getIsAtivo() ? "Ativo" : "Inativo", p.getIsPromocaoAtiva() ? "Ativo" : "Inativo", p.getSecao().getDescricao()};
+
+                csvWriter.writeNext(linha);
+            }
+
+            csvWriter.close();
+            outputStreamWriter.close();
+            byte[] csvBytes = byteArrayOutputStream.toByteArray();
+
+            return csvBytes;
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
 
 }
