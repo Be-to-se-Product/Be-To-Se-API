@@ -20,7 +20,7 @@ public class ComercianteMapper {
         ResponseComercianteDto responseComercianteDto = new ResponseComercianteDto();
         responseComercianteDto.setId(comerciante.getId());
         responseComercianteDto.setNome(comerciante.getNome());
-        responseComercianteDto.setEmail(comerciante.getCnpj());
+        responseComercianteDto.setEmail(comerciante.getUsuario().getEmail());
         return responseComercianteDto;
     }
 }

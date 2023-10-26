@@ -1,12 +1,14 @@
 package com.be.two.c.apibetwoc.dto.produto;
 
 import com.be.two.c.apibetwoc.dto.TagDTO;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.util.Base64;
 import java.util.List;
 
 @Getter
@@ -29,11 +31,10 @@ public class CadastroProdutoDto {
     @NotBlank
     private String categoria;
     @NotNull
-    private Boolean isAtivo;
-    @NotNull
-    private Boolean isPromocaoAtiva;
-    @NotNull
     private Long secao;
-    @NotNull
+    @Nullable
     private List<@Valid TagDTO> tag;
+    @Nullable
+    private List<String> imagens;
+
 }

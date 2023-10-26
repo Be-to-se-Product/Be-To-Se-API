@@ -17,7 +17,6 @@ public class Exception {
     @ExceptionHandler(NoSuchElementException.class)
     public ProblemDetail produtoNaoEncontrado(NoSuchElementException exception) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        problemDetail.setTitle("Produto não encontrado");
         problemDetail.setDetail(exception.getMessage());
         return problemDetail;
     }

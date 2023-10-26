@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.controller;
 
+import com.be.two.c.apibetwoc.dto.produto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.ProdutoService;
@@ -7,20 +8,20 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProdutoController {
 
     @Autowired
     private ProdutoService produtoService;
 
     @GetMapping
-    public ResponseEntity<List<Produto>> listarProdutos(){
-        List<Produto> produtos = produtoService.listarProdutos();
+    public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
+        List<ProdutoDetalhamentoDto  > produtos = produtoService.listarProdutos();
 
         if(produtos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -83,17 +84,17 @@ public class ProdutoController {
         }
         return ResponseEntity.ok(produtos);
     }
-    @GetMapping("/download-csv")
-    public ResponseEntity<byte[]> downloadCsv(@RequestParam("idEmpresa") Long id){
-        return ResponseEntity.status(200).body(produtoService.downloadCsv(id));
-    }
-
-    @PostMapping("/upload-csv")
-    public ResponseEntity<List<Produto>> uploadCsv(@RequestParam("arquivo")MultipartFile file, @RequestParam("secao")String secao){
-        if(file.isEmpty()){
-            return ResponseEntity.status(400).build();
-        }
-
-        return ResponseEntity.status(201).body(produtoService.uploadCsv(file, secao));
-    }
+//    @GetMapping("/download-csv")
+//    public ResponseEntity<byte[]> downloadCsv(@RequestParam("idEmpresa") Long id){
+//        return ResponseEntity.status(200).body(produtoService.downloadCsv(id));
+//    }
+//
+//    @PostMapping("/upload-csv")
+//    public ResponseEntity<List<Produto>> uploadCsv(@RequestParam("arquivo")MultipartFile file, @RequestParam("secao")String secao){
+//        if(file.isEmpty()){
+//            return ResponseEntity.status(400).build();
+//        }
+//
+//        return ResponseEntity.status(201).body(produtoService.uploadCsv(file, secao));
+//    }
 }

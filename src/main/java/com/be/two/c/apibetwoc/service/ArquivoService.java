@@ -21,7 +21,7 @@ public class ArquivoService {
 
     private final ImagemRepository imagemRepository;
     private final ProdutoRepository produtoRepository;
-    private Path diretorioBase = Path.of(System.getProperty("java.io.tmpdir") + "/arquivos");
+    private final Path diretorioBase = Path.of(System.getProperty("java.io.tmpdir") + "/arquivos");
 //  private Path diretorioBase = Path.of(System.getProperty("user.dir") + "/arquivos"); // projeto
 
     public Imagem upload(MultipartFile file) {
