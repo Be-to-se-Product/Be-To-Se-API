@@ -13,8 +13,7 @@ public class ProdutoMapper {
         produto.setPrecoOferta(cadastroProdutoDto.getPrecoOferta());
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
-        produto.setIsAtivo(cadastroProdutoDto.getIsAtivo());
-        produto.setIsPromocaoAtiva(cadastroProdutoDto.getIsPromocaoAtiva());
+        produto.setIsAtivo(true);
         return produto;
     }
 }

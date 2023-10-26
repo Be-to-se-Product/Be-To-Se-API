@@ -27,6 +27,11 @@ public class Produto {
     @JoinColumn(name = "fk_secao")
     private Secao secao;
 
+    @OneToMany(mappedBy = "produto")
+    private List<ProdutoTag> tags;
+
+    @OneToMany(mappedBy = "produto")
+    private List<Imagem> imagens;
     public Produto(String nome, String codigoSku, Double preco, String descricao, Double precoOferta, String codigoBarras, String categoria, Boolean isAtivo, Boolean isPromocaoAtiva, Secao secao) {
         this.nome = nome;
         this.codigoSku = codigoSku;
