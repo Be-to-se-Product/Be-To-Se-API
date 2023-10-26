@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
+    private final NewsletterService newsletterService;
 
     private final ProdutoRepository produtoRepository;
     private final SecaoService secaoService;
@@ -60,6 +61,8 @@ public class ProdutoService {
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
         Produto produto = ProdutoMapper.of(cadastroProdutoDto);
         produto.setSecao(secao);
+        produto.setIsPromocaoAtiva(false);
+
         Produto produtoSalvo = produtoRepository.save(produto);
 
         if (cadastroProdutoDto.getTag() != null) {
@@ -75,10 +78,10 @@ public class ProdutoService {
                 produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
             }
         }
-        if (cadastroProdutoDto.getImagens() != null &&!cadastroProdutoDto.getImagens().isEmpty()) {
+        if (cadastroProdutoDto.getImagens() != null && !cadastroProdutoDto.getImagens().isEmpty()) {
             cadastroProdutoDto.getImagens().forEach(i -> imagemService.salvarImagem(i, produtoSalvo.getCodigoSku(), produtoSalvo));
         }
-
+        newsletterService.publicarNewsletter(produtoSalvo);
         return produtoSalvo;
     }
 
@@ -88,10 +91,10 @@ public class ProdutoService {
         produto = ProdutoMapper.of(cadastroProdutoDto);
         produto.setSecao(secao);
         produto.setId(id);
+
         Produto produtoSalvo = produtoRepository.save(produto);
         List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produto.getId());
         List<TagDTO> tagEdicao = cadastroProdutoDto.getTag();
-
 
         for (TagDTO tags : tagEdicao) {
             boolean tagJaAssociada = false;
@@ -168,7 +171,7 @@ public class ProdutoService {
         return produtoRepository.findByIsPromocaoAtivaTrue();
     }
 
-    public List<Produto> uploadCsv(MultipartFile file, String secaoSelecionada){
+    public List<Produto> uploadCsv(MultipartFile file, String secaoSelecionada) {
         List<Produto> produtos = new ArrayList<>();
         Secao secao = secaoService.listarSecaoPorDescricao(secaoSelecionada);
 
@@ -194,23 +197,23 @@ public class ProdutoService {
                         .replaceAll("R\\$", "");
 
 
-                Produto produto = new Produto(linha[0], linha[1], Double.parseDouble(valor), linha[3], Double.parseDouble(valorPromocao), linha[5], linha[6], true , false, secao);
+                Produto produto = new Produto(linha[0], linha[1], Double.parseDouble(valor), linha[3], Double.parseDouble(valorPromocao), linha[5], linha[6], true, false, secao);
 
                 produtos.add(produto);
             }
 
             produtoRepository.saveAll(produtos);
 
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException("Falha ao processar arquivo");
-        } catch (CsvException e){
+        } catch (CsvException e) {
             throw new RuntimeException("Falha ao ler arquivo");
         }
 
         return produtos;
     }
 
-    public byte[] downloadCsv(Long idEstabelecimento){
+    public byte[] downloadCsv(Long idEstabelecimento) {
         List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(idEstabelecimento);
 
         try {
@@ -224,7 +227,7 @@ public class ProdutoService {
             String[] cabecalho = {"Nome", "Codigo SKU", "Preço", "Descrição", "Preco Oferta", "Código de Barras", "Categoria", "Status", "Status Promoção", "Seção"};
             csvWriter.writeNext(cabecalho);
 
-            for (Produto p : produtos){
+            for (Produto p : produtos) {
                 String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getPrecoOferta().toString(), p.getCodigoBarras(), p.getCategoria(), p.getIsAtivo() ? "Ativo" : "Inativo", p.getIsPromocaoAtiva() ? "Ativo" : "Inativo", p.getSecao().getDescricao()};
 
                 csvWriter.writeNext(linha);
@@ -236,7 +239,7 @@ public class ProdutoService {
 
             return csvBytes;
 
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
