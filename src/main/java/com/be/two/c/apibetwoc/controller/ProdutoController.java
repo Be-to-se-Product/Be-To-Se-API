@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -84,17 +85,17 @@ public class ProdutoController {
         }
         return ResponseEntity.ok(produtos);
     }
-//    @GetMapping("/download-csv")
-//    public ResponseEntity<byte[]> downloadCsv(@RequestParam("idEmpresa") Long id){
-//        return ResponseEntity.status(200).body(produtoService.downloadCsv(id));
-//    }
-//
-//    @PostMapping("/upload-csv")
-//    public ResponseEntity<List<Produto>> uploadCsv(@RequestParam("arquivo")MultipartFile file, @RequestParam("secao")String secao){
-//        if(file.isEmpty()){
-//            return ResponseEntity.status(400).build();
-//        }
-//
-//        return ResponseEntity.status(201).body(produtoService.uploadCsv(file, secao));
-//    }
+    @GetMapping("/download-csv")
+    public ResponseEntity<byte[]> downloadCsv(@RequestParam("idEmpresa") Long id){
+        return ResponseEntity.status(200).body(produtoService.downloadCsv(id));
+    }
+
+    @PostMapping("/upload-csv")
+    public ResponseEntity<List<Produto>> uploadCsv(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao")String secao){
+        if(file.isEmpty()){
+            return ResponseEntity.status(400).build();
+        }
+
+        return ResponseEntity.status(201).body(produtoService.uploadCsv(file, secao));
+    }
 }
