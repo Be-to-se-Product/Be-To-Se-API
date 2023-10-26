@@ -6,6 +6,8 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,9 +88,18 @@ public class ProdutoController {
         return ResponseEntity.ok(produtos);
     }
     @GetMapping("/download-csv")
-    public ResponseEntity<byte[]> downloadCsv(@RequestParam("idEmpresa") Long id){
-        return ResponseEntity.status(200).body(produtoService.downloadCsv(id));
+    public ResponseEntity<byte[]> downloadCsv(@RequestParam("idEmpresa") Long id) {
+        byte[] data = produtoService.downloadCsv(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=produtos.csv");
+        headers.add("Content-Type", "text/csv; charset=UTF-8");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(data);
     }
+
 
     @PostMapping("/upload-csv")
     public ResponseEntity<List<Produto>> uploadCsv(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao")String secao){
