@@ -30,7 +30,7 @@ public class Produto {
     @OneToMany(mappedBy = "produto")
     private List<ProdutoTag> tags;
 
-    @OneToMany(mappedBy = "produto")
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
     private List<Imagem> imagens;
     public Produto(String nome, String codigoSku, Double preco, String descricao, Double precoOferta, String codigoBarras, String categoria, Boolean isAtivo, Boolean isPromocaoAtiva, Secao secao) {
         this.nome = nome;
