@@ -76,8 +76,9 @@ public class EstabelecimentoService {
 
     public Estabelecimento atualizarEstabelecimento(AtualizarEstabelecimentoDto estabelecimentoDto, Long id){
         Estabelecimento estabelecimento = listarPorId(id);
-
-        return estabelecimentoRepository.save(EstabelecimentoMapper.of(estabelecimentoDto, estabelecimento)) ;
+        Estabelecimento estabelecimentoAtualizado = EstabelecimentoMapper.of(estabelecimentoDto, estabelecimento);
+        estabelecimentoAtualizado.setId(id);
+        return estabelecimentoRepository.save(estabelecimentoAtualizado) ;
     }
 
     public void deletar(Long id){
