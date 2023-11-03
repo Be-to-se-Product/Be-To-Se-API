@@ -1,12 +1,10 @@
 package com.be.two.c.apibetwoc.model;
 
-import com.be.two.c.apibetwoc.util.StatusPedido;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,8 +19,6 @@ public class Pedido {
 
     @Enumerated(EnumType.STRING)
     private StatusPedido statusDescricao;
-
-
     private Boolean isPagamentoOnline;
     private LocalDateTime dataHoraRetirada;
     @ManyToOne

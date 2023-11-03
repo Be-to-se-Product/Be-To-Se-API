@@ -13,6 +13,4 @@ public class ResponseItemVendaDto {
     private String produtoNome;
     private Double preco;
 
-
-
 }

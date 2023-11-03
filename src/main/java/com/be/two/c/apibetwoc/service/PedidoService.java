@@ -1,16 +1,18 @@
 package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.dto.pedido.PedidoCriacaoDto;
+import com.be.two.c.apibetwoc.dto.pedido.PedidoDtoStatus;
 import com.be.two.c.apibetwoc.dto.pedido.PedidoMapper;
 import com.be.two.c.apibetwoc.dto.pedido.ResponsePedidoDTO;
 
+import com.be.two.c.apibetwoc.exception.ForbidenPedidoException;
+import com.be.two.c.apibetwoc.exception.NaoAutorizadoException;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
-import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
-import com.be.two.c.apibetwoc.model.Pedido;
+import com.be.two.c.apibetwoc.model.*;
+import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
 import com.be.two.c.apibetwoc.repository.MetodoPagamentoAceitoRepository;
 import com.be.two.c.apibetwoc.repository.PedidoRepository;
 import com.be.two.c.apibetwoc.util.ListaObj;
-import com.be.two.c.apibetwoc.util.StatusPedido;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -23,20 +25,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PedidoService {
 
-    private final SimpMessagingTemplate messagingTemplate;
+
     private final PedidoRepository pedidoRepository;
+private final EstabelecimentoRepository estabelecimentoRepository;
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
-    public void alterarStatusPedido(Long idPedido, StatusPedido novoStatus) {
-        Pedido pedido = pedidoRepository
-                .findById(idPedido)
-                .orElseThrow(
-                        () -> new EntidadeNaoExisteException("O pedido informado não existe"));
+    private final AutenticacaoService autenticacaoService;
 
-        pedido.setStatusDescricao(novoStatus);
-        StatusPedidoMessage mensagem = new StatusPedidoMessage();
-        mensagem.setIdPedido(idPedido);
 
-        messagingTemplate.convertAndSend("/topic/statusPedido", mensagem);
+
+    private void validarPedidosEstabelecimento(Long id){
+        Optional<Estabelecimento> estabelecimentoOpt=  estabelecimentoRepository.findById(id);
+        if(estabelecimentoOpt.isEmpty()){
+            throw new EntidadeNaoExisteException("Estabelecimento não encontrado");
+        }
+        Estabelecimento estabelecimento = estabelecimentoOpt.get();
+        if(estabelecimento.getComerciante().getUsuario().getId() != autenticacaoService.loadUsuarioDetails().getId()){
+            throw new ForbidenPedidoException("Estabelecimento não encontrado");
+        }
+    }
+
+
+    public void alterarStatusPedido(Long idPedido, PedidoDtoStatus novoStatus) {
+        Pedido pedido = pedidoRepository.findById(idPedido).orElseThrow(() -> new EntidadeNaoExisteException("O pedido informado não existe"));
+        validarPedidosEstabelecimento(pedido.getMetodoPagamentoAceito().getEstabelecimento().getId());
+        pedido.setStatusDescricao(novoStatus.getStatus());
+        pedidoRepository.save(pedido);
     }
 
     public Pedido cadastrar(@Valid PedidoCriacaoDto pedidoCriacaoDto){
@@ -48,31 +61,48 @@ public class PedidoService {
     }
 
     public Pedido buscarPorId(Long idPedido) {
+
+
         Optional<Pedido> pedido = pedidoRepository.findById(idPedido);
+
         if (pedido.isPresent()) {
             return pedido.get();
         }
         throw new EntidadeNaoExisteException("Pedido não encontrado");
     }
 
-    public List<ResponsePedidoDTO> listarPorConsumidor(Long idConsumidor) {
-        List <Pedido> pedidos = pedidoRepository.searchByConsumidor(idConsumidor);
+    public List<ResponsePedidoDTO> listarPorConsumidor() {
+
+        if(autenticacaoService.loadUsuarioDetails()==null){
+                throw new NaoAutorizadoException();
+        }
+
+
+        List <Pedido> pedidos = pedidoRepository.searchByConsumidor(autenticacaoService.loadUsuarioDetails().getId());
+
         return pedidos.stream().map(PedidoMapper::of).toList();
     }
 
+
+
+
     public ListaObj<ResponsePedidoDTO> listarPorEstabelecimento(Long idEstabelecimento) {
-        List<Pedido> pedidos = pedidoRepository.searchByEstabelecimento(idEstabelecimento);
 
-        ListaObj<ResponsePedidoDTO> listaPedidos = new ListaObj<>(pedidos.size());
-        for (Pedido pedido : pedidos) {
-            listaPedidos.adiciona(PedidoMapper.of(pedido));
-        }
+        validarPedidosEstabelecimento(idEstabelecimento);
+            List<Pedido> pedidos = pedidoRepository.searchByEstabelecimento(idEstabelecimento);
+            ListaObj<ResponsePedidoDTO> listaPedidos = new ListaObj<>(pedidos.size());
+            for (Pedido pedido : pedidos) {
 
-        return listaPedidos;
+                listaPedidos.adiciona(PedidoMapper.of(pedido));
+            }
+
+            return listaPedidos;
+
     }
 
-    public List<Pedido> listarPorEstabelecimentoEStatus(Long idEstabelecimento, String status) {
-        return pedidoRepository.searchByEstabelecimentoEStatus(idEstabelecimento, status);
+    public List<ResponsePedidoDTO> listarPorEstabelecimentoEStatus(Long idEstabelecimento, StatusPedido status) {
+        validarPedidosEstabelecimento(idEstabelecimento);
+       return  pedidoRepository.searchByEstabelecimentoEStatus(idEstabelecimento, status).stream().map(PedidoMapper::of).toList();
     }
 
 //    public ListaObj<ResponsePedidoDto> ordenacao(ListaObj<ResponsePedidoDto> listaPedidos) {

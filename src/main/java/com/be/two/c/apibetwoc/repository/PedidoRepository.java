@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.repository;
 
 import com.be.two.c.apibetwoc.model.Pedido;
+import com.be.two.c.apibetwoc.model.StatusPedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,5 +22,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
             "JOIN p.itens iv " +
             "WHERE iv.produto.secao.estabelecimento.id = ?1 " +
             "AND p.statusDescricao = ?2")
-    List<Pedido> searchByEstabelecimentoEStatus(Long idEstabelecimento, String status);
+    List<Pedido> searchByEstabelecimentoEStatus(Long idEstabelecimento, StatusPedido status);
 }

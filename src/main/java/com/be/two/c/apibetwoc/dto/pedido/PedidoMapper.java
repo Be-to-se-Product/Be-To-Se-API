@@ -1,13 +1,8 @@
 package com.be.two.c.apibetwoc.dto.pedido;
 
-import com.be.two.c.apibetwoc.model.ItemVenda;
-import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.model.Pedido;
-import com.be.two.c.apibetwoc.util.StatusPedido;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class PedidoMapper {
     public static Pedido of(PedidoCriacaoDto pedidoCriacaoDto) {
