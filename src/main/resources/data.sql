@@ -64,6 +64,63 @@ INSERT INTO usuario (email, senha, tipo_usuario) VALUES
     ('2022-10-01', true, 4, 7, 'contato@lojaconveniencia.com', 'MEI', 'Loja de Conveniência', 'fb.com/lojaconveniencia', '@lojaconveniencia', 'Conveniência', '(11) 2345-6789'),
     ('2023-01-01', true, 2, 9, 'contato@supermercadomega.com', 'MEI', 'Supermercado Mega', 'fb.com/supermercadomega', '@supermercadomega', 'Supermercado', '(11) 8901-2345');
 
+
+-- Segunda-feira
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('12:00:00', '10:00:00', 1, 'Segunda-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('13:30:00', '11:00:00', 2, 'Segunda-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('15:00:00', '12:30:00', 3, 'Segunda-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('17:00:00', '14:00:00', 4, 'Segunda-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:30:00', '15:30:00', 5, 'Segunda-feira');
+
+
+-- Terça-feira
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('12:30:00', '09:00:00', 1, 'Terça-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('14:00:00', '10:30:00', 2, 'Terça-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('16:00:00', '12:00:00', 3, 'Terça-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:00:00', '14:30:00', 4, 'Terça-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('19:30:00', '16:00:00', 5, 'Terça-feira');
+
+
+-- Quarta-feira
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('11:00:00', '09:30:00', 1, 'Quarta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('13:00:00', '10:30:00', 2, 'Quarta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('15:00:00', '12:00:00', 3, 'Quarta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('17:00:00', '14:30:00', 4, 'Quarta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:30:00', '16:00:00', 5, 'Quarta-feira');
+
+
+-- Quinta-feira
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('12:30:00', '09:00:00', 1, 'Quinta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('14:00:00', '10:30:00', 2, 'Quinta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('16:00:00', '12:00:00', 3, 'Quinta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:00:00', '14:30:00', 4, 'Quinta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('19:30:00', '16:00:00', 5, 'Quinta-feira');
+
+
+-- Sexta-feira
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('11:00:00', '09:30:00', 1, 'Sexta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('13:00:00', '10:30:00', 2, 'Sexta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('15:00:00', '12:00:00', 3, 'Sexta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('17:00:00', '14:30:00', 4, 'Sexta-feira');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:30:00', '16:00:00', 5, 'Sexta-feira');
+
+
+-- Sábado
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('12:30:00', '09:00:00', 1, 'Sábado');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('14:00:00', '10:30:00', 2, 'Sábado');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('16:00:00', '12:00:00', 3, 'Sábado');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:00:00', '14:30:00', 4, 'Sábado');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('19:30:00', '16:00:00', 5, 'Sábado');
+
+
+-- Domingo
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('11:00:00', '09:30:00', 1, 'Domingo');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('13:00:00', '10:30:00', 2, 'Domingo');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('15:00:00', '12:00:00', 3, 'Domingo');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('17:00:00', '14:30:00', 4, 'Domingo');
+insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:30:00', '16:00:00', 5, 'Domingo');
+
+
     -- Dados para a tabela 'metodo_pagamento_aceito'
     INSERT INTO metodo_pagamento_aceito (fk_estabelecimento, fk_metodo_pagamento) VALUES
     (1, 1),
