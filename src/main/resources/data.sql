@@ -2,16 +2,16 @@
     -- Dados para a tabela 'usuario'
 -- Dados para a tabela 'usuario'
 INSERT INTO usuario (email, senha, tipo_usuario) VALUES
-('comerciante1@email.com', '$2a$10$nlHlJ84K/2pKrb5dHM1FuOLJnu7IRl0F8qkplYdmB1S68KcYyVXWm', 'COMERCIANTE'),
-('consumidor1@email.com', '$2a$10$kMT85VTvG9lG.U1y6uRP0uHfQUH0N8pPy3WenWzT3d38m8WFnf0xG', 'CONSUMIDOR'),
-('comerciante2@email.com', '$2a$10$aGd8yvWZfBv4ttozebCMLur4LpI22YpdugYvUBl06C3OgIot5sBZG', 'COMERCIANTE'),
-('consumidor2@email.com', '$2a$10$8mBY2g.2vfi6SdGVD65PUurTGicwJjeW8kJLktcx9pNCEVDeJ6wDa', 'CONSUMIDOR'),
-('comerciante3@email.com', '$2a$10$U05/gVACI4MkX4c7F7fI2u/W02MNOOlfU7KBY2yVfB1VwDJpDX2U2', 'COMERCIANTE'),
-('consumidor3@email.com', '$2a$10$S66SC.5jBAmvP/yJRWlMLuUROpIiVTY5YB5yK7unDMHEFQdfopNjG', 'CONSUMIDOR'),
-('comerciante4@email.com', '$2a$10$Br9V8hVl5UCXnCRPvqD0t.GyxzFrcxgdkS0zCvGz.ww8uOCOiqqCa', 'COMERCIANTE'),
-('consumidor4@email.com', '$2a$10$.ZunH.6neX3WDPnZlDpdN.B27z.EKsZ.qTHjSfF5xGiUH2At8S2Ba', 'CONSUMIDOR'),
-('comerciante5@email.com', '$2a$10$dmfW0fLe1sLl3HBYR1AFcOSUsPpK6Rof2LOFBoFZn//Jvc9Z0Zz8K', 'COMERCIANTE'),
-('consumidor5@email.com', '$2a$10$3/lh4JX3pC6Sco19pfQmuOFpJFWpAOWm8Af.aBbgjFSFSCF2xPTAC', 'CONSUMIDOR');
+('comerciante1@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'COMERCIANTE'),
+('consumidor1@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq ', 'CONSUMIDOR'),
+('comerciante2@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'COMERCIANTE'),
+('consumidor2@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'CONSUMIDOR'),
+('comerciante3@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'COMERCIANTE'),
+('consumidor3@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'CONSUMIDOR'),
+('comerciante4@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'COMERCIANTE'),
+('consumidor4@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'CONSUMIDOR'),
+('comerciante5@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'COMERCIANTE'),
+('consumidor5@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'CONSUMIDOR');
 
 
     -- Dados para a tabela 'endereco'
