@@ -2,13 +2,15 @@ package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.dto.pedido.PedidoCriacaoDto;
 import com.be.two.c.apibetwoc.dto.pedido.PedidoMapper;
-import com.be.two.c.apibetwoc.dto.pedido.ResponsePedidoDto;
+import com.be.two.c.apibetwoc.dto.pedido.ResponsePedidoDTO;
+
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.repository.MetodoPagamentoAceitoRepository;
 import com.be.two.c.apibetwoc.repository.PedidoRepository;
 import com.be.two.c.apibetwoc.util.ListaObj;
+import com.be.two.c.apibetwoc.util.StatusPedido;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -24,7 +26,7 @@ public class PedidoService {
     private final SimpMessagingTemplate messagingTemplate;
     private final PedidoRepository pedidoRepository;
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
-    public void alterarStatusPedido(Long idPedido, String novoStatus) {
+    public void alterarStatusPedido(Long idPedido, StatusPedido novoStatus) {
         Pedido pedido = pedidoRepository
                 .findById(idPedido)
                 .orElseThrow(
@@ -33,7 +35,7 @@ public class PedidoService {
         pedido.setStatusDescricao(novoStatus);
         StatusPedidoMessage mensagem = new StatusPedidoMessage();
         mensagem.setIdPedido(idPedido);
-        mensagem.setNovoStatus(novoStatus);
+
         messagingTemplate.convertAndSend("/topic/statusPedido", mensagem);
     }
 
@@ -53,46 +55,47 @@ public class PedidoService {
         throw new EntidadeNaoExisteException("Pedido não encontrado");
     }
 
-    public List<ResponsePedidoDto> listarPorConsumidor(Long idConsumidor) {
+    public List<ResponsePedidoDTO> listarPorConsumidor(Long idConsumidor) {
         List <Pedido> pedidos = pedidoRepository.searchByConsumidor(idConsumidor);
         return pedidos.stream().map(PedidoMapper::of).toList();
     }
 
-    public ListaObj<Pedido> listarPorEstabelecimento(Long idEstabelecimento) {
+    public ListaObj<ResponsePedidoDTO> listarPorEstabelecimento(Long idEstabelecimento) {
         List<Pedido> pedidos = pedidoRepository.searchByEstabelecimento(idEstabelecimento);
-        ListaObj<Pedido> listaPedidos = new ListaObj<>(pedidos.size());
+
+        ListaObj<ResponsePedidoDTO> listaPedidos = new ListaObj<>(pedidos.size());
         for (Pedido pedido : pedidos) {
-            listaPedidos.adiciona(pedido);
+            listaPedidos.adiciona(PedidoMapper.of(pedido));
         }
 
-        return ordenacao(listaPedidos) ;
+        return listaPedidos;
     }
 
     public List<Pedido> listarPorEstabelecimentoEStatus(Long idEstabelecimento, String status) {
         return pedidoRepository.searchByEstabelecimentoEStatus(idEstabelecimento, status);
     }
 
-    public ListaObj<Pedido> ordenacao(ListaObj<Pedido> listaPedidos) {
-        int tamanho = listaPedidos.getTamanho();
-
-        for (int i = 0; i < tamanho - 1; i++) {
-            for (int j = 0; j < tamanho - 1 - i; j++) {
-                Pedido pedidoAtual = listaPedidos.getElemento(j);
-                Pedido proximoPedido = listaPedidos.getElemento(j + 1);
-
-                if (pedidoAtual.getDataHoraPedido().isBefore(proximoPedido.getDataHoraPedido())) {
-                    listaPedidos.troca(j, j + 1);
-                }
-            }
-        }
-
-        return listaPedidos;
-    }
+//    public ListaObj<ResponsePedidoDto> ordenacao(ListaObj<ResponsePedidoDto> listaPedidos) {
+//        int tamanho = listaPedidos.getTamanho();
+//
+//        for (int i = 0; i < tamanho - 1; i++) {
+//            for (int j = 0; j < tamanho - 1 - i; j++) {
+//                ResponsePedidoDto pedidoAtual = listaPedidos.getElemento(j);
+//                ResponsePedidoDto proximoPedido = listaPedidos.getElemento(j + 1);
+//
+//                if (pedidoAtual.getDataHoraPedido().isBefore(proximoPedido.getDataHoraPedido())) {
+//                    listaPedidos.troca(j, j + 1);
+//                }
+//            }
+//        }
+//
+//        return listaPedidos;
+//    }
 
 
     public void deletar(Long id) {
     Pedido pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new EntidadeNaoExisteException("Pedido não encontrado"));
-    pedido.setStatusDescricao("CANCELADO");
+    pedido.setStatusDescricao(StatusPedido.PENDENTE);
     }
 }

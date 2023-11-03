@@ -121,30 +121,154 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
 insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values ('18:30:00', '16:00:00', 5, 'Domingo');
 
 
+    -- Dados para a tabela 'metodo_pagamento_aceito'
+    INSERT INTO metodo_pagamento_aceito (fk_estabelecimento, fk_metodo_pagamento) VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (2, 4),
+    (2, 5),
+    (2, 6),
+    (3, 7),
+    (3, 8),
+    (3, 9),
+    (4, 10);
 
-INSERT INTO endereco (id, cep, rua, bairro, numero, geolocalizacaox, geolocalizacaoy)
-VALUES (1, '12345-678', 'Rua Comerciante', 'Bairro Comerciante', 123, 0.0, 0.0);
+    -- Dados para a tabela 'tag'
+    INSERT INTO tag (descricao) VALUES
+    ('Orgânico'),
+    ('Integral'),
+    ('Promoção'),
+    ('Sem Glúten'),
+    ('Sem Lactose'),
+    ('Vegano'),
+    ('Low Carb'),
+    ('Fitness'),
+    ('Gourmet'),
+    ('Artesanal');
 
-INSERT INTO comerciante (id, cnpj, nome, data_criacao, data_ultimo_acesso, razao_social, fk_usuario, fk_endereco, is_ativo)
-VALUES (1, '12345678901234', 'Nome Comerciante', '2023-10-25', '2023-10-25', 'Razao Social', 1, 1, true);
+    -- Dados para a tabela 'secao'
+    INSERT INTO secao (fk_estabelecimento, descricao) VALUES
+    (1, 'Açougue'),
+    (1, 'Padaria'),
+    (2, 'Açougue'),
+    (2, 'Padaria'),
+    (3, 'Açougue'),
+    (3, 'Padaria'),
+    (4, 'Conveniência'),
+    (4, 'Mercado'),
+    (5, 'Hortifruti'),
+    (5, 'Congelados');
 
-INSERT INTO tag (id, descricao)
-VALUES (1, 'NomeTag');
+    -- Dados para a tabela 'imagem'
+    INSERT INTO imagem (data_criacao, fk_estabelecimento, fk_produto, nome_imagem, nome_referencia) VALUES
+    ('2022-05-01', 1, NULL, 'logo_mercado.jpg', 'Logo Mercado Bom Preço'),
+    ('2022-07-01', 1, NULL, 'logo_padaria.jpg', 'Logo Padaria Sabor Artesanal'),
+    ('2022-08-15', 3, NULL, 'logo_acougue.jpg', 'Logo Açougue da Esquina'),
+    ('2022-09-10', 3, NULL, 'logo_padaria_acougue.jpg', 'Logo Padaria e Açougue da Esquina'),
+    ('2022-11-01', 5, NULL, 'logo_conveniencia.jpg', 'Logo Loja de Conveniência'),
+    ('2023-01-15', 5, NULL, 'logo_supermercado.jpg', 'Logo Supermercado Mega');
 
-INSERT INTO estabelecimento (
-    nome, segmento, data_criacao, telefone_contato, enquadramento_juridico,
-    referencia_instagram, referencia_facebook, email_contato, is_ativo,
-    fk_comerciante, fk_endereco
-) VALUES (
-    'Estabelecimento nome', 'Roupas', '2023-10-23', 'SampleTelefone', 'SampleEnquadramento',
-    'SampleInstagram', 'SampleFacebook', 'sample@email.com', true,
-    1, 1
-);
-INSERT INTO secao (
-    descricao, fk_estabelecimento
-) VALUES (
-    'Bebidas', 1
-);
-INSERT INTO metodo_pagamento (descricao) VALUES ('Cartão de Crédito');
-INSERT INTO metodo_pagamento (descricao) VALUES ('Dinheiro');
-INSERT INTO metodo_pagamento (descricao) VALUES ('Transferência Bancária');
+    -- Dados para a tabela 'produto'
+    INSERT INTO produto (is_ativo, is_promocao_ativa, preco, preco_oferta, qtd_vendido, fk_secao, categoria, codigo_barras, codigo_sku, descricao, nome) VALUES
+    (true, false, 5.99, NULL, 100, 1, 'Alimentos', '1234567890123', 'PROD001', 'Arroz Integral 1kg', 'Arroz Integral'),
+    (true, true, 8.99, 6.99, 50, 2, 'Padaria', '9876543210987', 'PROD002', 'Pão Francês', 'Pão Francês 1 unidade'),
+    (true, false, 2.50, NULL, 80, 1, 'Alimentos', '8765432109876', 'PROD003', 'Feijão Preto 500g', 'Feijão Preto'),
+    (true, true, 15.99, 12.99, 30, 4, 'Padaria', '3456789012345', 'PROD004', 'Bolo de Chocolate', 'Bolo de Chocolate 1kg'),
+    (true, false, 3.50, NULL, 60, 5, 'Hortifruti', '2345678901234', 'PROD005', 'Maçã Fuji', 'Maçã Fuji 1kg'),
+    (true, true, 7.99, 5.99, 45, 6, 'Congelados', '6543210987654', 'PROD006', 'Pizza Margherita', 'Pizza Margherita 400g'),
+    (true, false, 9.50, NULL, 70, 7, 'Conveniência', '7890123456789', 'PROD007', 'Água Mineral 1L', 'Água Mineral'),
+    (true, true, 4.99, 3.99, 55, 8, 'Mercado', '3210987654321', 'PROD008', 'Sabonete Líquido 250ml', 'Sabonete Líquido'),
+    (true, false, 6.50, NULL, 40, 9, 'Supermercado', '0123456789012', 'PROD009', 'Detergente 500ml', 'Detergente'),
+    (true, true, 11.99, 9.99, 25, 10, 'Gourmet', '9876543210123', 'PROD010', 'Azeite Extra Virgem 500ml', 'Azeite Extra Virgem');
+
+    -- Dados para a tabela 'produto_tag'
+    INSERT INTO produto_tag (fk_produto, fk_tag) VALUES
+    (1, 1),
+    (2, 2),
+    (3, 1),
+    (4, 3),
+    (5, 4),
+    (6, 5),
+    (7, 6),
+    (8, 7),
+    (9, 8),
+    (10, 9);
+
+    -- Dados para a tabela 'avaliacao'
+    INSERT INTO avaliacao (data_criacao, qtd_estrela, data_atualizacao, fk_consumidor, fk_produto, comentario) VALUES
+    ('2023-01-01', 4, '2023-01-02 15:30:00', 1, 1, 'Ótimo produto! Recomendo'),
+    ('2023-01-05', 5, '2023-01-06 12:45:00', 1, 2, 'Excelente atendimento'),
+    ('2023-02-10', 3, '2023-02-12 09:00:00', 2, 3, 'Bom custo-benefício'),
+    ('2023-02-15', 5, '2023-02-18 14:20:00', 2, 4, 'O bolo é incrível!'),
+    ('2023-03-05', 4, '2023-03-08 11:10:00', 3, 5, 'Maçãs fresquinhas!'),
+    ('2023-03-12', 5, '2023-03-15 16:45:00', 3, 6, 'A pizza é deliciosa'),
+    ('2023-04-01', 3, '2023-04-03 08:30:00', 4, 7, 'Água de qualidade'),
+    ('2023-04-05', 4, '2023-04-08 14:15:00', 4, 8, 'Cheirinho maravilhoso'),
+    ('2023-04-20', 5, '2023-04-22 10:45:00', 5, 9, 'Detergente eficiente'),
+    ('2023-05-02', 4, '2023-05-05 13:00:00', 5, 10, 'Azeite de alta qualidade');
+
+    -- Dados para a tabela 'interesse'
+    INSERT INTO interesse (nivel_interesse, fk_consumidor, fk_tag) VALUES
+    (3, 1, 1),
+    (2, 1, 2),
+    (4, 2, 3),
+    (5, 2, 4),
+    (3, 3, 5),
+    (4, 3, 6),
+    (2, 4, 7),
+    (5, 4, 8),
+    (3, 5, 9),
+    (4, 5, 10);
+
+    -- Dados para a tabela 'pedido'
+    INSERT INTO pedido (is_pagamento_online, data_hora_pedido, data_hora_retirada, fk_metodo_aceito, nf, status_descricao) VALUES
+    (true, '2023-03-01 11:30:00', '2023-03-01 16:00:00', 1, '12345', 'ENTREGUE'),
+    (false, '2023-03-02 09:45:00', '2023-03-02 14:30:00', 2, '67890', 'ENTREGUE'),
+    (true, '2023-03-05 14:00:00', '2023-03-05 18:30:00', 3, '11111', 'ENTREGUE'),
+    (false, '2023-03-08 10:30:00', '2023-03-08 15:15:00', 4, '22222', 'ENTREGUE'),
+    (true, '2023-03-12 12:45:00', '2023-03-12 17:00:00', 5, '33333', 'ENTREGUE'),
+    (false, '2023-03-15 09:00:00', '2023-03-15 13:45:00', 6, '44444', 'ENTREGUE'),
+    (true, '2023-03-18 16:30:00', '2023-03-18 20:45:00', 7, '55555', 'ENTREGUE'),
+    (false, '2023-03-22 11:15:00', '2023-03-22 15:30:00', 8, '66666', 'ENTREGUE'),
+    (true, '2023-03-25 13:45:00', '2023-03-25 18:00:00', 9, '77777', 'ENTREGUE'),
+    (false, '2023-03-28 08:30:00', '2023-03-28 12:45:00', 10, '88888', 'ENTREGUE');
+
+    -- Dados para a tabela 'transacao'
+    INSERT INTO transacao (is_estornado, taxa, valor, fk_pedido) VALUES
+    (false, 0.05, 30.00, 1),
+    (false, 0.03, 15.00, 2),
+    (false, 0.08, 40.00, 3),
+    (false, 0.02, 25.00, 4),
+    (false, 0.07, 35.00, 5),
+    (false, 0.04, 20.00, 6),
+    (false, 0.06, 30.00, 7),
+    (false, 0.01, 10.00, 8),
+    (false, 0.09, 45.00, 9),
+    (false, 0.03, 15.00, 10);
+
+    -- Dados para a tabela 'carrinho'
+    INSERT INTO carrinho (quantidade, data_hora_alocacao, fk_consumidor, fk_produto) VALUES
+    (2, '2023-02-10 08:30:00', 1, 1),
+    (1, '2023-02-11 14:00:00', 1, 3),
+    (3, '2023-02-15 09:30:00', 2, 5),
+    (2, '2023-02-18 16:00:00', 2, 7),
+    (1, '2023-02-22 11:45:00', 3, 9),
+    (4, '2023-02-25 13:15:00', 3, 2),
+    (3, '2023-03-01 10:00:00', 4, 4),
+    (2, '2023-03-04 15:30:00', 4, 6),
+    (1, '2023-03-08 09:15:00', 5, 8),
+    (4, '2023-03-11 12:45:00', 5, 10);
+
+    -- Dados para a tabela 'item_venda'
+    INSERT INTO item_venda (is_promocao_ativa, quantidade, fk_consumidor, fk_pedido, fk_produto) VALUES
+    (true, 2, 1, 1, 1),
+    (false, 1, 1, 2, 3),
+    (true, 3, 2, 3, 5),
+    (false, 2, 2, 4, 7),
+    (true, 1, 3, 5, 9),
+    (false, 4, 3, 6, 2),
+    (true, 3, 4, 7, 4),
+    (false, 2, 4, 8, 6),
+    (true, 1, 5, 9, 8),
+    (false, 4, 5, 10, 10);
