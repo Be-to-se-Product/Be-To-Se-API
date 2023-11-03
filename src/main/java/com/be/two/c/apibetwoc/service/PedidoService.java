@@ -66,7 +66,6 @@ public class PedidoService {
         }
 
         return ordenacao(listaPedidos) ;
-
     }
 
     public List<Pedido> listarPorEstabelecimentoEStatus(Long idEstabelecimento, String status) {
