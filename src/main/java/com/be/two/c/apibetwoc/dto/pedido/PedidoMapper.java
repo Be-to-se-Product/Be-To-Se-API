@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.dto.pedido;
 
+import com.be.two.c.apibetwoc.model.Endereco;
 import com.be.two.c.apibetwoc.model.Pedido;
 
 import java.time.LocalDateTime;
@@ -14,8 +15,12 @@ public class PedidoMapper {
     }
 
     public static ResponsePedidoDTO of(Pedido pedido) {
-       ResponsePedidoDTO responsePedidoDTO = new ResponsePedidoDTO(pedido.getId(),pedido.getDataHoraPedido(), pedido.getStatusDescricao(),pedido.getIsPagamentoOnline(),pedido.getMetodoPagamentoAceito().getMetodoPagamento().getDescricao(),pedido.getItens().stream().map(ItemVendaMapper::of).toList());
-       return responsePedidoDTO;
+        ResponsePedidoDTO responsePedidoDTO = new ResponsePedidoDTO(pedido.getId(), pedido.getDataHoraPedido(), pedido.getStatusDescricao(), pedido.getIsPagamentoOnline(), pedido.getMetodoPagamentoAceito().getMetodoPagamento().getDescricao(), pedido.getItens().stream().map(ItemVendaMapper::of).toList());
+        return responsePedidoDTO;
+    }
+
+    public static ResponsePedidoConsumidorDto ofResponseUsuario(Pedido pedido) {
+        return new ResponsePedidoConsumidorDto(pedido.getId(), pedido.getDataHoraPedido(), pedido.getStatusDescricao(), pedido.getIsPagamentoOnline(), pedido.getMetodoPagamentoAceito().getMetodoPagamento().getDescricao(), pedido.getItens().stream().map(ItemVendaMapper::of).toList(), new EstabelecimentoResponsePedido(pedido.getMetodoPagamentoAceito().getEstabelecimento().getNome(), new EnderecoResponsePedido(pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getRua(), pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getNumero(), pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getBairro())));
     }
 
 

@@ -1,9 +1,6 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.pedido.PedidoCriacaoDto;
-import com.be.two.c.apibetwoc.dto.pedido.PedidoDtoStatus;
-import com.be.two.c.apibetwoc.dto.pedido.PedidoMapper;
-import com.be.two.c.apibetwoc.dto.pedido.ResponsePedidoDTO;
+import com.be.two.c.apibetwoc.dto.pedido.*;
 
 import com.be.two.c.apibetwoc.exception.ForbidenPedidoException;
 import com.be.two.c.apibetwoc.exception.NaoAutorizadoException;
@@ -15,7 +12,6 @@ import com.be.two.c.apibetwoc.repository.PedidoRepository;
 import com.be.two.c.apibetwoc.util.ListaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +23,7 @@ public class PedidoService {
 
 
     private final PedidoRepository pedidoRepository;
-private final EstabelecimentoRepository estabelecimentoRepository;
+    private final EstabelecimentoRepository estabelecimentoRepository;
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final AutenticacaoService autenticacaoService;
 
@@ -60,27 +56,18 @@ private final EstabelecimentoRepository estabelecimentoRepository;
         return pedidoRepository.save(pedido);
     }
 
-    public Pedido buscarPorId(Long idPedido) {
 
-
-        Optional<Pedido> pedido = pedidoRepository.findById(idPedido);
-
-        if (pedido.isPresent()) {
-            return pedido.get();
-        }
-        throw new EntidadeNaoExisteException("Pedido não encontrado");
-    }
-
-    public List<ResponsePedidoDTO> listarPorConsumidor() {
-
+    public List<ResponsePedidoConsumidorDto> listarPorConsumidor(StatusPedido status) {
         if(autenticacaoService.loadUsuarioDetails()==null){
                 throw new NaoAutorizadoException();
         }
 
+        if(status != null){
+            return pedidoRepository.searchByConsumidorEStatus(autenticacaoService.loadUsuarioDetails().getId(), status).stream().map(PedidoMapper::ofResponseUsuario).toList();
+        }
 
         List <Pedido> pedidos = pedidoRepository.searchByConsumidor(autenticacaoService.loadUsuarioDetails().getId());
-
-        return pedidos.stream().map(PedidoMapper::of).toList();
+        return pedidos.stream().map(PedidoMapper::ofResponseUsuario).toList();
     }
 
 

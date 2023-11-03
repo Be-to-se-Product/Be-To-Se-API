@@ -1,9 +1,6 @@
 package com.be.two.c.apibetwoc.controller;
 
-import com.be.two.c.apibetwoc.dto.pedido.ItemVendaCriacaoDto;
-import com.be.two.c.apibetwoc.dto.pedido.PedidoDtoStatus;
-import com.be.two.c.apibetwoc.dto.pedido.PedidoMapper;
-import com.be.two.c.apibetwoc.dto.pedido.ResponsePedidoDTO;
+import com.be.two.c.apibetwoc.dto.pedido.*;
 import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.service.ItemVendaService;
 import com.be.two.c.apibetwoc.service.PedidoService;
@@ -37,8 +34,8 @@ public class PedidoController {
     }
 
     @GetMapping("/consumidor")
-    public ResponseEntity<List<ResponsePedidoDTO>> buscarPedidosPorConsumidor() {
-        List<ResponsePedidoDTO> pedidos = pedidoService.listarPorConsumidor();
+    public ResponseEntity<List<ResponsePedidoConsumidorDto>> buscarPedidosPorConsumidor(@RequestParam(required = false) StatusPedido status) {
+        List<ResponsePedidoConsumidorDto> pedidos = pedidoService.listarPorConsumidor(status);
         if (pedidos.isEmpty())
             return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidos);
