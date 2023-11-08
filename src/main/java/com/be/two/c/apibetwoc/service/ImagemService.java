@@ -39,6 +39,15 @@ public class ImagemService {
         } catch (IOException e) {
             throw new RuntimeException("Erro ao salvar imagem", e);
         }
+
     }
 
+    public String converterParaBase64(String nomeImagem){
+        try {
+            byte[] bytes = Files.readAllBytes(caminho.resolve(nomeImagem));
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao converter imagem", e);
+        }
+    }
 }

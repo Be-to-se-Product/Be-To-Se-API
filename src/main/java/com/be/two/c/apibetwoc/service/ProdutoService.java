@@ -51,9 +51,14 @@ public class ProdutoService {
                 }
             }
         }
-        return produtos.stream()
-                .map(ProdutoDetalhamentoDto::new)
-                .collect(Collectors.toList());
+        return produtos.stream().map(produto -> {
+            ProdutoDetalhamentoDto dto = new ProdutoDetalhamentoDto(produto);
+            List<String> imagensBase64 = produto.getImagens().stream()
+                    .map(imagem -> imagemService.converterParaBase64(imagem.getNomeImagem()))
+                    .collect(Collectors.toList());
+            dto.setImagens(imagensBase64);
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto) {
