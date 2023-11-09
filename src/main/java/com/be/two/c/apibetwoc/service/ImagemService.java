@@ -24,7 +24,7 @@ public class ImagemService {
 
         byte[] bytes = Base64.getDecoder().decode(base64Image);
         String nomeImagem = produto.getNome() + "-" + nomeReferencia + ".jpg";
-
+        System.out.println(base64Image);
         Imagem imagem = new Imagem();
         imagem.setNomeReferencia(nomeReferencia);
         imagem.setProduto(produto);
@@ -35,6 +35,7 @@ public class ImagemService {
             if (!Files.exists(caminho)) {
                 Files.createDirectories(caminho);
             }
+            System.out.println(caminho.resolve(nomeImagem));
             Files.write(caminho.resolve(nomeImagem), bytes);
         } catch (IOException e) {
             throw new RuntimeException("Erro ao salvar imagem", e);

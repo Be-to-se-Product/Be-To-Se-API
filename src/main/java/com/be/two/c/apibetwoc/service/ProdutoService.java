@@ -53,10 +53,10 @@ public class ProdutoService {
         }
         return produtos.stream().map(produto -> {
             ProdutoDetalhamentoDto dto = new ProdutoDetalhamentoDto(produto);
-            List<String> imagensBase64 = produto.getImagens().stream()
+            String imagemBase64  = produto.getImagens().stream()
                     .map(imagem -> imagemService.converterParaBase64(imagem.getNomeImagem()))
-                    .collect(Collectors.toList());
-            dto.setImagens(imagensBase64);
+                    .findFirst().orElse(null);
+            dto.setImagem(imagemBase64);
             return dto;
         }).collect(Collectors.toList());
     }
@@ -83,8 +83,20 @@ public class ProdutoService {
                 produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
             }
         }
-        if (cadastroProdutoDto.getImagens() != null && !cadastroProdutoDto.getImagens().isEmpty()) {
-            cadastroProdutoDto.getImagens().forEach(i -> imagemService.salvarImagem(i, produtoSalvo.getCodigoSku(), produtoSalvo));
+        if (cadastroProdutoDto.getImagem1() != null) {
+            imagemService.salvarImagem(cadastroProdutoDto.getImagem1(), "imagem1", produtoSalvo);
+        }
+        if (cadastroProdutoDto.getImagem2() != null) {
+            imagemService.salvarImagem(cadastroProdutoDto.getImagem2(), "imagem2", produtoSalvo);
+        }
+        if (cadastroProdutoDto.getImagem3() != null) {
+            imagemService.salvarImagem(cadastroProdutoDto.getImagem3(), "imagem3", produtoSalvo);
+        }
+        if (cadastroProdutoDto.getImagem4() != null) {
+            imagemService.salvarImagem(cadastroProdutoDto.getImagem4(), "imagem4", produtoSalvo);
+        }
+        if (cadastroProdutoDto.getImagem5() != null) {
+            imagemService.salvarImagem(cadastroProdutoDto.getImagem5(), "imagem5", produtoSalvo);
         }
         newsletterService.publicarNewsletter(produtoSalvo);
         return produtoSalvo;

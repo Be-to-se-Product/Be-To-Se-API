@@ -19,7 +19,7 @@ public class ProdutoDetalhamentoDto {
     private String categoria;
     private Boolean isAtivo;
     private Boolean isPromocaoAtiva;
-    private List<String> imagens;
+    private String imagem;
     private SecaoDetalhamentoDto secao;
     public ProdutoDetalhamentoDto(Produto produto){
 
