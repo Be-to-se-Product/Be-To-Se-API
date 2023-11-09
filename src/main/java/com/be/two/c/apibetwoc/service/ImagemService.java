@@ -17,13 +17,13 @@ import java.util.Base64;
 public class ImagemService {
 
     private final ImagemRepository imagemRepository;
-    private final Path caminho = Paths.get(System.getProperty("java.io.tmpdir"), "arquivos");
+    private final Path caminho = Paths.get("C:\\Users\\Aluno\\Documents\\SprintFacul\\Be-To-Se-API\\arquivos");
 
     public void salvarImagem(String base64Image, String nomeReferencia, Produto produto) {
 
 
         byte[] bytes = Base64.getDecoder().decode(base64Image);
-        String nomeImagem = produto.getNome() + "-" + nomeReferencia;
+        String nomeImagem = produto.getNome() + "-" + nomeReferencia + ".jpg";
 
         Imagem imagem = new Imagem();
         imagem.setNomeReferencia(nomeReferencia);
@@ -39,6 +39,15 @@ public class ImagemService {
         } catch (IOException e) {
             throw new RuntimeException("Erro ao salvar imagem", e);
         }
+
     }
 
+    public String converterParaBase64(String nomeImagem){
+        try {
+            byte[] bytes = Files.readAllBytes(caminho.resolve(nomeImagem));
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao converter imagem", e);
+        }
+    }
 }

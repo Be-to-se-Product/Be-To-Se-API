@@ -4,6 +4,8 @@ import com.be.two.c.apibetwoc.dto.secao.SecaoDetalhamentoDto;
 import com.be.two.c.apibetwoc.model.Produto;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ProdutoDetalhamentoDto {
 
@@ -17,7 +19,7 @@ public class ProdutoDetalhamentoDto {
     private String categoria;
     private Boolean isAtivo;
     private Boolean isPromocaoAtiva;
-
+    private List<String> imagens;
     private SecaoDetalhamentoDto secao;
     public ProdutoDetalhamentoDto(Produto produto){
 
