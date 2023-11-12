@@ -34,7 +34,7 @@ public class ItemVendaService {
             Consumidor consumidor = consumidorRepository.findById(i.idConsumidor())
                     .orElseThrow(() -> new EntidadeNaoExisteException("Consumidor informado não existe"));
             Produto produto = produtoRepository.findById(i.idProduto())
-                    .orElseThrow(() -> new EntidadeNaoExisteException("produto informado não existe"));
+                    .orElseThrow(() -> new EntidadeNaoExisteException("Produto informado não existe"));
             itemVenda.setConsumidor(consumidor);
             itemVenda.setProduto(produto);
             itemVenda.setPedido(pedido);

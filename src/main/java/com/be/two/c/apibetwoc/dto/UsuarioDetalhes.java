@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.dto;
 
+import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,16 +9,37 @@ import java.util.Collection;
 
 public class UsuarioDetalhes implements UserDetails {
 
-
+    private final Long id;
     private final String email;
 
     private final String senha;
 
+    private final TipoUsuario tipo;
+
+
+
     public UsuarioDetalhes(Usuario usuario) {
+        this.id = usuario.getId();
         this.email = usuario.getEmail();
         this.senha = usuario.getSenha();
+        this.tipo = usuario.getTipoUsuario();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public TipoUsuario getTipo() {
+        return tipo;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

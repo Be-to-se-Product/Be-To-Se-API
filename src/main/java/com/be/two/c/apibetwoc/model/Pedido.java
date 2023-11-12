@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +15,10 @@ public class Pedido {
     private Long id;
     private String nf;
     private LocalDateTime dataHoraPedido;
-    private String statusDescricao;
+
+
+    @Enumerated(EnumType.STRING)
+    private StatusPedido statusDescricao;
     private Boolean isPagamentoOnline;
     private LocalDateTime dataHoraRetirada;
     @ManyToOne

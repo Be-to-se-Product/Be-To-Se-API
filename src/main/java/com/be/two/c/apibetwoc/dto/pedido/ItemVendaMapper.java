@@ -11,10 +11,7 @@ public class ItemVendaMapper {
     }
 
     public static ResponseItemVendaDto of(ItemVenda itemVenda){
-        ResponseItemVendaDto responseItemVendaDto = new ResponseItemVendaDto();
-        responseItemVendaDto.setId(itemVenda.getId());
-        responseItemVendaDto.setQuantidade(itemVenda.getQuantidade());
-        responseItemVendaDto.setProdutoNome(itemVenda.getProduto().getNome());
+        ResponseItemVendaDto responseItemVendaDto = new ResponseItemVendaDto(itemVenda.getId(),itemVenda.getQuantidade(),itemVenda.getProduto().getNome(),itemVenda.getProduto().getPreco(),null);
         return responseItemVendaDto;
     }
 }
