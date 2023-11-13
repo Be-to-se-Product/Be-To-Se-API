@@ -9,41 +9,40 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ImagemService {
 
     private final ImagemRepository imagemRepository;
-    private final Path caminho = Paths.get("C:\\Users\\Aluno\\Documents\\SprintFacul\\Be-To-Se-API\\arquivos");
+    private final Path caminho = Path.of(System.getProperty("java.io.tmpdir") + "/arquivos");
 
     public void salvarImagem(String base64Image, String nomeReferencia, Produto produto) {
 
-
-        byte[] bytes = Base64.getDecoder().decode(base64Image);
-        String nomeImagem = produto.getNome() + "-" + nomeReferencia + ".jpg";
-        System.out.println(base64Image);
         Imagem imagem = new Imagem();
         imagem.setNomeReferencia(nomeReferencia);
         imagem.setProduto(produto);
-        imagem.setNomeImagem(nomeImagem);
-        imagemRepository.save(imagem);
 
         try {
             if (!Files.exists(caminho)) {
                 Files.createDirectories(caminho);
             }
-            System.out.println(caminho.resolve(nomeImagem));
-            Files.write(caminho.resolve(nomeImagem), bytes);
+
+            String nomeArquivoFormatado = formatarNomeArquivo(produto.getNome());
+            imagem.setNomeImagem(nomeArquivoFormatado);
+
+            byte[] bytes = Base64.getDecoder().decode(base64Image);
+
+            Files.write(caminho.resolve(nomeArquivoFormatado), bytes);
         } catch (IOException e) {
             throw new RuntimeException("Erro ao salvar imagem", e);
         }
-
+        imagemRepository.save(imagem);
     }
 
-    public String converterParaBase64(String nomeImagem){
+    public String converterParaBase64(String nomeImagem) {
         try {
             byte[] bytes = Files.readAllBytes(caminho.resolve(nomeImagem));
             return Base64.getEncoder().encodeToString(bytes);
@@ -51,4 +50,16 @@ public class ImagemService {
             throw new RuntimeException("Erro ao converter imagem", e);
         }
     }
+
+    private String formatarNomeArquivo(String originalFilename) {
+        return String.format("%s_%s", UUID.randomUUID(), originalFilename);
+    }
+    public Imagem obterImagemPorId(Long id) {
+        return imagemRepository.findById(id).orElse(null);
+    }
+
+    public byte[] obterBytesDaImagem(String nomeImagem) throws IOException {
+        return Files.readAllBytes(caminho.resolve(nomeImagem));
+    }
+
 }

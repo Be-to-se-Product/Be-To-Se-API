@@ -53,10 +53,9 @@ public class ProdutoService {
         }
         return produtos.stream().map(produto -> {
             ProdutoDetalhamentoDto dto = new ProdutoDetalhamentoDto(produto);
-            String imagemBase64  = produto.getImagens().stream()
-                    .map(imagem -> imagemService.converterParaBase64(imagem.getNomeImagem()))
+            Imagem imagem  = produto.getImagens().stream()
                     .findFirst().orElse(null);
-            dto.setImagem(imagemBase64);
+            dto.setImagem(imagem.getId());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -156,7 +155,7 @@ public class ProdutoService {
     public void deletarProduto(Long id) {
         Produto produto = buscarPorId(id);
         List<ProdutoTag> tags = produtoTagRepository.buscarPorProduto(id);
-        List<Long> produtoTagIds = tags.stream().map(ProdutoTag::getId).collect(Collectors.toList());
+        List<Long> produtoTagIds = tags.stream().map(ProdutoTag::getId).toList();
         for (Long tagDeletar : produtoTagIds) {
             produtoTagRepository.deleteById(tagDeletar);
         }

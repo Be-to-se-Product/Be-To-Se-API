@@ -8,12 +8,18 @@ public record PedidoHistoricoDto(Long id,
                                  LocalDateTime dataHoraPedido,
                                  String statusDescricao,
                                  Boolean isPagamentoOnline,
-                                 LocalDateTime dataHoraRetirada
+                                 LocalDateTime dataHoraRetirada,
+                                 String cpfCliente
 ) {
     public PedidoHistoricoDto(Pedido pedido) {
-        this(pedido.getId(), pedido.getDataHoraPedido(),
+        this(pedido.getId(),
+                pedido.getDataHoraPedido(),
                 pedido.getStatusDescricao(),
                 pedido.getIsPagamentoOnline(),
-                pedido.getDataHoraRetirada());
+                pedido.getDataHoraRetirada(),
+                pedido.getItens()
+                        .get(0)
+                        .getConsumidor()
+                        .getCpf());
     }
 }

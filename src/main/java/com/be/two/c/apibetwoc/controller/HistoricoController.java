@@ -8,17 +8,18 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/historico")
+@RequestMapping("/historico-vendas")
 @RequiredArgsConstructor
 public class HistoricoController {
 
     private final HistoricoVendaService historicoVendaService;
 
     @GetMapping
-    public ResponseEntity<List<TransacaoHistoricoDto>> getHistoricoVenda(@RequestParam(required = false)  @DefaultValue(value = "0") int page,
+    public ResponseEntity<List<TransacaoHistoricoDto>> getHistoricoVenda(@RequestParam(required = false) @DefaultValue(value = "0") int page,
                                                                          @RequestParam(required = false) @DefaultValue(value = "10") int size) {
         List<Transacao> transacoes = historicoVendaService.getHistoricoVenda(page, size).toList();
         if (transacoes.isEmpty()) {
@@ -28,5 +29,24 @@ public class HistoricoController {
                 .stream()
                 .map(TransacaoHistoricoDto::new).toList();
         return ResponseEntity.ok(historico);
+    }
+
+    @GetMapping("/filtro")
+    public ResponseEntity<List<TransacaoHistoricoDto>> getHistoricoPorFiltro(@RequestParam(required = false) LocalDateTime de,
+                                                                        @RequestParam(required = false) LocalDateTime ate,
+                                                                        @RequestParam(required = false) String status,
+                                                                        @RequestParam(required = false) String metodoPagamento,
+                                                                        @RequestParam(required = false) @DefaultValue("0") int page,
+                                                                        @RequestParam(required = false) @DefaultValue("25") int size) {
+        List<Transacao> transacoes = historicoVendaService
+                .getHistoricoPorFiltro(de, ate, status, metodoPagamento, page, size)
+                .toList();
+        if (transacoes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<TransacaoHistoricoDto> historicoComFiltro = transacoes
+                .stream()
+                .map(TransacaoHistoricoDto::new).toList();
+        return ResponseEntity.ok(historicoComFiltro);
     }
 }

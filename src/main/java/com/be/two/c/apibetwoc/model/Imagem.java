@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class Imagem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String nomeReferencia;
     private LocalDate dataCriacao;
     private String nomeImagem;
