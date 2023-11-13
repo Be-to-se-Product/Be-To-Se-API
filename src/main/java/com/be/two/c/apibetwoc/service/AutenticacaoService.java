@@ -4,6 +4,9 @@ import com.be.two.c.apibetwoc.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,11 +23,16 @@ public class AutenticacaoService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(username);
-
         if(usuarioOpt.isEmpty()){
             throw new UsernameNotFoundException(String.format("O email %s não foi encontrado",username));
         }
 
         return new UsuarioDetalhes(usuarioOpt.get());
+    }
+
+
+    public UsuarioDetalhes loadUsuarioDetails(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (UsuarioDetalhes) authentication.getPrincipal();
     }
 }

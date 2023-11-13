@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Component;
 
 public class ListaObj <T> {
@@ -62,8 +63,16 @@ public class ListaObj <T> {
         return removePeloIndice(busca(elementoARemover));
     }
 
+
+
+    @JsonIgnore
     public int getTamanho() {
         return nroElem;
+    }
+
+
+    public T[] getVetor() {
+        return vetor;
     }
 
     public T getElemento(int indice) {

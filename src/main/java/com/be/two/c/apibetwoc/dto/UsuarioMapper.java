@@ -15,7 +15,7 @@ public class UsuarioMapper {
     public static UsuarioTokenDTO of(Usuario usuario, String token){
         UsuarioTokenDTO usuarioTokenDTO = new UsuarioTokenDTO();
 
-        usuarioTokenDTO.setUserId(usuario.getId());
+        usuarioTokenDTO.setId(usuario.getId());
         usuarioTokenDTO.setEmail(usuario.getEmail());
         usuarioTokenDTO.setTipoUsuario(usuario.getTipoUsuario());
         usuarioTokenDTO.setToken(token);

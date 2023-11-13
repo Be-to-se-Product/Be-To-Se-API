@@ -223,16 +223,16 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
 
     -- Dados para a tabela 'pedido'
     INSERT INTO pedido (is_pagamento_online, data_hora_pedido, data_hora_retirada, fk_metodo_aceito, nf, status_descricao) VALUES
-    (true, '2023-03-01 11:30:00', '2023-03-01 16:00:00', 1, '12345', 'Aguardando Retirada'),
-    (false, '2023-03-02 09:45:00', '2023-03-02 14:30:00', 2, '67890', 'Em Preparo'),
-    (true, '2023-03-05 14:00:00', '2023-03-05 18:30:00', 3, '11111', 'Pronto para Entrega'),
-    (false, '2023-03-08 10:30:00', '2023-03-08 15:15:00', 4, '22222', 'Entregue'),
-    (true, '2023-03-12 12:45:00', '2023-03-12 17:00:00', 5, '33333', 'Aguardando Retirada'),
-    (false, '2023-03-15 09:00:00', '2023-03-15 13:45:00', 6, '44444', 'Em Preparo'),
-    (true, '2023-03-18 16:30:00', '2023-03-18 20:45:00', 7, '55555', 'Pronto para Entrega'),
-    (false, '2023-03-22 11:15:00', '2023-03-22 15:30:00', 8, '66666', 'Entregue'),
-    (true, '2023-03-25 13:45:00', '2023-03-25 18:00:00', 9, '77777', 'Aguardando Retirada'),
-    (false, '2023-03-28 08:30:00', '2023-03-28 12:45:00', 10, '88888', 'Em Preparo');
+    (true, '2023-03-01 11:30:00', '2023-03-01 16:00:00', 1, '12345', 'ENTREGUE'),
+    (false, '2023-03-02 09:45:00', '2023-03-02 14:30:00', 2, '67890', 'AGUARDANDO_RETIRADA'),
+    (true, '2023-03-05 14:00:00', '2023-03-05 18:30:00', 3, '11111', 'PENDENTE'),
+    (false, '2023-03-08 10:30:00', '2023-03-08 15:15:00', 4, '22222', 'PREPARO'),
+    (true, '2023-03-12 12:45:00', '2023-03-12 17:00:00', 5, '33333', 'CANCELADO'),
+    (false, '2023-03-15 09:00:00', '2023-03-15 13:45:00', 6, '44444', 'ENTREGUE'),
+    (true, '2023-03-18 16:30:00', '2023-03-18 20:45:00', 7, '55555', 'AGUARDANDO_RETIRADA'),
+    (false, '2023-03-22 11:15:00', '2023-03-22 15:30:00', 8, '66666', 'PENDENTE'),
+    (true, '2023-03-25 13:45:00', '2023-03-25 18:00:00', 9, '77777', 'ENTREGUE'),
+    (false, '2023-03-28 08:30:00', '2023-03-28 12:45:00', 10, '88888', 'CANCELADO');
 
     -- Dados para a tabela 'transacao'
     INSERT INTO transacao (is_estornado, taxa, valor, fk_pedido) VALUES
@@ -272,4 +272,3 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     (false, 2, 4, 8, 6),
     (true, 1, 5, 9, 8),
     (false, 4, 5, 10, 10);
-

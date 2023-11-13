@@ -1,12 +1,13 @@
 package com.be.two.c.apibetwoc.dto.historico;
 
 import com.be.two.c.apibetwoc.model.Pedido;
+import com.be.two.c.apibetwoc.model.StatusPedido;
 
 import java.time.LocalDateTime;
 
 public record PedidoHistoricoDto(Long id,
                                  LocalDateTime dataHoraPedido,
-                                 String statusDescricao,
+                                 StatusPedido statusDescricao,
                                  Boolean isPagamentoOnline,
                                  LocalDateTime dataHoraRetirada,
                                  String cpfCliente
