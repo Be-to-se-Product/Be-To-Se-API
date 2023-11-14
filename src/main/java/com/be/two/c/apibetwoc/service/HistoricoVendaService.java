@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -18,9 +17,9 @@ public class HistoricoVendaService {
 
     private final TransacaoRepository transacaoRepository;
 
-    public Page<Transacao> getHistoricoVenda(int page, int size) {
+    public Page<Transacao> getHistoricoVenda(int page, int size,Long id) {
         Pageable pageable = PageRequest.of(page, size);
-        return transacaoRepository.findAll(pageable);
+        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(pageable, id);
     }
 
     public Page<Transacao> getHistoricoPorFiltro(LocalDateTime de,
@@ -28,7 +27,8 @@ public class HistoricoVendaService {
                                                  String status,
                                                  String nomeMetodoPagamento,
                                                  int page,
-                                                 int size) {
+                                                 int size,
+                                                 Long id) {
         Pageable pageable = PageRequest.of(page, size);
         Specification<Transacao> specification = Specification.where(null);
         if (de != null && ate != null) {
@@ -41,6 +41,6 @@ public class HistoricoVendaService {
             specification = specification.and(TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento));
         }
 
-        return transacaoRepository.findAll(specification, pageable);
+        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(specification, pageable, id);
     }
 }

@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface TransacaoRepository extends JpaRepository<Transacao, Long>{
-    Page<Transacao> findAll(Specification<Transacao> spec, Pageable pageable);
+
+    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(Pageable pageable, Long id);
+    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(Specification<Transacao> specification,Pageable pageable, Long id);
 }

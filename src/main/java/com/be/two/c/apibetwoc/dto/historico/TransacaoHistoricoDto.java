@@ -10,7 +10,14 @@ public record TransacaoHistoricoDto(Long id,
                                     PedidoHistoricoDto pedido) {
 
     public TransacaoHistoricoDto(Transacao transacao) {
-        this(transacao.getId(), transacao.getValor(), transacao.getTaxa(), transacao.isEstornado(),
-                transacao.getPedido().getMetodoPagamentoAceito().getMetodoPagamento().getDescricao(), new PedidoHistoricoDto(transacao.getPedido()));
+        this(transacao.getId(),
+                transacao.getValor(),
+                transacao.getTaxa(),
+                transacao.isEstornado(),
+                transacao.getPedido()
+                        .getMetodoPagamentoAceito()
+                        .getMetodoPagamento()
+                        .getDescricao(),
+                new PedidoHistoricoDto(transacao.getPedido()));
     }
 }
