@@ -1,9 +1,13 @@
-package com.be.two.c.apibetwoc.controller;
+package com.be.two.c.apibetwoc.controller.produto;
 
-import com.be.two.c.apibetwoc.dto.produto.ProdutoDetalhamentoDto;
-import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
+import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
+import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.service.ProdutoService;
+import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
+import com.be.two.c.apibetwoc.service.produto.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,15 +20,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProdutoController {
 
     @Autowired
     private ProdutoService produtoService;
 
+    @Autowired
+    private ProdutoMapaService produtoMapaService;
+
     @GetMapping
     public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
-        List<ProdutoDetalhamentoDto  > produtos = produtoService.listarProdutos();
+        List<ProdutoDetalhamentoDto > produtos = produtoService.listarProdutos();
 
         if(produtos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -108,5 +114,18 @@ public class ProdutoController {
         }
 
         return ResponseEntity.status(201).body(produtoService.uploadCsv(file, secao));
+    }
+
+    @GetMapping("/mapa")
+    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam Double distancia,  @RequestParam(required = false)  String nome){
+        List<Produto> produtos = produtoMapaService.retornarProdutos(latitude, longitude, distancia, nome);
+
+        if(produtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+
+
+        return ResponseEntity.ok(produtos.stream().map(ProdutoMapper::to).toList());
     }
 }

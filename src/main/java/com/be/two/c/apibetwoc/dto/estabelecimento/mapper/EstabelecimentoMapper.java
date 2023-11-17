@@ -1,6 +1,8 @@
-package com.be.two.c.apibetwoc.dto.estabelecimento;
+package com.be.two.c.apibetwoc.dto.estabelecimento.mapper;
 
-import com.be.two.c.apibetwoc.dto.secao.ResponseSecaoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.AtualizarEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.CadastroEstabelecimentoDto;
 import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Estabelecimento;

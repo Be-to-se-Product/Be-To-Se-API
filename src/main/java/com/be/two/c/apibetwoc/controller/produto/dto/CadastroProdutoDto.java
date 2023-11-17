@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.dto.produto;
+package com.be.two.c.apibetwoc.controller.produto.dto;
 
 import com.be.two.c.apibetwoc.dto.TagDTO;
 import jakarta.annotation.Nullable;

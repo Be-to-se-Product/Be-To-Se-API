@@ -1,11 +1,11 @@
 package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.dto.agenda.AgendaMapper;
-import com.be.two.c.apibetwoc.dto.estabelecimento.AtualizarEstabelecimentoDto;
-import com.be.two.c.apibetwoc.dto.estabelecimento.CadastroEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.AtualizarEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.CadastroEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.CoordenadaDto;
-import com.be.two.c.apibetwoc.dto.estabelecimento.EstabelecimentoMapper;
-import com.be.two.c.apibetwoc.dto.estabelecimento.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.mapper.EstabelecimentoMapper;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.ResponseEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.secao.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Agenda;

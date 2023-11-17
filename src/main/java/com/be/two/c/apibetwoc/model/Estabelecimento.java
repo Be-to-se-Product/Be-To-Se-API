@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,7 +26,15 @@ public class Estabelecimento {
     @ManyToOne
     @JoinColumn(name = "fk_comerciante")
     private Comerciante comerciante;
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "fk_endereco")
     private Endereco endereco;
+
+    @OneToMany
+    @JoinColumn(name = "fk_estabelecimento")
+    private List<Secao> secao;
+
+    @OneToMany
+    @JoinColumn(name = "fk_estabelecimento")
+    private List<Agenda> agenda;
 }
