@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.dto.estabelecimento;
 
+import com.be.two.c.apibetwoc.dto.EnderacoCricaoEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.agenda.CadastroAgendaDto;
 import com.be.two.c.apibetwoc.model.Endereco;
 import com.be.two.c.apibetwoc.model.Secao;
@@ -30,7 +31,7 @@ public class CadastroEstabelecimentoDto {
     @NotNull
     private Long idComerciante;
     @NotNull
-    private Endereco endereco;
+    private EnderacoCricaoEstabelecimentoDto enderecoDto;
     @NotNull
     private List<Long> idMetodoPagamento;
     @NotNull

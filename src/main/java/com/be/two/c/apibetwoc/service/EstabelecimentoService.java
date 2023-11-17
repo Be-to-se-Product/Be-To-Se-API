@@ -8,10 +8,7 @@ import com.be.two.c.apibetwoc.dto.estabelecimento.EstabelecimentoMapper;
 import com.be.two.c.apibetwoc.dto.estabelecimento.ResponseEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.secao.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
-import com.be.two.c.apibetwoc.model.Agenda;
-import com.be.two.c.apibetwoc.model.Comerciante;
-import com.be.two.c.apibetwoc.model.Estabelecimento;
-import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
+import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.AgendaRepository;
 import com.be.two.c.apibetwoc.repository.ComercianteRepository;
 import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
@@ -58,18 +55,22 @@ public class EstabelecimentoService {
     }
 
     @Transactional
-    public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto estabelecimento){
+    public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto cadastroEstabelecimentoDto){
         Comerciante comerciante = comercianteRepository
-                .findById(estabelecimento.getIdComerciante())
+                .findById(cadastroEstabelecimentoDto.getIdComerciante())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
 
-        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(EstabelecimentoMapper.of(estabelecimento, comerciante));
+        Estabelecimento estabelecimento = EstabelecimentoMapper.of(cadastroEstabelecimentoDto, comerciante);
+        Endereco endereco = EstabelecimentoMapper.of(cadastroEstabelecimentoDto.getEnderecoDto());
+        estabelecimento.setEndereco(endereco);
 
-        metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimento.getIdMetodoPagamento());
+        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
 
-        agendaRepository.saveAll(AgendaMapper.of(estabelecimento.getAgenda(), estabelecimentoCriado));
+        metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, cadastroEstabelecimentoDto.getIdMetodoPagamento());
 
-        secaoRepository.saveAll(SecaoMapper.of(estabelecimento.getSecao(), estabelecimentoCriado));
+        agendaRepository.saveAll(AgendaMapper.of(cadastroEstabelecimentoDto.getAgenda(), estabelecimentoCriado));
+
+        secaoRepository.saveAll(SecaoMapper.of(cadastroEstabelecimentoDto.getSecao(), estabelecimentoCriado));
 
         return estabelecimentoCriado;
     }
