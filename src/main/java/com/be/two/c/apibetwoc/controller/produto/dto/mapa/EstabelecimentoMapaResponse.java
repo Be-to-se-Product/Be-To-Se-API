@@ -15,6 +15,7 @@ public class EstabelecimentoMapaResponse {
     private LocalDate dataCriacao;
     private EnderecoResponseDTO endereco;
     private List<AgendaResponseDTO> agenda;
+    private List<MetodoPagamentoMapaResponse> metodoPagamento;
     private String telefone;
     private String site;
     private LocalDate tempoCarro;

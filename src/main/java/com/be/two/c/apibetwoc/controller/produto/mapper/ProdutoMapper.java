@@ -32,7 +32,7 @@ public class ProdutoMapper {
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element->element.getQtdEstrela()).average().orElse(0));
-        produtoResponse.setEstabeleciemento(to(produto.getSecao().getEstabelecimento()));
+        produtoResponse.setEstabelecimento(to(produto.getSecao().getEstabelecimento()));
         return produtoResponse;
     }
 
@@ -56,6 +56,7 @@ public class ProdutoMapper {
         estabelecimentoMapaResponse.setEndereco(to(estabelecimento.getEndereco()));
         estabelecimentoMapaResponse.setTelefone(estabelecimento.getTelefoneContato());
         estabelecimentoMapaResponse.setSite(estabelecimento.getReferenciaInstagram());
+        estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element->to(element.getMetodoPagamento())).toList());
         estabelecimentoMapaResponse.setTempoCarro(null);
         estabelecimentoMapaResponse.setTempoPessoa(null);
         estabelecimentoMapaResponse.setTempoBike(null);
@@ -82,5 +83,12 @@ public class ProdutoMapper {
 
         return enderecoResponseDTO;
 
+    }
+
+    public static MetodoPagamentoMapaResponse to (MetodoPagamento metodoPagamento){
+        MetodoPagamentoMapaResponse metodoPagamentoMapaResponse = new MetodoPagamentoMapaResponse();
+        metodoPagamentoMapaResponse.setNome(metodoPagamento.getDescricao());
+        metodoPagamentoMapaResponse.setId(metodoPagamento.getId());
+        return metodoPagamentoMapaResponse;
     }
 }

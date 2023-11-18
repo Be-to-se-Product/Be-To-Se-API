@@ -3,6 +3,7 @@ package com.be.two.c.apibetwoc.repository;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,5 +29,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     @Query("SELECT e FROM Estabelecimento e  WHERE (6371 * acos(cos(radians(?1)) * cos(radians(e.endereco.geolocalizacaoY)) * cos(radians(e.endereco.geolocalizacaoX) - radians(?2)) + sin(radians(?1)) * sin(radians(e.endereco.geolocalizacaoX)))) < ?3 ")
     List<Estabelecimento> buscarPorLocalizacao(Double latitude, Double longitude, Double distancia);
 
-
+    List<Produto> findAll(Specification<Produto> produtoSpecification);
 }

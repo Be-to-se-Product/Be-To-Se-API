@@ -28,16 +28,16 @@ public class ProdutoController {
     @Autowired
     private ProdutoMapaService produtoMapaService;
 
-    @GetMapping
-    public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
-        List<ProdutoDetalhamentoDto > produtos = produtoService.listarProdutos();
-
-        if(produtos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(produtos);
-    }
+    //    @GetMapping
+    //    public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
+    //        List<ProdutoDetalhamentoDto > produtos = produtoService.listarProdutos();
+    //
+    //        if(produtos.isEmpty()) {
+    //            return ResponseEntity.noContent().build();
+    //        }
+    //
+    //        return ResponseEntity.ok(produtos);
+    //    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Produto> listarProdutoPorId(@PathVariable Long id){
@@ -117,9 +117,9 @@ public class ProdutoController {
     }
 
     @GetMapping("/mapa")
-    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam Double distancia,  @RequestParam(required = false)  String nome){
-        List<Produto> produtos = produtoMapaService.retornarProdutos(latitude, longitude, distancia, nome);
-
+    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam Double distancia,  @RequestParam(required = false)  String nome, @RequestParam(required = false) String metodoPagamento){
+        List<Produto> produtos = produtoMapaService.retornarProdutos(latitude, longitude, distancia, nome,metodoPagamento);
+        System.out.println(metodoPagamento);
         if(produtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

@@ -32,6 +32,10 @@ public class Estabelecimento {
 
     @OneToMany
     @JoinColumn(name = "fk_estabelecimento")
+    private List<MetodoPagamentoAceito> metodoPagamentoAceito;
+
+    @OneToMany
+    @JoinColumn(name = "fk_estabelecimento")
     private List<Secao> secao;
 
     @OneToMany

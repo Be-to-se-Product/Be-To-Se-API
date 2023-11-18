@@ -25,6 +25,10 @@ public class Produto {
     @JoinColumn(name = "fk_secao")
     private Secao secao;
 
+    @OneToMany
+    @JoinColumn(name = "fk_estabelecimento")
+    private List<MetodoPagamentoAceito> metodoPagamentoAceito;
+
     @OneToMany(mappedBy = "produto")
     private List<ProdutoTag> tags;
 

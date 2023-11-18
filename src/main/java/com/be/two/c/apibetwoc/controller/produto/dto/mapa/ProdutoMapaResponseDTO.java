@@ -13,6 +13,6 @@ public class ProdutoMapaResponseDTO {
     private String descricao;
     private List<AvaliacaoMapaResponse> avaliacao;
     private Double mediaAvaliacao;
-    private EstabelecimentoMapaResponse estabeleciemento;
+    private EstabelecimentoMapaResponse estabelecimento;
 
 }

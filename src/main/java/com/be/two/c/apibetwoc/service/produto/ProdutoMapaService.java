@@ -4,12 +4,11 @@ import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
-import com.be.two.c.apibetwoc.service.Carro;
-import com.be.two.c.apibetwoc.service.ITempoPercurso;
+import com.be.two.c.apibetwoc.service.produto.specification.ProdutoSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,12 +17,19 @@ public class ProdutoMapaService{
 
 
     private final EstabelecimentoRepository estabelecimentoRepository;
+    private final ProdutoRepository produtoRepository;
 
+    public List<Produto> retornarProdutos(Double latitude,Double longitude,Double distancia,String produto,String metodoPagamento){
+        List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
+        System.out.println(distancia);
+        System.out.println(latitude);
+        System.out.println(longitude);
+        System.out.println(produto);
+        System.out.println(metodoPagamento);
 
-    public List<Produto> retornarProdutos(Double latitude,Double longitude,Double distancia,String produto){
-        List<Produto> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
-        return estabelecimentos;
-
+        Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
+        List<Produto> produtos = produtoRepository.findAll(estabelecimentoSpecification);
+        return produtos;
     }
 
 
