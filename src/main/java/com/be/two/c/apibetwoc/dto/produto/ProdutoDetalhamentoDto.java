@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.dto.secao.SecaoDetalhamentoDto;
 import com.be.two.c.apibetwoc.model.Produto;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,7 +20,7 @@ public class ProdutoDetalhamentoDto {
     private String categoria;
     private Boolean isAtivo;
     private Boolean isPromocaoAtiva;
-    private String imagem;
+    private List<String> imagens;
     private SecaoDetalhamentoDto secao;
     public ProdutoDetalhamentoDto(Produto produto){
 
@@ -34,6 +35,7 @@ public class ProdutoDetalhamentoDto {
         this.isAtivo = produto.getIsAtivo();
         this.isPromocaoAtiva = produto.getIsPromocaoAtiva();
         this.secao = new SecaoDetalhamentoDto(produto.getSecao());
+        this.imagens = new ArrayList<>();
 
     }
 }

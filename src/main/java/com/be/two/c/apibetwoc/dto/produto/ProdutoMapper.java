@@ -14,6 +14,7 @@ public class ProdutoMapper {
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
         produto.setIsAtivo(true);
+
         return produto;
     }
 }
