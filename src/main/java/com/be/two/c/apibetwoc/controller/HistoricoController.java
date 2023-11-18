@@ -32,7 +32,7 @@ public class HistoricoController {
         return ResponseEntity.ok(historico);
     }
 
-    @GetMapping("/download")
+    @GetMapping("/download-txt")
     public ResponseEntity<byte[]> downloadTxt(@RequestParam("idEstabelecimento") Long idEstabelecimento) {
         byte[] txt = historicoVendaService.downloadTxt(idEstabelecimento);
 
@@ -43,5 +43,18 @@ public class HistoricoController {
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(headers)
                 .body(txt);
+    }
+
+    @GetMapping("/download-csv")
+    public ResponseEntity<byte[]> downloadCsv(@RequestParam("idPedido") Long idPedido) {
+        byte[] csv = historicoVendaService.downloadCsv(idPedido);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=historico.csv");
+        headers.add("Content-Type", "text/csv; charset=UTF-8");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(csv);
     }
 }

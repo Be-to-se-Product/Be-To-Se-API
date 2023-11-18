@@ -13,4 +13,6 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long>{
     Page<Transacao> findAll(Specification<Transacao> spec, Pageable pageable);
 
     List<Transacao> findByPedidoMetodoPagamentoAceitoEstabelecimentoId(Long id);
+
+    Transacao findByPedidoId(Long id);
 }
