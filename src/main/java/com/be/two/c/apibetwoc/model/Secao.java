@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Entity
 @Data
 @EqualsAndHashCode(of="id")
@@ -15,4 +17,8 @@ public class Secao {
     @ManyToOne
     @JoinColumn(name = "fk_estabelecimento")
     private Estabelecimento estabelecimento;
+
+    @OneToMany
+    @JoinColumn(name = "fk_secao")
+    private List<Produto> produto;
 }

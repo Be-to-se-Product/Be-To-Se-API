@@ -1,10 +1,16 @@
-package com.be.two.c.apibetwoc.controller;
+package com.be.two.c.apibetwoc.controller.produto;
 
-import com.be.two.c.apibetwoc.dto.produto.ProdutoDetalhamentoDto;
-import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
+import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
+import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
+import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
+import com.be.two.c.apibetwoc.service.produto.ProdutoService;
+
 import com.be.two.c.apibetwoc.service.ImagemService;
-import com.be.two.c.apibetwoc.service.ProdutoService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +24,25 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class ProdutoController {
 
     private final ProdutoService produtoService;
     private final ImagemService imagemService;
 
-    @GetMapping
-    public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
-        List<ProdutoDetalhamentoDto  > produtos = produtoService.listarProdutos();
+    @Autowired
+    private ProdutoMapaService produtoMapaService;
 
-        if(produtos.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        @GetMapping
+        public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
+            List<ProdutoDetalhamentoDto > produtos = produtoService.listarProdutos();
+
+            if(produtos.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(produtos);
         }
-
-        return ResponseEntity.ok(produtos);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoDetalhamentoDto> listarProdutoPorId(@PathVariable Long id){
@@ -133,5 +141,16 @@ public class ProdutoController {
         List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoDetalhamentoDto::new).toList();
 
         return ResponseEntity.status(201).body(dtos);
+    }
+
+    @GetMapping("/mapa")
+    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam Double distancia,  @RequestParam(required = false)  String nome, @RequestParam(required = false) String metodoPagamento){
+        List<Produto> produtos = produtoMapaService.retornarProdutos(latitude, longitude, distancia, nome,metodoPagamento);
+        System.out.println(metodoPagamento);
+        if(produtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(produtos.stream().map(ProdutoMapper::to).toList());
     }
 }

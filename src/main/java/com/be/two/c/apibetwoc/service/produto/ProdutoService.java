@@ -1,12 +1,15 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.produto;
 
-import com.be.two.c.apibetwoc.dto.produto.ProdutoDetalhamentoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.dto.TagDTO;
-import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
-import com.be.two.c.apibetwoc.dto.produto.ProdutoMapper;
+import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import com.be.two.c.apibetwoc.service.ImagemService;
+import com.be.two.c.apibetwoc.service.NewsletterService;
+import com.be.two.c.apibetwoc.service.SecaoService;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +100,7 @@ public class ProdutoService {
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).get();
         produto = ProdutoMapper.of(cadastroProdutoDto);
         produto.setSecao(secao);
-        produto.setId(id);
+        produto.setId(produto.getId());
 
         Produto produtoSalvo = produtoRepository.save(produto);
         List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produto.getId());
@@ -145,7 +148,7 @@ public class ProdutoService {
 
     public void deletarProduto(Long id) {
         Produto produto = buscarPorId(id);
-        List<ProdutoTag> tags = produtoTagRepository.buscarPorProduto(id);
+        List<ProdutoTag> tags = produtoTagRepository.buscarPorProduto(produto.getId());
         List<Long> produtoTagIds = tags.stream().map(ProdutoTag::getId).collect(Collectors.toList());
         for (Long tagDeletar : produtoTagIds) {
             produtoTagRepository.deleteById(tagDeletar);
@@ -204,8 +207,8 @@ public class ProdutoService {
                         .replaceAll("R\\$", "");
 
 
-                Produto produto = new Produto(linha[0], linha[1], Double.parseDouble(valor), linha[3], Double.parseDouble(valorPromocao), linha[5], linha[6], true, false, secao);
-
+                Produto produto = new Produto();
+//linha[0], linha[1], Double.parseDouble(valor), linha[3], Double.parseDouble(valorPromocao), linha[5], linha[6], true, false, secao
                 produtos.add(produto);
             }
 

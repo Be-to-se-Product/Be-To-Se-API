@@ -6,13 +6,11 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Data
-@EqualsAndHashCode(of = "id")
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String nome;
     private String codigoSku;
     private Double preco;
@@ -27,21 +25,18 @@ public class Produto {
     @JoinColumn(name = "fk_secao")
     private Secao secao;
 
+    @OneToMany
+    @JoinColumn(name = "fk_estabelecimento")
+    private List<MetodoPagamentoAceito> metodoPagamentoAceito;
+
     @OneToMany(mappedBy = "produto")
     private List<ProdutoTag> tags;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "produto")
     private List<Imagem> imagens;
-    public Produto(String nome, String codigoSku, Double preco, String descricao, Double precoOferta, String codigoBarras, String categoria, Boolean isAtivo, Boolean isPromocaoAtiva, Secao secao) {
-        this.nome = nome;
-        this.codigoSku = codigoSku;
-        this.preco = preco;
-        this.descricao = descricao;
-        this.precoOferta = precoOferta;
-        this.codigoBarras = codigoBarras;
-        this.categoria = categoria;
-        this.isAtivo = isAtivo;
-        this.isPromocaoAtiva = isPromocaoAtiva;
-        this.secao = secao;
-    }
+
+    @OneToMany(mappedBy = "produto")
+    private List<Avaliacao> avaliacoes;
+
+
 }

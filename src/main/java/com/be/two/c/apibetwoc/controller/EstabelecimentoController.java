@@ -1,14 +1,13 @@
 package com.be.two.c.apibetwoc.controller;
 
-import com.be.two.c.apibetwoc.dto.estabelecimento.AtualizarEstabelecimentoDto;
-import com.be.two.c.apibetwoc.dto.estabelecimento.CadastroEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.AtualizarEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.CadastroEstabelecimentoDto;
 import com.be.two.c.apibetwoc.dto.CoordenadaDto;
-import com.be.two.c.apibetwoc.dto.estabelecimento.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.dto.estabelecimento.dto.ResponseEstabelecimentoDto;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

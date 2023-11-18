@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.dto.produto;
+package com.be.two.c.apibetwoc.controller.produto.dto;
 
 import com.be.two.c.apibetwoc.dto.secao.SecaoDetalhamentoDto;
 import com.be.two.c.apibetwoc.model.Produto;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class ProdutoDetalhamentoDto {
 
-    private Long id;
+    private Integer id;
     private String nome;
     private String codigoSku;
     private Double preco;
@@ -22,8 +22,8 @@ public class ProdutoDetalhamentoDto {
     private Boolean isPromocaoAtiva;
     private List<String> imagens;
     private SecaoDetalhamentoDto secao;
-    public ProdutoDetalhamentoDto(Produto produto){
 
+    public ProdutoDetalhamentoDto(Produto produto) {
         this.id = produto.getId();
         this.nome = produto.getNome();
         this.codigoSku = produto.getCodigoSku();
@@ -36,6 +36,5 @@ public class ProdutoDetalhamentoDto {
         this.isPromocaoAtiva = produto.getIsPromocaoAtiva();
         this.secao = new SecaoDetalhamentoDto(produto.getSecao());
         this.imagens = new ArrayList<>();
-
     }
 }

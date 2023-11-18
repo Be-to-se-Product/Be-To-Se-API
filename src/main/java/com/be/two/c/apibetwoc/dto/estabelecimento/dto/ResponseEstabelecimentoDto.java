@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.dto.estabelecimento;
+package com.be.two.c.apibetwoc.dto.estabelecimento.dto;
 
 import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Endereco;
