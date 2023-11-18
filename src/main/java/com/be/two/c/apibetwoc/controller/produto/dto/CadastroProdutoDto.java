@@ -35,6 +35,9 @@ public class CadastroProdutoDto {
     @Nullable
     private List<@Valid TagDTO> tag;
     @Nullable
+    private List<String> imagens;
+    /*
+    @Nullable
     private String imagem1;
     @Nullable
     private String imagem2;
@@ -45,4 +48,6 @@ public class CadastroProdutoDto {
     @Nullable
     private String imagem5;
 
+
+     */
 }

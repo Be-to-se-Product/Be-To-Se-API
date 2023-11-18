@@ -28,5 +28,5 @@ public class ConsumidorCriacaoDto {
     private LocalDate dataNascimento;
     @Valid
     private UsuarioCriacaoDTO usuarioCriacaoDTO;
-    private List<@Valid InteresseCriacaoDto> interesses;
+    //private List<@Valid InteresseCriacaoDto> interesses;
 }

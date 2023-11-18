@@ -21,22 +21,29 @@ public class ImagemService {
 
     public void salvarImagem(String base64Image, String nomeReferencia, Produto produto) {
 
-
-        byte[] bytes = Base64.getDecoder().decode(base64Image);
-        String nomeImagem = produto.getNome() + "-" + nomeReferencia + ".jpg";
-        System.out.println(base64Image);
-        Imagem imagem = new Imagem();
-        imagem.setNomeReferencia(nomeReferencia);
-        imagem.setProduto(produto);
-        imagem.setNomeImagem(nomeImagem);
-        imagemRepository.save(imagem);
-
         try {
-            if (!Files.exists(caminho)) {
-                Files.createDirectories(caminho);
+            base64Image = base64Image.replaceAll("^data:image/[a-zA-Z]+;base64,", "");
+
+            byte[] bytes = Base64.getDecoder().decode(base64Image);
+            String nomeImagem = produto.getNome() + "-" + nomeReferencia + ".jpg";
+            //System.out.println(base64Image);
+            Imagem imagem = new Imagem();
+            imagem.setNomeReferencia(nomeReferencia);
+            imagem.setProduto(produto);
+            imagem.setNomeImagem(nomeImagem);
+            imagemRepository.save(imagem);
+
+            Path caminhoRelativo = Paths.get("arquivos");
+
+            Path caminhoCompleto = Paths.get(System.getProperty("user.dir"), caminhoRelativo.toString());
+
+            if (!Files.exists(caminhoCompleto)) {
+                Files.createDirectories(caminhoCompleto);
             }
-            System.out.println(caminho.resolve(nomeImagem));
-            Files.write(caminho.resolve(nomeImagem), bytes);
+
+            System.out.println(caminhoCompleto.resolve(nomeImagem));
+            Files.write(caminhoCompleto.resolve(nomeImagem), bytes);
+
         } catch (IOException e) {
             throw new RuntimeException("Erro ao salvar imagem", e);
         }
@@ -44,8 +51,12 @@ public class ImagemService {
     }
 
     public String converterParaBase64(String nomeImagem){
+        Path caminhoRelativo = Paths.get("arquivos");
+
+        Path caminhoCompleto = Paths.get(System.getProperty("user.dir"), caminhoRelativo.toString());
+
         try {
-            byte[] bytes = Files.readAllBytes(caminho.resolve(nomeImagem));
+            byte[] bytes = Files.readAllBytes(caminhoCompleto.resolve(nomeImagem));
             return Base64.getEncoder().encodeToString(bytes);
         } catch (IOException e) {
             throw new RuntimeException("Erro ao converter imagem", e);

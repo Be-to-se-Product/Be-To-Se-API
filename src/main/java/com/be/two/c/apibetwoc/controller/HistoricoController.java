@@ -5,6 +5,8 @@ import com.be.two.c.apibetwoc.model.Transacao;
 import com.be.two.c.apibetwoc.service.HistoricoVendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +30,18 @@ public class HistoricoController {
                 .stream()
                 .map(TransacaoHistoricoDto::new).toList();
         return ResponseEntity.ok(historico);
+    }
+
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadTxt(@RequestParam("idEstabelecimento") Long idEstabelecimento) {
+        byte[] txt = historicoVendaService.downloadTxt(idEstabelecimento);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=historico.txt");
+        headers.add("Content-Type", "text/csv; charset=UTF-8");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(txt);
     }
 }

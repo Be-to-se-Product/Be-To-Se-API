@@ -29,7 +29,7 @@ public class ConsumidorService {
         Consumidor consumidor = ConsumidorMapper.of(consumidorCriacaoDto);
         consumidor.setUsuario(usuario);
         Consumidor consumidorSalvo = consumidorRepository.save(consumidor);
-        interesseService.cadastrar(consumidorSalvo.getId(), consumidorCriacaoDto.getInteresses());
+        //interesseService.cadastrar(consumidorSalvo.getId(), consumidorCriacaoDto.getInteresses());
         return ConsumidorMapper.of(consumidorSalvo);
     }
 
