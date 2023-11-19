@@ -1,6 +1,5 @@
 package com.be.two.c.apibetwoc.controller.produto.dto;
 
-import com.be.two.c.apibetwoc.dto.TagDTO;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
-import java.util.Base64;
 import java.util.List;
 
 @Getter

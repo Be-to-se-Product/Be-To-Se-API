@@ -1,11 +1,11 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.agenda.AgendaMapper;
-import com.be.two.c.apibetwoc.dto.estabelecimento.dto.AtualizarEstabelecimentoDto;
-import com.be.two.c.apibetwoc.dto.estabelecimento.dto.CadastroEstabelecimentoDto;
-import com.be.two.c.apibetwoc.dto.CoordenadaDto;
-import com.be.two.c.apibetwoc.dto.estabelecimento.mapper.EstabelecimentoMapper;
-import com.be.two.c.apibetwoc.dto.estabelecimento.dto.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.AgendaMapper;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.AtualizarEstabelecimentoDto;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CadastroEstabelecimentoDto;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CoordenadaDto;
+import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.ResponseEstabelecimentoDto;
 import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Agenda;
@@ -46,7 +46,7 @@ public class EstabelecimentoService {
         List<Agenda> agenda = agendaRepository.findByEstabelecimentoId(id);
         List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);
 
-        return EstabelecimentoMapper.of(estabelecimento, agenda, metodos);
+        return EstabelecimentoMapper.toResponseEstabelecimento(estabelecimento, agenda, metodos);
     }
 
     public List<Estabelecimento> listarTodos(){
@@ -63,7 +63,7 @@ public class EstabelecimentoService {
                 .findById(estabelecimento.getIdComerciante())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
 
-        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(EstabelecimentoMapper.of(estabelecimento, comerciante));
+        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(EstabelecimentoMapper.toEstabelecimento(estabelecimento, comerciante));
 
         metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimento.getIdMetodoPagamento());
 
@@ -76,7 +76,7 @@ public class EstabelecimentoService {
 
     public Estabelecimento atualizarEstabelecimento(AtualizarEstabelecimentoDto estabelecimentoDto, Long id){
         Estabelecimento estabelecimento = listarPorId(id);
-        Estabelecimento estabelecimentoAtualizado = EstabelecimentoMapper.of(estabelecimentoDto, estabelecimento);
+        Estabelecimento estabelecimentoAtualizado = EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto, estabelecimento);
         estabelecimentoAtualizado.setId(id);
         return estabelecimentoRepository.save(estabelecimentoAtualizado) ;
     }

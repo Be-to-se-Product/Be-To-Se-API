@@ -1,7 +1,8 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.pedido.*;
+import com.be.two.c.apibetwoc.controller.pedido.dto.*;
 
+import com.be.two.c.apibetwoc.controller.pedido.mapper.PedidoMapper;
 import com.be.two.c.apibetwoc.exception.ForbidenPedidoException;
 import com.be.two.c.apibetwoc.exception.NaoAutorizadoException;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;

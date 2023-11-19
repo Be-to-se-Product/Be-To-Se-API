@@ -1,6 +1,6 @@
 package com.be.two.c.apibetwoc.service.produto;
 
-import com.be.two.c.apibetwoc.dto.TagDTO;
+import com.be.two.c.apibetwoc.controller.produto.dto.TagDTO;
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
