@@ -29,4 +29,9 @@ public class EnderecoService {
 
         return enderecoRepository.save(endereco);
     }
+    public Endereco buscarPorId(Long id){
+        return enderecoRepository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Endereco não encontrado")
+        );
+    }
 }

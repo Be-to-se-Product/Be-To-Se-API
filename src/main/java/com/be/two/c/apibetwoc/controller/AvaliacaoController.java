@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.controller;
 
 import com.be.two.c.apibetwoc.dto.avaliacao.AvaliacaoDTO;
+import com.be.two.c.apibetwoc.dto.avaliacao.AvaliacaoResponseDto;
 import com.be.two.c.apibetwoc.model.Avaliacao;
 import com.be.two.c.apibetwoc.repository.AvaliacaoRepository;
 import com.be.two.c.apibetwoc.service.AvaliacaoService;
@@ -18,8 +19,8 @@ public class AvaliacaoController {
     private AvaliacaoService avaliacaoService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Avaliacao>> avaliacaoPorProduto(@PathVariable Long id){
-        List<Avaliacao> avaliacoes = avaliacaoService.buscarAvaliacaoPorProduto(id);
+    public ResponseEntity<List<AvaliacaoResponseDto>> avaliacaoPorProduto(@PathVariable Long id){
+        List<AvaliacaoResponseDto> avaliacoes = avaliacaoService.buscarAvaliacaoPorProduto(id);
 
         if (avaliacoes.isEmpty()){
             return ResponseEntity.noContent().build();

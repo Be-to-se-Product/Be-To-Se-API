@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.dto.comerciante.ComercianteCriacaoDto;
+import com.be.two.c.apibetwoc.dto.comerciante.ComercianteDetalhamentoDto;
 import com.be.two.c.apibetwoc.dto.comerciante.ComercianteMapper;
 import com.be.two.c.apibetwoc.dto.comerciante.ResponseComercianteDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
@@ -40,14 +41,13 @@ public class ComercianteService {
                 .map(ComercianteMapper :: of)
                 .toList();
     }
-
-    public ResponseComercianteDto buscarPorId(Long id){
-        return comercianteRepository
-                .findById(id)
-                .map(ComercianteMapper :: of)
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
+    public ComercianteDetalhamentoDto buscarPorId(Long id){
+        Comerciante comerciante = comercianteRepository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Comerciante não encontrado")
+        );
+       Endereco endereco = enderecoService.buscarPorId(comerciante.getEndereco().getId());
+       return new ComercianteDetalhamentoDto(comerciante,endereco);
     }
-
     public void excluir(Long id){
         if(!comercianteRepository.existsById(id)){
             throw new EntidadeNaoExisteException("O comerciante procurado não existe.");

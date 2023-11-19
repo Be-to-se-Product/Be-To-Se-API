@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.controller;
 
 import com.be.two.c.apibetwoc.dto.comerciante.ComercianteCriacaoDto;
+import com.be.two.c.apibetwoc.dto.comerciante.ComercianteDetalhamentoDto;
 import com.be.two.c.apibetwoc.dto.comerciante.ComercianteMapper;
 import com.be.two.c.apibetwoc.dto.comerciante.ResponseComercianteDto;
 import com.be.two.c.apibetwoc.model.Comerciante;
@@ -15,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("comerciantes")
+@RequestMapping("/comerciantes")
 @RequiredArgsConstructor
 public class ComercianteController {
 
@@ -37,7 +38,11 @@ public class ComercianteController {
         }
         return ResponseEntity.ok(comerciantes);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<ComercianteDetalhamentoDto> comercianetPorId(@PathVariable Long id){
+        ComercianteDetalhamentoDto comerciante = comercianteService.buscarPorId(id);
+        return ResponseEntity.ok(comerciante);
+    }
     @DeleteMapping("{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         comercianteService.excluir(id);

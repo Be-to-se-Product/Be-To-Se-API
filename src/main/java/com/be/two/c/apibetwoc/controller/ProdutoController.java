@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.controller;
 
 import com.be.two.c.apibetwoc.dto.produto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.dto.produto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.dto.produto.ProdutoResponseDto;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.ProdutoService;
 import jakarta.validation.Valid;
@@ -34,8 +35,8 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> listarProdutoPorId(@PathVariable Long id){
-        return ResponseEntity.ok(produtoService.buscarPorId(id));
+    public ResponseEntity<ProdutoDetalhamentoDto> listarProdutoPorId(@PathVariable Long id){
+        return ResponseEntity.ok(produtoService.buscarProdutoPorId(id));
     }
 
     @PostMapping

@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.dto.avaliacao.AvaliacaoDTO;
 import com.be.two.c.apibetwoc.dto.avaliacao.AvaliacaoMapper;
+import com.be.two.c.apibetwoc.dto.avaliacao.AvaliacaoResponseDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Avaliacao;
 import com.be.two.c.apibetwoc.model.Consumidor;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class AvaliacaoService {
@@ -39,9 +42,12 @@ public class AvaliacaoService {
 
         return avaliacaoRepository.save(avaliacao);
     }
-    public List<Avaliacao> buscarAvaliacaoPorProduto(Long id){
+    public List<AvaliacaoResponseDto> buscarAvaliacaoPorProduto(Long id){
         Produto produto = buscarProdutoPorId(id);
-        return avaliacaoRepository.buscaPorProduto(id);
+        List<Avaliacao> avalicoes = avaliacaoRepository.buscaPorProduto(id);
+        return avalicoes.stream()
+                .map(avaliacao -> new AvaliacaoResponseDto(avaliacao))
+                .collect(Collectors.toList());
     }
     private Avaliacao buscarPorId(Long id){
         Avaliacao avaliacao = avaliacaoRepository.findById(id).orElseThrow(

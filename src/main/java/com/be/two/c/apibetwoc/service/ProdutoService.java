@@ -31,11 +31,23 @@ public class ProdutoService {
     private final ProdutoTagRepository produtoTagRepository;
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final ImagemService imagemService;
+    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
 
     public Produto buscarPorId(Long id) {
         return produtoRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Produto não encontrado")
         );
+    }
+    public ProdutoDetalhamentoDto buscarProdutoPorId(Long id){
+        Produto produto = buscarPorId(id);
+        ProdutoDetalhamentoDto pd = new ProdutoDetalhamentoDto(produto);
+        List<MetodoPagamentoAceito> ma = metodoPagamentoAceitoService.findByEstabelecimentoId(pd.getSecao().getEstabelecimento().getId());
+        List<Long> listaIds = ma.stream()
+                .map(MetodoPagamentoAceito::getId)
+                .collect(Collectors.toList());
+
+        pd.getSecao().getEstabelecimento().setIdMetodo(listaIds);
+        return pd ;
     }
 
     public List<ProdutoDetalhamentoDto> listarProdutos() {

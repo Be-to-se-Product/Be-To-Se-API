@@ -1,12 +1,15 @@
 package com.be.two.c.apibetwoc.dto.produto;
 
 import com.be.two.c.apibetwoc.dto.secao.SecaoDetalhamentoDto;
+import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.model.Produto;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class ProdutoDetalhamentoDto {
 
     private Long id;

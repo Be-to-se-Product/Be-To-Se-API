@@ -1,7 +1,9 @@
 package com.be.two.c.apibetwoc.controller;
 
 import com.be.two.c.apibetwoc.dto.consumidor.ConsumidorCriacaoDto;
+import com.be.two.c.apibetwoc.dto.consumidor.ConsumidorMapper;
 import com.be.two.c.apibetwoc.dto.consumidor.ResponseConsumidorDto;
+import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.service.ConsumidorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +38,15 @@ public class ConsumidorController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ResponseConsumidorDto> buscarPorId(Long id) {
+    public ResponseEntity<ResponseConsumidorDto> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(consumidorService.buscarPorId(id));
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Void> atualizar(){
-        return null;
+    public ResponseEntity<Void> atualizar(@Valid @RequestBody ConsumidorCriacaoDto consumidor, @PathVariable Long id){
+        Consumidor consumidorAtualizado = ConsumidorMapper.of(consumidor);
+        consumidorService.atualizar(consumidorAtualizado,id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
