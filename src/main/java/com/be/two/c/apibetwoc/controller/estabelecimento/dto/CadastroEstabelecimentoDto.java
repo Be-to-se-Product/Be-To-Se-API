@@ -1,9 +1,6 @@
 package com.be.two.c.apibetwoc.controller.estabelecimento.dto;
-
-import com.be.two.c.apibetwoc.model.Endereco;
 import jakarta.validation.constraints.*;
 import lombok.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class CadastroEstabelecimentoDto {
     @NotNull
     private Long idComerciante;
     @NotNull
-    private Endereco endereco;
+    private EnderacoCricaoEstabelecimentoDto enderecoDto;
     @NotNull
     private List<Long> idMetodoPagamento;
     @NotNull

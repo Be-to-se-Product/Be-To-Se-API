@@ -1,5 +1,7 @@
 package com.be.two.c.apibetwoc.controller.estabelecimento.mapper;
 
+
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EnderacoCricaoEstabelecimentoDto;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.ResponseEstabelecimentoDto;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.AtualizarEstabelecimentoDto;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CadastroEstabelecimentoDto;
@@ -7,6 +9,9 @@ import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
+
+import com.be.two.c.apibetwoc.model.*;
+
 
 import java.util.List;
 
@@ -23,7 +28,6 @@ public class EstabelecimentoMapper {
         estabelecimento.setEmailContato(cadastroEstabelecimentoDto.getEmailContato());
         estabelecimento.setIsAtivo(true);
         estabelecimento.setComerciante(comerciante);
-        estabelecimento.setEndereco(cadastroEstabelecimentoDto.getEndereco());
 
         return estabelecimento;
     }
@@ -45,7 +49,21 @@ public class EstabelecimentoMapper {
         return estabelecimento;
     }
 
+
+    public static Endereco of(EnderacoCricaoEstabelecimentoDto enderecoEstabelecimento){
+        Endereco endereco = new Endereco();
+        endereco.setCep(enderecoEstabelecimento.getCep());
+        endereco.setNumero(enderecoEstabelecimento.getNumero());
+        endereco.setBairro(enderecoEstabelecimento.getBairro());
+        endereco.setGeolocalizacaoX(enderecoEstabelecimento.getGeolocalizacaoX());
+        endereco.setGeolocalizacaoY(enderecoEstabelecimento.getGeolocalizacaoY());
+        endereco.setRua(enderecoEstabelecimento.getRua());
+
+        return endereco;
+    }
+
     public static ResponseEstabelecimentoDto toResponseEstabelecimento(Estabelecimento estabelecimento, List<Agenda> agenda, List<MetodoPagamentoAceito> metodos){
+
         ResponseEstabelecimentoDto responseEstabelecimentoDto = new ResponseEstabelecimentoDto();
 
         responseEstabelecimentoDto.setId(estabelecimento.getId());
