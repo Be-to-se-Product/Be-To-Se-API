@@ -9,10 +9,7 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.dto.ResponseEstabelecim
 import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
-import com.be.two.c.apibetwoc.repository.AgendaRepository;
-import com.be.two.c.apibetwoc.repository.ComercianteRepository;
-import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
-import com.be.two.c.apibetwoc.repository.SecaoRepository;
+import com.be.two.c.apibetwoc.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,7 @@ public class EstabelecimentoService {
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
     private final AgendaRepository agendaRepository;
     private final SecaoRepository secaoRepository;
+    private final EnderecoRepository enderecoRepository;
 
     public Estabelecimento listarPorId(Long id){
         return estabelecimentoRepository
@@ -46,23 +44,26 @@ public class EstabelecimentoService {
     }
 
 
+    @Transactional
     public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto cadastroEstabelecimentoDto){
         Comerciante comerciante = comercianteRepository
                 .findById(cadastroEstabelecimentoDto.getIdComerciante())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
 
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(cadastroEstabelecimentoDto, comerciante);
-        Endereco endereco = EstabelecimentoMapper.of(cadastroEstabelecimentoDto.getEnderecoDto());
+        Endereco enderecoEntity = EstabelecimentoMapper.of(cadastroEstabelecimentoDto.getEnderecoDto());
+
+
+        Endereco endereco =  enderecoRepository.save(enderecoEntity);
+
         estabelecimento.setEndereco(endereco);
-
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
-
-        metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, cadastroEstabelecimentoDto.getIdMetodoPagamento());
-
-        agendaRepository.saveAll(AgendaMapper.of(cadastroEstabelecimentoDto.getAgenda(), estabelecimentoCriado));
-
-        secaoRepository.saveAll(SecaoMapper.of(cadastroEstabelecimentoDto.getSecao(), estabelecimentoCriado));
-
+        List<MetodoPagamentoAceito> metodoPagamentoAceitos = metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, cadastroEstabelecimentoDto.getIdMetodoPagamento());
+        List<Agenda> agenda =agendaRepository.saveAll(AgendaMapper.of(cadastroEstabelecimentoDto.getAgenda(), estabelecimentoCriado));
+        List<Secao> secao =  secaoRepository.saveAll(SecaoMapper.of(cadastroEstabelecimentoDto.getSecao(), estabelecimentoCriado));
+        estabelecimentoCriado.setAgenda(agenda);
+        estabelecimentoCriado.setSecao(secao);
+        estabelecimentoCriado.setMetodoPagamentoAceito(metodoPagamentoAceitos);
         return estabelecimentoCriado;
     }
 
