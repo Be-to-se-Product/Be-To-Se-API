@@ -57,7 +57,9 @@ public class ProdutoService {
                 }
             }
         }
+
         return produtos;
+
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto ) {
@@ -144,6 +146,7 @@ public class ProdutoService {
         Produto produto = buscarPorId(id);
         List<ProdutoTag> tags = produtoTagRepository.buscarPorProduto(produto.getId());
         List<Long> produtoTagIds = tags.stream().map(ProdutoTag::getId).collect(Collectors.toList());
+
         for (Long tagDeletar : produtoTagIds) {
             produtoTagRepository.deleteById(tagDeletar);
         }

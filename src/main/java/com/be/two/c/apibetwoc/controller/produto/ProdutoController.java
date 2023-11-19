@@ -61,8 +61,6 @@ public class ProdutoController {
         imagensCadastradas.forEach(element-> element.setNomeReferencia(dominio +""+ element.getNomeReferencia()));
         produtoCadastrado.setImagens(imagensCadastradas);
 
-
-
         return ResponseEntity.ok(ProdutoMapper.toProdutoDetalhamento(produtoCadastrado));
     }
 

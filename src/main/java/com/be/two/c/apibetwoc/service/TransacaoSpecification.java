@@ -3,11 +3,11 @@ package com.be.two.c.apibetwoc.service;
 import com.be.two.c.apibetwoc.model.Transacao;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TransacaoSpecification {
 
-    public static Specification<Transacao> entreDatas(LocalDate dataUm, LocalDate dataDois){
+    public static Specification<Transacao> entreDatas(LocalDateTime dataUm, LocalDateTime dataDois){
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.between(root.get("pedido").get("dataHoraPedido"), dataUm, dataDois);
     }

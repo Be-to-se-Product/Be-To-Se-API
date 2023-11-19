@@ -21,7 +21,7 @@ public class ConsumidorService {
     private final ConsumidorRepository consumidorRepository;
     private final UsuarioService usuarioService;
     private final InteresseService interesseService;
-    private final ArquivoService arquivoService;
+
 
     public ResponseConsumidorDto cadastrar(ConsumidorCriacaoDto consumidorCriacaoDto) {
         Usuario usuario = usuarioService.cadastrar(consumidorCriacaoDto.getUsuarioCriacaoDTO());

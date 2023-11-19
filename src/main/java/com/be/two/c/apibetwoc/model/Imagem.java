@@ -15,12 +15,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Imagem {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Integer id;
     private String nomeImagem;
     private String nomeReferencia;
     private LocalDateTime dataCriacao;
-
 
     @ManyToOne
     @JoinColumn(name = "fk_estabelecimento")

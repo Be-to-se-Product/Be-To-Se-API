@@ -10,9 +10,14 @@ import java.util.List;
 
 
 public interface TransacaoRepository extends JpaRepository<Transacao, Long>{
+
     Page<Transacao> findAll(Specification<Transacao> spec, Pageable pageable);
 
     List<Transacao> findByPedidoMetodoPagamentoAceitoEstabelecimentoId(Long id);
 
     Transacao findByPedidoId(Long id);
+
+    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(Pageable pageable, Long id);
+    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(Specification<Transacao> specification,Pageable pageable, Long id);
+
 }
