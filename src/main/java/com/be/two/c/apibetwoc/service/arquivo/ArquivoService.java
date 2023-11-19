@@ -6,6 +6,7 @@ import com.be.two.c.apibetwoc.repository.ProdutoRepository;
 import com.be.two.c.apibetwoc.service.AutenticacaoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoReponseDTO;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
+import com.be.two.c.apibetwoc.service.arquivo.exception.ArquivoNaoPermitidoException;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,7 @@ import java.util.*;
 public class ArquivoService {
 
   private final AutenticacaoService autenticacaoService;
-  private final ImagemRepository imagemRepository;
-  private final ProdutoRepository produtoRepository;
+
   Map<String, MediaType> tiposArquivosPermitidos = new HashMap<>() {{
     put("png", MediaType.IMAGE_PNG);
     put("jpg", MediaType.IMAGE_JPEG);
@@ -48,9 +48,15 @@ public class ArquivoService {
 
 
 
-  private final HttpServletRequest request;
+
   public ArquivoSaveDTO salvarArquivo(MultipartFile file, TipoArquivo tipoArquivo) {
     UsuarioDetalhes usuarioDetalhes = autenticacaoService.loadUsuarioDetails();
+    String extensaoArquivo = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
+    if (!tiposArquivosPermitidos.containsKey(extensaoArquivo)) {
+      throw new ArquivoNaoPermitidoException();
+    }
+
+
     String diretorio = DIRETORIO_PRINCIPAL + diretorios.get(tipoArquivo);
     try {
       Path caminhoArquivo = Paths.get(diretorio).normalize();
@@ -66,8 +72,6 @@ public class ArquivoService {
       throw new RuntimeException("Erro ao salvar o arquivo");
     }
   }
-
-
 
 
     public ArquivoReponseDTO getArquivo(String nomeReferencia, TipoArquivo tipoArquivo) {
