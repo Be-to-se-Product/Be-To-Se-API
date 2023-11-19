@@ -3,11 +3,12 @@ package com.be.two.c.apibetwoc.dto.historico;
 import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.model.StatusPedido;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record PedidoHistoricoDto(Long id,
-                                 LocalDateTime dataHoraPedido,
+                                 LocalDate dataHoraPedido,
                                  StatusPedido statusDescricao,
                                  Boolean isPagamentoOnline,
                                  LocalDateTime dataHoraRetirada,
@@ -16,7 +17,7 @@ public record PedidoHistoricoDto(Long id,
 ) {
     public PedidoHistoricoDto(Pedido pedido) {
         this(pedido.getId(),
-                pedido.getDataHoraPedido(),
+                pedido.getDataHoraPedido().toLocalDate(),
                 pedido.getStatusDescricao(),
                 pedido.getIsPagamentoOnline(),
                 pedido.getDataHoraRetirada(),

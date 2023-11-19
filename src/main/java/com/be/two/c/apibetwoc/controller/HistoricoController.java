@@ -1,6 +1,8 @@
 package com.be.two.c.apibetwoc.controller;
 
+import com.be.two.c.apibetwoc.dto.historico.MetodoPagamentoHistoricoDto;
 import com.be.two.c.apibetwoc.dto.historico.TransacaoHistoricoDto;
+import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.model.Transacao;
 import com.be.two.c.apibetwoc.service.HistoricoVendaService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -35,12 +36,13 @@ public class HistoricoController {
 
     @GetMapping("/filtro/{id}")
     public ResponseEntity<Page<TransacaoHistoricoDto>> getHistoricoPorFiltro(@PathVariable Long id,
-                                                                             @RequestParam(required = false) LocalDateTime de,
-                                                                             @RequestParam(required = false) LocalDateTime ate,
+                                                                             @RequestParam(required = false) String de,
+                                                                             @RequestParam(required = false) String ate,
                                                                              @RequestParam(required = false) String status,
                                                                              @RequestParam(required = false) String metodoPagamento,
                                                                              @RequestParam(required = false) @DefaultValue("0") int page,
                                                                              @RequestParam(required = false) @DefaultValue("25") int size) {
+
         Page<Transacao> transacoes = historicoVendaService
                 .getHistoricoPorFiltro(de, ate, status, metodoPagamento, page, size, id);
         if (transacoes.isEmpty()) {
@@ -49,5 +51,17 @@ public class HistoricoController {
         Page<TransacaoHistoricoDto> historicoComFiltro = transacoes
                 .map(TransacaoHistoricoDto::new);
         return ResponseEntity.ok(historicoComFiltro);
+    }
+
+    @GetMapping("/{id}/metodos-pagamento")
+    public ResponseEntity<List<MetodoPagamentoHistoricoDto>> listarMetodosPagamentoAceitos(@PathVariable Long id) {
+        List<MetodoPagamentoAceito> metodosPagamento = historicoVendaService.listarMetodosPagamentoAceitos(id);
+        if (metodosPagamento.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<MetodoPagamentoHistoricoDto> metodosPagamentoDto = metodosPagamento
+                .stream()
+                .map(MetodoPagamentoHistoricoDto::new).toList();
+        return ResponseEntity.ok(metodosPagamentoDto);
     }
 }

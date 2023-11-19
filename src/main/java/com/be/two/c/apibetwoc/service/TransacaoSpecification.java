@@ -1,24 +1,59 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.model.Transacao;
+import com.be.two.c.apibetwoc.model.*;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class TransacaoSpecification {
 
-    public static Specification<Transacao> entreDatas(LocalDateTime dataUm, LocalDateTime dataDois){
-        return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.between(root.get("pedido").get("dataHoraPedido"), dataUm, dataDois);
+    public static Specification<Transacao> comIdPedido(Long idTransacao) {
+  return (root, query, criteriaBuilder) -> {
+
+
+      return criteriaBuilder
+              .equal(root
+                      .get("id"), idTransacao);
+
+  };
     }
 
-    public static Specification<Transacao> comStatus(String status){
-        return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("statusDescricao"), status);
+    public static Specification<Transacao> entreDatas(LocalDate dataUm, LocalDate dataDois) {
+
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (dataUm == null || dataDois == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder
+                    .between(root
+                            .get("dataTransacao"), dataUm, dataDois);
+        };
+
     }
 
-    public static Specification<Transacao> comMetodoPagamento(String nomeMetodoPagamento){
+    public static Specification<Transacao> comStatus(String status) {
+        if (status == null) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+        }
+        StatusPedido statusPedido = StatusPedido.valueOf(status.toUpperCase());
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("pedido").get("metodoPagamentoAceito").get("descricao"), nomeMetodoPagamento);
+                criteriaBuilder
+                        .equal(root
+                                .join("pedido")
+                                .get("statusDescricao"), statusPedido);
+    }
+
+    public static Specification<Transacao> comMetodoPagamento(String nomeMetodoPagamento) {
+        return (root, query, criteriaBuilder) -> {
+            if (nomeMetodoPagamento == null) {
+                return criteriaBuilder.conjunction();
+            }
+            Join<Transacao, Pedido> pedidoJoin = root.join("pedido");
+            Join<Pedido, MetodoPagamentoAceito> pedidoMetodoPagamentoAceitoJoin = pedidoJoin.join("metodoPagamentoAceito");
+            Join<MetodoPagamentoAceito, MetodoPagamento> metodoPagamentoAceitoMetodoPagamentoJoin = pedidoMetodoPagamentoAceitoJoin.join("metodoPagamento");
+            return criteriaBuilder.equal(metodoPagamentoAceitoMetodoPagamentoJoin.get("descricao"), nomeMetodoPagamento);
+
+        };
     }
 }

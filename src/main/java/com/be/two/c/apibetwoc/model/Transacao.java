@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @EqualsAndHashCode(of="id")
@@ -13,6 +15,7 @@ public class Transacao {
     private Double valor;
     private Double taxa;
     private boolean isEstornado;
+    private LocalDate dataTransacao;
     @ManyToOne
     @JoinColumn(name = "fk_pedido")
     private Pedido pedido;
