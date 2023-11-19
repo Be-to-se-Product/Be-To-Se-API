@@ -9,10 +9,12 @@ import com.be.two.c.apibetwoc.repository.*;
 import com.be.two.c.apibetwoc.service.SecaoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.service.produto.mapper.ImagemMapper;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,8 +36,7 @@ public class ProdutoService {
     private final TagRepository tagRepository;
     private final ProdutoTagRepository produtoTagRepository;
     private final EstabelecimentoRepository estabelecimentoRepository;
-    private final ArquivoService arquivoService;
-    private final ImagemRepository imagemRepository;
+    private final ImagemService imagemService;
 
 
     public Produto buscarPorId(Long id) {
@@ -62,7 +63,7 @@ public class ProdutoService {
 
     }
 
-    public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto ) {
+    public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto, List<MultipartFile> imagens ) {
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
         Produto produto = ProdutoMapper.of(cadastroProdutoDto,secao);
@@ -81,15 +82,13 @@ public class ProdutoService {
                 produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
             }
         }
-
+        List<Imagem> imagensCadastradas = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produtoSalvo)).toList();
+        produtoSalvo.setImagens(imagemService.formatterImagensURI(imagensCadastradas));
         return produtoSalvo;
     }
 
 
-    public Imagem  cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo,Produto produto){
-        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo);
-        return imagemRepository.save(ImagemMapper.of(arquivo,produto));
-    }
+
 
     public Produto atualizarProduto(Long id, CadastroProdutoDto cadastroProdutoDto) {
         Produto produto = buscarPorId(id);

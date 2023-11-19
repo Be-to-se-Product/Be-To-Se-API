@@ -44,6 +44,7 @@ public class ProdutoMapper {
         produtoResponse.setAvaliacao(avaliacao);
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element->element.getQtdEstrela()).average().orElse(0));
         produtoResponse.setEstabelecimento(to(produto.getSecao().getEstabelecimento()));
+        produtoResponse.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
         return produtoResponse;
     }
 

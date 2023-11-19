@@ -55,11 +55,7 @@ public class ProdutoController {
 
     @PostMapping
     public ResponseEntity<ProdutoDetalhamentoDto> cadastrarProduto(@Valid @RequestPart CadastroProdutoDto produto, @RequestPart List<MultipartFile> imagens ){
-        Produto produtoCadastrado = produtoService.cadastrarProduto(produto);
-        List<Imagem> imagensCadastradas = imagens.stream().map(element-> produtoService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produtoCadastrado)).toList();
-        String dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/");
-        imagensCadastradas.forEach(element-> element.setNomeReferencia(dominio +""+ element.getNomeReferencia()));
-        produtoCadastrado.setImagens(imagensCadastradas);
+        Produto produtoCadastrado = produtoService.cadastrarProduto(produto, imagens);
 
         return ResponseEntity.ok(ProdutoMapper.toProdutoDetalhamento(produtoCadastrado));
     }

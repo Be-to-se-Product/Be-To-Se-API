@@ -11,6 +11,7 @@ public class ProdutoMapaResponseDTO {
     private String nome;
     private String categoria;
     private String descricao;
+    private List<String> imagens;
     private List<AvaliacaoMapaResponse> avaliacao;
     private Double mediaAvaliacao;
     private EstabelecimentoMapaResponse estabelecimento;
