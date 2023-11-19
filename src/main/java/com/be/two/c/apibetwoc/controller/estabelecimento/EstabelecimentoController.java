@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.dto.AtualizarEstabeleci
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CadastroEstabelecimentoDto;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CoordenadaDto;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
 import jakarta.validation.Valid;
@@ -21,41 +22,40 @@ public class EstabelecimentoController {
     private final EstabelecimentoService estabelecimentoService;
 
     @GetMapping
-    public ResponseEntity<List<Estabelecimento>> listarTodos() {
+    public ResponseEntity<List<ResponseEstabelecimentoDto>> listarTodos() {
         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarTodos();
 
         return estabelecimentos.isEmpty()
                 ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(estabelecimentos);
+                : ResponseEntity.status(200).body(estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Estabelecimento> listarPorId(@PathVariable Long id){
-        return ResponseEntity.status(200).body(estabelecimentoService.listarPorId(id));
+    public ResponseEntity<ResponseEstabelecimentoDto> listarPorId(@PathVariable Long id){
+        return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoService.listarPorId(id)));
     }
 
-    @GetMapping("/dto/{id}")
-    public ResponseEntity<ResponseEstabelecimentoDto> listarPorId2(@PathVariable Long id){
-        return ResponseEntity.status(200).body(estabelecimentoService.listarPorId2(id));
-    }
+
 
     @GetMapping("/segmento")
-    public ResponseEntity<List<Estabelecimento>> listarPorSegmento(@RequestParam String segmento){
+    public ResponseEntity<List<ResponseEstabelecimentoDto>> listarPorSegmento(@RequestParam String segmento){
         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorSegmento(segmento);
 
         return estabelecimentos.isEmpty()
                 ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(estabelecimentos);
+                : ResponseEntity.status(200).body(estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList());
     }
 
-    @PostMapping()
-    public ResponseEntity<Estabelecimento> cadastrarEstabelecimento(@Valid @RequestBody CadastroEstabelecimentoDto estabelecimento) {
-        return ResponseEntity.status(201).body(estabelecimentoService.cadastroEstabelecimento(estabelecimento));
+    @PostMapping
+    public ResponseEntity<ResponseEstabelecimentoDto> cadastrarEstabelecimento(@Valid @RequestBody CadastroEstabelecimentoDto estabelecimento) {
+        Estabelecimento estabelecimentoCriado = estabelecimentoService.cadastroEstabelecimento(estabelecimento);
+        return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoCriado));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Estabelecimento> atualizarEstabelecimento(@Valid @RequestBody AtualizarEstabelecimentoDto estabelecimentoDto, @PathVariable Long id) {
-        return ResponseEntity.status(200).body(estabelecimentoService.atualizarEstabelecimento(estabelecimentoDto,id));
+    public ResponseEntity<ResponseEstabelecimentoDto> atualizarEstabelecimento(@Valid @RequestBody AtualizarEstabelecimentoDto estabelecimentoDto, @PathVariable Long id) {
+        Estabelecimento estabelecimentoAtualizado = estabelecimentoService.atualizarEstabelecimento(estabelecimentoDto, id);
+        return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoAtualizado));
     }
 
     @DeleteMapping("/{id}")

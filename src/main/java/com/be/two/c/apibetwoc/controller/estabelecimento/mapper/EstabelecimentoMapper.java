@@ -1,10 +1,7 @@
 package com.be.two.c.apibetwoc.controller.estabelecimento.mapper;
 
 
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EnderacoCricaoEstabelecimentoDto;
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.ResponseEstabelecimentoDto;
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.AtualizarEstabelecimentoDto;
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CadastroEstabelecimentoDto;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.*;
 import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
@@ -62,7 +59,7 @@ public class EstabelecimentoMapper {
         return endereco;
     }
 
-    public static ResponseEstabelecimentoDto toResponseEstabelecimento(Estabelecimento estabelecimento, List<Agenda> agenda, List<MetodoPagamentoAceito> metodos){
+    public static ResponseEstabelecimentoDto toResponseEstabelecimento(Estabelecimento estabelecimento){
 
         ResponseEstabelecimentoDto responseEstabelecimentoDto = new ResponseEstabelecimentoDto();
 
@@ -78,10 +75,40 @@ public class EstabelecimentoMapper {
         responseEstabelecimentoDto.setIsAtivo(estabelecimento.getIsAtivo());
         responseEstabelecimentoDto.setIdComerciante(estabelecimento.getComerciante().getId());
         responseEstabelecimentoDto.setCnpj(estabelecimento.getComerciante().getCnpj());
-        responseEstabelecimentoDto.setEndereco(estabelecimento.getEndereco());
-        responseEstabelecimentoDto.setAgenda(agenda);
-        responseEstabelecimentoDto.setMetodoPagamento(metodos);
-
+        responseEstabelecimentoDto.setEndereco(toEstabelecimentoEnderecoResponse(estabelecimento.getEndereco()));
+        responseEstabelecimentoDto.setAgenda(estabelecimento.getAgenda().stream().map(EstabelecimentoMapper::toEstabelecimentoAgendaResponse).toList());
+        responseEstabelecimentoDto.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(EstabelecimentoMapper::toEstabeleciementoMetodoPagamentoResponse).toList());
+        responseEstabelecimentoDto.setSecao(estabelecimento.getSecao().stream().map(EstabelecimentoMapper::toEstabelecimentoSecaoResponse).toList());
         return responseEstabelecimentoDto;
+    }
+
+    private static EstabelecentoSecaoResponseDTO toEstabelecimentoSecaoResponse(Secao secao) {
+    EstabelecentoSecaoResponseDTO estabelecentoSecaoResponseDTO = new EstabelecentoSecaoResponseDTO();
+    estabelecentoSecaoResponseDTO.setId(secao.getId());
+    estabelecentoSecaoResponseDTO.setNome(secao.getDescricao());
+    return estabelecentoSecaoResponseDTO;
+    }
+
+    public static EstabelecimentoMetodoPagamentoResponseDTO toEstabeleciementoMetodoPagamentoResponse(MetodoPagamentoAceito metodoPagamentoAceito){
+        EstabelecimentoMetodoPagamentoResponseDTO estabelecimentoMetodoPagamentoResponse = new EstabelecimentoMetodoPagamentoResponseDTO();
+        estabelecimentoMetodoPagamentoResponse.setId(metodoPagamentoAceito.getMetodoPagamento().getId());
+        estabelecimentoMetodoPagamentoResponse.setNome(metodoPagamentoAceito.getMetodoPagamento().getDescricao());
+        return estabelecimentoMetodoPagamentoResponse;
+    }
+
+    public static EstabelecimentoAgendaResponseDTO toEstabelecimentoAgendaResponse(Agenda agenda){
+        EstabelecimentoAgendaResponseDTO estabelecimentoAgendaResponse = new EstabelecimentoAgendaResponseDTO();
+        estabelecimentoAgendaResponse.setDia(agenda.getDia());
+        estabelecimentoAgendaResponse.setHorarioInicio(agenda.getHorarioInicio());
+        estabelecimentoAgendaResponse.setHorarioFim(agenda.getHorarioFim());
+        return estabelecimentoAgendaResponse;
+    }
+
+    public static EstabelecimentoEnderecoResponseDTO toEstabelecimentoEnderecoResponse( Endereco endereco){
+        EstabelecimentoEnderecoResponseDTO estabelecimentoEnderecoResponse = new EstabelecimentoEnderecoResponseDTO();
+        estabelecimentoEnderecoResponse.setNumero(endereco.getNumero());
+        estabelecimentoEnderecoResponse.setBairro(endereco.getBairro());
+        estabelecimentoEnderecoResponse.setRua(endereco.getRua());
+        return estabelecimentoEnderecoResponse;
     }
 }

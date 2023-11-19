@@ -1,9 +1,5 @@
 package com.be.two.c.apibetwoc.controller.estabelecimento.dto;
 
-import com.be.two.c.apibetwoc.model.Agenda;
-import com.be.two.c.apibetwoc.model.Endereco;
-import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
-import com.be.two.c.apibetwoc.model.Secao;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -23,8 +19,8 @@ public class ResponseEstabelecimentoDto {
     private Boolean isAtivo;
     private Long idComerciante;
     private String cnpj;
-    private Endereco endereco;
-    private List<Agenda> agenda;
-    private List<MetodoPagamentoAceito> metodoPagamento;
-    private List<Secao> secao;
+    private EstabelecimentoEnderecoResponseDTO endereco;
+    private List<EstabelecimentoAgendaResponseDTO> agenda;
+    private List<EstabelecimentoMetodoPagamentoResponseDTO> metodoPagamento;
+    private List<EstabelecentoSecaoResponseDTO> secao;
 }

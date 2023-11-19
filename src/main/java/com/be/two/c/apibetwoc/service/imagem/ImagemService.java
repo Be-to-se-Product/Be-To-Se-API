@@ -6,7 +6,7 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.ImagemRepository;
 import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
-import com.be.two.c.apibetwoc.service.produto.mapper.ImagemMapper;
+import com.be.two.c.apibetwoc.service.imagem.mapper.ImagemMapper;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

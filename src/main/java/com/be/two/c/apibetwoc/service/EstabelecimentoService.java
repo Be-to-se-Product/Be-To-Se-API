@@ -35,16 +35,7 @@ public class EstabelecimentoService {
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
     }
 
-    public ResponseEstabelecimentoDto listarPorId2(Long id){
-        Estabelecimento estabelecimento = estabelecimentoRepository
-                .findById(id)
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
 
-        List<Agenda> agenda = agendaRepository.findByEstabelecimentoId(id);
-        List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);
-
-        return EstabelecimentoMapper.toResponseEstabelecimento(estabelecimento, agenda, metodos);
-    }
 
     public List<Estabelecimento> listarTodos(){
         return estabelecimentoRepository.findAll();
@@ -54,7 +45,7 @@ public class EstabelecimentoService {
         return estabelecimentoRepository.findBySegmento(segmento);
     }
 
-    @Transactional
+
     public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto cadastroEstabelecimentoDto){
         Comerciante comerciante = comercianteRepository
                 .findById(cadastroEstabelecimentoDto.getIdComerciante())

@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service.produto.mapper;
+package com.be.two.c.apibetwoc.service.imagem.mapper;
 
 import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.model.Produto;

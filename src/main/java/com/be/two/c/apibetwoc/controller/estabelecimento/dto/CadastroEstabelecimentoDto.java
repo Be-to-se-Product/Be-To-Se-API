@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class CadastroEstabelecimentoDto {
     @NotBlank
     private String nome;

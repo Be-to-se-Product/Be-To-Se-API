@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.controller.produto.dto.mapa;
 
 
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoMetodoPagamentoResponseDTO;
 import lombok.Data;
 
 import java.time.LocalDate;
