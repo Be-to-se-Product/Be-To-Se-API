@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.service;
 
+import com.be.two.c.apibetwoc.model.ItemVenda;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.model.Transacao;
 import com.be.two.c.apibetwoc.repository.TransacaoRepository;
@@ -87,6 +88,39 @@ public class HistoricoVendaService {
 
             outputStreamWriter.close();
             return byteArrayOutputStream.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] downloadCsv(Long idPedido) {
+        Transacao venda = transacaoRepository.findByPedidoId(idPedido);
+
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+
+            ICSVWriter csvWriter = new CSVWriterBuilder(outputStreamWriter)
+                    .withSeparator(';')
+                    .build();
+
+            String[] cabecalho = {"Nome", "Codigo SKU", "Preço", "Descrição", "Categoria","Seção"};
+            csvWriter.writeNext(cabecalho);
+
+            for (ItemVenda item : venda.getPedido().getItens()) {
+                Produto p = item.getProduto();
+
+                String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getCategoria(), p.getSecao().getDescricao()};
+
+                csvWriter.writeNext(linha);
+            }
+
+            csvWriter.close();
+            outputStreamWriter.close();
+            byte[] csvBytes = byteArrayOutputStream.toByteArray();
+
+            return csvBytes;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
