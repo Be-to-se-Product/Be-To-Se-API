@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ProdutoTagRepository extends JpaRepository<ProdutoTag, Long> {
     @Query("SELECT pt FROM ProdutoTag pt WHERE pt.produto.id =:id")
-    List<ProdutoTag> buscarPorProduto(Integer id);
+    List<ProdutoTag> buscarPorProduto(Long id);
 }

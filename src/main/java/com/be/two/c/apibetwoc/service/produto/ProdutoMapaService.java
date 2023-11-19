@@ -24,18 +24,10 @@ public class ProdutoMapaService{
 
     public List<Produto> retornarProdutos(Double latitude,Double longitude,Double distancia,String produto,String metodoPagamento){
         List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
-        System.out.println(distancia);
-        System.out.println(latitude);
-        System.out.println(longitude);
-        System.out.println(produto);
-        System.out.println(metodoPagamento);
-
         Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
         List<Produto> produtos = produtoRepository.findAll(estabelecimentoSpecification);
         produtos.stream().forEach(produto1 -> produto1.setImagens(imagemService.formatterImagensURI(produto1.getImagens())));
         return produtos;
     }
-
-
 
 }

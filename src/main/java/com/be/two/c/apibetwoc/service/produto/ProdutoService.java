@@ -66,7 +66,7 @@ public class ProdutoService {
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto, List<MultipartFile> imagens ) {
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
-        Produto produto = ProdutoMapper.of(cadastroProdutoDto,secao);
+        Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao);
         Produto produtoSalvo = produtoRepository.save(produto);
 
         if (cadastroProdutoDto.getTag() != null) {
@@ -91,11 +91,13 @@ public class ProdutoService {
 
 
     public Produto atualizarProduto(Long id, CadastroProdutoDto cadastroProdutoDto) {
-        Produto produto = buscarPorId(id);
+
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).get();
-        produto = ProdutoMapper.of(cadastroProdutoDto,secao);
-        produto.setSecao(secao);
-        produto.setId(produto.getId());
+
+        buscarPorId(id);
+
+        Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao,id);
+
 
         Produto produtoSalvo = produtoRepository.save(produto);
         List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produto.getId());

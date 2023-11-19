@@ -3,7 +3,7 @@ package com.be.two.c.apibetwoc.controller.historico.dto;
 import com.be.two.c.apibetwoc.model.ItemVenda;
 
 public record ItemPedidoHistoricoDto(
-        Integer id,
+        Long id,
         String nome,
         int quantidade,
         Double preco

@@ -19,7 +19,22 @@ import java.util.List;
 public class ProdutoMapper {
 
     private  static  HttpServletRequest request;
-    public static Produto of(CadastroProdutoDto cadastroProdutoDto,Secao secao){
+    public static Produto toProduto(CadastroProdutoDto cadastroProdutoDto,Secao secao,Long id){
+        Produto produto = new Produto();
+        produto.setId(id);
+        produto.setNome(cadastroProdutoDto.getNome());
+        produto.setCodigoSku(cadastroProdutoDto.getCodigoSku());
+        produto.setPreco(cadastroProdutoDto.getPreco());
+        produto.setDescricao(cadastroProdutoDto.getDescricao());
+        produto.setPrecoOferta(cadastroProdutoDto.getPrecoOferta());
+        produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
+        produto.setCategoria(cadastroProdutoDto.getCategoria());
+        produto.setIsAtivo(true);
+        produto.setSecao(secao);
+        return produto;
+    }
+
+    public static Produto toProduto(CadastroProdutoDto cadastroProdutoDto,Secao secao){
         Produto produto = new Produto();
         produto.setNome(cadastroProdutoDto.getNome());
         produto.setCodigoSku(cadastroProdutoDto.getCodigoSku());
@@ -33,23 +48,23 @@ public class ProdutoMapper {
         return produto;
     }
 
-    public static ProdutoMapaResponseDTO toProdutoMapaReponse(Produto produto){
 
+    public static ProdutoMapaResponseDTO toProdutoMapaReponse(Produto produto){
         ProdutoMapaResponseDTO produtoResponse = new ProdutoMapaResponseDTO();
-        List<AvaliacaoMapaResponse> avaliacao = produto.getAvaliacoes().stream().map(element->to(element)).toList();
+        List<AvaliacaoMapaResponse> avaliacao = produto.getAvaliacoes().stream().map(element->toAvaliacaoResponse(element)).toList();
         produtoResponse.setId(produto.getId());
         produtoResponse.setNome(produto.getNome());
         produtoResponse.setCategoria(produto.getCategoria());
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element->element.getQtdEstrela()).average().orElse(0));
-        produtoResponse.setEstabelecimento(to(produto.getSecao().getEstabelecimento()));
+        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento()));
         produtoResponse.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
         return produtoResponse;
     }
 
 
-    public static AvaliacaoMapaResponse to (Avaliacao avaliacao){
+    public static AvaliacaoMapaResponse toAvaliacaoResponse (Avaliacao avaliacao){
         AvaliacaoMapaResponse avaliacaoMapaResponse = new AvaliacaoMapaResponse();
         avaliacaoMapaResponse.setData(avaliacao.getDataCriacao());
         avaliacaoMapaResponse.setDescricao(avaliacao.getComentario());
@@ -57,18 +72,18 @@ public class ProdutoMapper {
         avaliacaoMapaResponse.setUsuario(avaliacao.getConsumidor().getNome());
         return avaliacaoMapaResponse;
     }
-    public static EstabelecimentoMapaResponse to(Estabelecimento estabelecimento){
+    public static EstabelecimentoMapaResponse toEstabelecimentoResponse(Estabelecimento estabelecimento){
         EstabelecimentoMapaResponse estabelecimentoMapaResponse = new EstabelecimentoMapaResponse();
-        List<AgendaResponseDTO> agenda = estabelecimento.getAgenda().stream().map(element->to(element)).toList();
+        List<AgendaResponseDTO> agenda = estabelecimento.getAgenda().stream().map(element->toAgendaResponse(element)).toList();
         estabelecimentoMapaResponse.setAgenda(agenda);
         estabelecimentoMapaResponse.setNome(estabelecimento.getNome());
         estabelecimentoMapaResponse.setId(estabelecimento.getId());
         estabelecimentoMapaResponse.setSegmento(estabelecimento.getSegmento());
         estabelecimentoMapaResponse.setDataCriacao(estabelecimento.getDataCriacao());
-        estabelecimentoMapaResponse.setEndereco(to(estabelecimento.getEndereco()));
+        estabelecimentoMapaResponse.setEndereco(toEnderecoResponse(estabelecimento.getEndereco()));
         estabelecimentoMapaResponse.setTelefone(estabelecimento.getTelefoneContato());
         estabelecimentoMapaResponse.setSite(estabelecimento.getReferenciaInstagram());
-        estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element->to(element.getMetodoPagamento())).toList());
+        estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element->toMetodoPagamentoResponse(element.getMetodoPagamento())).toList());
         estabelecimentoMapaResponse.setTempoCarro(null);
         estabelecimentoMapaResponse.setTempoPessoa(null);
         estabelecimentoMapaResponse.setTempoBike(null);
@@ -76,7 +91,7 @@ public class ProdutoMapper {
 
     }
 
-    public static AgendaResponseDTO to(Agenda agenda){
+    public static AgendaResponseDTO toAgendaResponse(Agenda agenda){
     AgendaResponseDTO agendaResponseDTO = new AgendaResponseDTO();
     agendaResponseDTO.setDia(agenda.getDia());
     agendaResponseDTO.setHorarioInicio(agenda.getHorarioInicio());
@@ -84,8 +99,7 @@ public class ProdutoMapper {
     return agendaResponseDTO;
     }
 
-    public static EnderecoResponseDTO to(Endereco endereco){
-
+    public static EnderecoResponseDTO toEnderecoResponse(Endereco endereco){
         EnderecoResponseDTO enderecoResponseDTO = new EnderecoResponseDTO();
         enderecoResponseDTO.setLatitude(endereco.getGeolocalizacaoX());
         enderecoResponseDTO.setLongitude(endereco.getGeolocalizacaoY());
@@ -97,7 +111,7 @@ public class ProdutoMapper {
 
     }
 
-    public static MetodoPagamentoMapaResponse to (MetodoPagamento metodoPagamento){
+    public static MetodoPagamentoMapaResponse toMetodoPagamentoResponse (MetodoPagamento metodoPagamento){
         MetodoPagamentoMapaResponse metodoPagamentoMapaResponse = new MetodoPagamentoMapaResponse();
         metodoPagamentoMapaResponse.setNome(metodoPagamento.getDescricao());
         metodoPagamentoMapaResponse.setId(metodoPagamento.getId());

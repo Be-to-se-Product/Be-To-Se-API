@@ -30,6 +30,7 @@ public class CadastroProdutoDto {
     private String categoria;
     @NotNull
     private Long secao;
+
     @Nullable
     private List<@Valid TagDTO> tag;
 

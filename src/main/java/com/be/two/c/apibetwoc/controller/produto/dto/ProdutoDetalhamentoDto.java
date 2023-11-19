@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProdutoDetalhamentoDto {
-    private Integer id;
+    private Long id;
     private String nome;
     private String codigoSku;
     private Double preco;

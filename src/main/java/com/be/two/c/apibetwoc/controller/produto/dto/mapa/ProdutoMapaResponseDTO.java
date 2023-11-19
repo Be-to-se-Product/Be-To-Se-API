@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class ProdutoMapaResponseDTO {
-    private Integer id;
+    private Long id;
     private String nome;
     private String categoria;
     private String descricao;
