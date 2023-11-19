@@ -1,7 +1,7 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.avaliacao.AvaliacaoDTO;
-import com.be.two.c.apibetwoc.dto.avaliacao.AvaliacaoMapper;
+import com.be.two.c.apibetwoc.controller.avaliacao.dto.AvaliacaoRequestDTO;
+import com.be.two.c.apibetwoc.controller.avaliacao.mapper.AvaliacaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Avaliacao;
 import com.be.two.c.apibetwoc.model.Consumidor;
@@ -9,6 +9,7 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.AvaliacaoRepository;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AvaliacaoService {
-    @Autowired
-    private AvaliacaoRepository avaliacaoRepository;
-    @Autowired
-    private ConsumidorRepository consumidorRepository;
-    @Autowired
-    private ProdutoRepository produtoRepository;
-    public Avaliacao publicar(AvaliacaoDTO avaliacaoDTO){
-        Consumidor consumidor = consumidorRepository.findById(avaliacaoDTO.getConsumidor()).orElseThrow(
+
+    private final AvaliacaoRepository avaliacaoRepository;
+
+    private final ConsumidorRepository consumidorRepository;
+
+    private final ProdutoRepository produtoRepository;
+
+    public Avaliacao publicar(AvaliacaoRequestDTO avaliacaoRequestDTO){
+        Consumidor consumidor = consumidorRepository.findById(avaliacaoRequestDTO.getConsumidor()).orElseThrow(
                 ()->new EntidadeNaoExisteException("Consumidor não encontrado")
         );
-        Produto produto = buscarProdutoPorId(avaliacaoDTO.getProduto());
-        Avaliacao avaliacao = AvaliacaoMapper.of(avaliacaoDTO);
+        Produto produto = buscarProdutoPorId(avaliacaoRequestDTO.getProduto());
+        Avaliacao avaliacao = AvaliacaoMapper.toAvaliacaoRequest(avaliacaoRequestDTO);
         LocalDate dataCriacao= LocalDate.now();
         LocalDateTime dataAtualizacao = LocalDateTime.now();
         avaliacao.setProduto(produto);

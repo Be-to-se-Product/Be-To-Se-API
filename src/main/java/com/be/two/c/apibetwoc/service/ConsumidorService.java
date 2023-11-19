@@ -1,14 +1,14 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.consumidor.ConsumidorCriacaoDto;
-import com.be.two.c.apibetwoc.dto.consumidor.ConsumidorMapper;
-import com.be.two.c.apibetwoc.dto.consumidor.ResponseConsumidorDto;
+import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorCriacaoDto;
+import com.be.two.c.apibetwoc.controller.consumidor.mapper.ConsumidorMapper;
+import com.be.two.c.apibetwoc.controller.consumidor.dto.ResponseConsumidorDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Consumidor;
-import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
+import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class ConsumidorService {
         Consumidor consumidor = ConsumidorMapper.of(consumidorCriacaoDto);
         consumidor.setUsuario(usuario);
         Consumidor consumidorSalvo = consumidorRepository.save(consumidor);
-        interesseService.cadastrar(consumidorSalvo.getId(), consumidorCriacaoDto.getInteresses());
+        //interesseService.cadastrar(consumidorSalvo.getId(), consumidorCriacaoDto.getInteresses());
         return ConsumidorMapper.of(consumidorSalvo);
     }
 

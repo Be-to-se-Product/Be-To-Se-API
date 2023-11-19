@@ -1,7 +1,7 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.pedido.ItemVendaCriacaoDto;
-import com.be.two.c.apibetwoc.dto.pedido.ItemVendaMapper;
+import com.be.two.c.apibetwoc.controller.pedido.dto.ItemVendaCriacaoDto;
+import com.be.two.c.apibetwoc.controller.pedido.dto.ItemVendaMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.model.ItemVenda;
@@ -9,7 +9,6 @@ import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
 import com.be.two.c.apibetwoc.repository.ItemVendaRepository;
-import com.be.two.c.apibetwoc.repository.PedidoRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
