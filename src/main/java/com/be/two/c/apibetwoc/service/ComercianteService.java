@@ -1,8 +1,8 @@
 package com.be.two.c.apibetwoc.service;
 
-import com.be.two.c.apibetwoc.dto.comerciante.ComercianteCriacaoDto;
-import com.be.two.c.apibetwoc.dto.comerciante.ComercianteMapper;
-import com.be.two.c.apibetwoc.dto.comerciante.ResponseComercianteDto;
+import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteCriacaoDto;
+import com.be.two.c.apibetwoc.controller.comerciante.mapper.ComercianteMapper;
+import com.be.two.c.apibetwoc.controller.comerciante.dto.ResponseComercianteDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Endereco;

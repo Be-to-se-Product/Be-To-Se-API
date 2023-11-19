@@ -1,15 +1,16 @@
 package com.be.two.c.apibetwoc.service.produto;
 
-import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.dto.TagDTO;
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
-import com.be.two.c.apibetwoc.service.ImagemService;
-import com.be.two.c.apibetwoc.service.NewsletterService;
 import com.be.two.c.apibetwoc.service.SecaoService;
+import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
+import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
+import com.be.two.c.apibetwoc.service.produto.mapper.ImagemMapper;
+import com.be.two.c.apibetwoc.util.TipoArquivo;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final NewsletterService newsletterService;
+
 
     private final ProdutoRepository produtoRepository;
     private final SecaoService secaoService;
@@ -33,7 +34,9 @@ public class ProdutoService {
     private final TagRepository tagRepository;
     private final ProdutoTagRepository produtoTagRepository;
     private final EstabelecimentoRepository estabelecimentoRepository;
-    private final ImagemService imagemService;
+    private final ArquivoService arquivoService;
+    private final ImagemRepository imagemRepository;
+
 
     public Produto buscarPorId(Long id) {
         return produtoRepository.findById(id).orElseThrow(
@@ -41,7 +44,7 @@ public class ProdutoService {
         );
     }
 
-    public List<ProdutoDetalhamentoDto> listarProdutos() {
+    public List<Produto> listarProdutos() {
         List<Produto> produtos = produtoRepository.findAll();
         int n = produtos.size();
 
@@ -54,23 +57,13 @@ public class ProdutoService {
                 }
             }
         }
-        return produtos.stream().map(produto -> {
-            ProdutoDetalhamentoDto dto = new ProdutoDetalhamentoDto(produto);
-            String imagemBase64  = produto.getImagens().stream()
-                    .map(imagem -> imagemService.converterParaBase64(imagem.getNomeImagem()))
-                    .findFirst().orElse(null);
-            dto.getImagens().add(imagemBase64);
-            return dto;
-        }).collect(Collectors.toList());
+        return produtos;
     }
 
-    public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto) {
+    public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto ) {
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
-        Produto produto = ProdutoMapper.of(cadastroProdutoDto);
-        produto.setSecao(secao);
-        produto.setIsPromocaoAtiva(false);
-
+        Produto produto = ProdutoMapper.of(cadastroProdutoDto,secao);
         Produto produtoSalvo = produtoRepository.save(produto);
 
         if (cadastroProdutoDto.getTag() != null) {
@@ -87,18 +80,19 @@ public class ProdutoService {
             }
         }
 
-        for (int i = 0; i < cadastroProdutoDto.getImagens().size(); i++){
-            imagemService.salvarImagem(cadastroProdutoDto.getImagens().get(i), "imagem" + (i + 1), produtoSalvo);
-        }
-
-        newsletterService.publicarNewsletter(produtoSalvo);
         return produtoSalvo;
+    }
+
+
+    public Imagem  cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo,Produto produto){
+        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo);
+        return imagemRepository.save(ImagemMapper.of(arquivo,produto));
     }
 
     public Produto atualizarProduto(Long id, CadastroProdutoDto cadastroProdutoDto) {
         Produto produto = buscarPorId(id);
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).get();
-        produto = ProdutoMapper.of(cadastroProdutoDto);
+        produto = ProdutoMapper.of(cadastroProdutoDto,secao);
         produto.setSecao(secao);
         produto.setId(produto.getId());
 

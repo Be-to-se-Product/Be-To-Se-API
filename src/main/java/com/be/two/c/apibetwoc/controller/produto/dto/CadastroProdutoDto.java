@@ -34,20 +34,6 @@ public class CadastroProdutoDto {
     private Long secao;
     @Nullable
     private List<@Valid TagDTO> tag;
-    @Nullable
-    private List<String> imagens;
-    /*
-    @Nullable
-    private String imagem1;
-    @Nullable
-    private String imagem2;
-    @Nullable
-    private String imagem3;
-    @Nullable
-    private String imagem4;
-    @Nullable
-    private String imagem5;
 
 
-     */
 }

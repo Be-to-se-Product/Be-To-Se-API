@@ -6,7 +6,7 @@ import com.be.two.c.apibetwoc.dto.estabelecimento.dto.CadastroEstabelecimentoDto
 import com.be.two.c.apibetwoc.dto.CoordenadaDto;
 import com.be.two.c.apibetwoc.dto.estabelecimento.mapper.EstabelecimentoMapper;
 import com.be.two.c.apibetwoc.dto.estabelecimento.dto.ResponseEstabelecimentoDto;
-import com.be.two.c.apibetwoc.dto.secao.SecaoMapper;
+import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Comerciante;

@@ -1,10 +1,7 @@
 package com.be.two.c.apibetwoc.dto.agenda;
 
-import com.be.two.c.apibetwoc.dto.secao.CadastroSecaoDto;
-import com.be.two.c.apibetwoc.dto.secao.ResponseSecaoDto;
 import com.be.two.c.apibetwoc.model.Agenda;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
-import com.be.two.c.apibetwoc.model.Secao;
 
 import java.util.ArrayList;
 import java.util.List;

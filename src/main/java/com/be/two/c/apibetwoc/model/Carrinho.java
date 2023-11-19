@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+
+@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Getter
-@Setter
 @EqualsAndHashCode(of = "id")
 public class Carrinho {
     @Id

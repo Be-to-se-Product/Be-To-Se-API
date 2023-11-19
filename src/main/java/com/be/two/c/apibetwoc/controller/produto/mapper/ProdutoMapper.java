@@ -2,14 +2,24 @@ package com.be.two.c.apibetwoc.controller.produto.mapper;
 
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.*;
 
+import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.model.*;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+
+@Data
+@RequiredArgsConstructor
 public class ProdutoMapper {
-    public static Produto of(CadastroProdutoDto cadastroProdutoDto){
+
+    private  static  HttpServletRequest request;
+    public static Produto of(CadastroProdutoDto cadastroProdutoDto,Secao secao){
         Produto produto = new Produto();
         produto.setNome(cadastroProdutoDto.getNome());
         produto.setCodigoSku(cadastroProdutoDto.getCodigoSku());
@@ -19,10 +29,11 @@ public class ProdutoMapper {
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
         produto.setIsAtivo(true);
+        produto.setSecao(secao);
         return produto;
     }
 
-    public static ProdutoMapaResponseDTO to(Produto produto){
+    public static ProdutoMapaResponseDTO toProdutoMapaReponse(Produto produto){
 
         ProdutoMapaResponseDTO produtoResponse = new ProdutoMapaResponseDTO();
         List<AvaliacaoMapaResponse> avaliacao = produto.getAvaliacoes().stream().map(element->to(element)).toList();
@@ -91,6 +102,23 @@ public class ProdutoMapper {
         metodoPagamentoMapaResponse.setId(metodoPagamento.getId());
         return metodoPagamentoMapaResponse;
     }
+
+    public static ProdutoDetalhamentoDto toProdutoDetalhamento (Produto produto){
+        ProdutoDetalhamentoDto produtoDto = new ProdutoDetalhamentoDto();
+        produtoDto.setId(produto.getId());
+        produtoDto.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
+        produtoDto.setCategoria(produto.getCategoria());
+        produtoDto.setSecao(SecaoMapper.toResponse(produto.getSecao()));
+        produtoDto.setNome(produto.getNome());
+        produtoDto.setCodigoSku(produto.getCodigoSku());
+        produtoDto.setPreco(produto.getPreco());
+        produtoDto.setDescricao(produto.getDescricao());
+        produtoDto.setPrecoOferta(produto.getPrecoOferta());
+        produtoDto.setCodigoBarras(produto.getCodigoBarras());
+        produtoDto.setIsAtivo(produto.getIsAtivo());
+        produtoDto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
+        return produtoDto;
+ }
 
 
 }
