@@ -15,6 +15,6 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
     @Transactional
     @Query("UPDATE Avaliacao a SET a.qtdEstrela = :novaNota, a.comentario = :novoComentario, a.dataAtualizacao = :dataEdicao  WHERE a.id = :id ")
     Avaliacao editarAvaliacao( Long id, Integer novaNota, String novoComentario, LocalDateTime dataEdicao);
-    @Query("SELECT a FROM Avaliacao a WHERE a.produto.id = :id")
+    @Query("SELECT a FROM Avaliacao a WHERE a.produto.id = :id ORDER BY a.dataCriacao ASC")
     List<Avaliacao>buscaPorProduto(Long id);
 }

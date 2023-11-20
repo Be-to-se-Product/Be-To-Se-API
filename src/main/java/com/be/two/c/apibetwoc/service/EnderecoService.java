@@ -31,7 +31,12 @@ public class EnderecoService {
         return enderecoRepository.save(endereco);
     }
 
-    public Endereco cadastrar(Endereco endereco){
+    public Endereco cadastrar(Endereco endereco) {
         return enderecoRepository.save(endereco);
+    }
+    public Endereco buscarPorId(Long id){
+        return enderecoRepository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Endereco não encontrado")
+        );
     }
 }

@@ -1,8 +1,11 @@
 package com.be.two.c.apibetwoc.controller.comerciante.mapper;
 
 import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteCriacaoDto;
+import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteEnderecoResponseDTO;
+import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteResponseDTO;
 import com.be.two.c.apibetwoc.controller.comerciante.dto.ResponseComercianteDto;
 import com.be.two.c.apibetwoc.model.Comerciante;
+import com.be.two.c.apibetwoc.model.Endereco;
 
 import java.time.LocalDate;
 
@@ -25,4 +28,24 @@ public class ComercianteMapper {
         responseComercianteDto.setEmail(comerciante.getUsuario().getEmail());
         return responseComercianteDto;
     }
+
+    public static ComercianteResponseDTO toComercianteResponseDTO(Comerciante comerciante){
+        ComercianteResponseDTO comercianteResponseDTO = new ComercianteResponseDTO();
+        comercianteResponseDTO.setCnpj(comerciante.getCnpj());
+        comercianteResponseDTO.setNome(comerciante.getNome());
+        comercianteResponseDTO.setRazaoSocial(comerciante.getRazaoSocial());
+        comercianteResponseDTO.setEmail(comerciante.getUsuario().getEmail());
+        comercianteResponseDTO.setEndereco(toComercianteEnderecoResponse(comerciante.getEndereco()));
+        return comercianteResponseDTO;
+    }
+
+    public static ComercianteEnderecoResponseDTO toComercianteEnderecoResponse(Endereco endereco){
+        ComercianteEnderecoResponseDTO comercianteEnderecoResponseDTO = new ComercianteEnderecoResponseDTO();
+        comercianteEnderecoResponseDTO.setCep(endereco.getCep());
+        comercianteEnderecoResponseDTO.setNumero(endereco.getNumero());
+        comercianteEnderecoResponseDTO.setBairro(endereco.getBairro());
+        comercianteEnderecoResponseDTO.setRua(endereco.getRua());
+        return comercianteEnderecoResponseDTO;
+    }
+
 }

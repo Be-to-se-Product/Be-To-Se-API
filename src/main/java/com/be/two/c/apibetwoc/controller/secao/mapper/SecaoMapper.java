@@ -1,5 +1,7 @@
 package com.be.two.c.apibetwoc.controller.secao.mapper;
 
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoEstabelecimentoResponseDTO;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoSecaoResponseDTO;
 import com.be.two.c.apibetwoc.controller.secao.dto.CadastroSecaoDto;
 import com.be.two.c.apibetwoc.controller.secao.dto.ResponseSecaoDto;
 import com.be.two.c.apibetwoc.controller.secao.dto.SecaoDetalhamentoDto;
@@ -36,10 +38,5 @@ public class SecaoMapper {
         return responseSecaoDto;
     }
 
-    public static SecaoDetalhamentoDto toResponse(Secao secao){
-        SecaoDetalhamentoDto secaoDetalhamentoDto = new SecaoDetalhamentoDto();
-        secaoDetalhamentoDto.setId(secao.getId());
-        secaoDetalhamentoDto.setDescricao(secao.getDescricao());
-        return secaoDetalhamentoDto;
-    }
+
 }

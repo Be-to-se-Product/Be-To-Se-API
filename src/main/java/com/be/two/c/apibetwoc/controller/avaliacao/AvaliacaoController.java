@@ -1,6 +1,6 @@
 package com.be.two.c.apibetwoc.controller.avaliacao;
-
 import com.be.two.c.apibetwoc.controller.avaliacao.dto.AvaliacaoRequestDTO;
+import com.be.two.c.apibetwoc.controller.avaliacao.dto.AvaliacaoResponseDTO;
 import com.be.two.c.apibetwoc.controller.avaliacao.mapper.AvaliacaoMapper;
 import com.be.two.c.apibetwoc.model.Avaliacao;
 import com.be.two.c.apibetwoc.service.AvaliacaoService;
@@ -18,18 +18,18 @@ public class AvaliacaoController {
     private AvaliacaoService avaliacaoService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Avaliacao>> avaliacaoPorProduto(@PathVariable Long id){
+    public ResponseEntity<List<AvaliacaoResponseDTO>> avaliacaoPorProduto(@PathVariable Long id){
         List<Avaliacao> avaliacoes = avaliacaoService.buscarAvaliacaoPorProduto(id);
 
         if (avaliacoes.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(avaliacoes);
+        return ResponseEntity.ok(avaliacoes.stream().map(AvaliacaoMapper::toAvaliacaoResponseDTO).toList());
     }
     @PostMapping
-    public ResponseEntity<Avaliacao>publicarAvaliacao(@Valid @RequestBody AvaliacaoRequestDTO avaliacaoRequestDTO){
+    public ResponseEntity<AvaliacaoResponseDTO>publicarAvaliacao(@Valid @RequestBody AvaliacaoRequestDTO avaliacaoRequestDTO){
 
-        return ResponseEntity.ok(avaliacaoService.publicar(avaliacaoRequestDTO));
+        return ResponseEntity.ok(AvaliacaoMapper.toAvaliacaoResponseDTO(avaliacaoService.publicar(avaliacaoRequestDTO)));
     }
     @PatchMapping("/{id}")
     public ResponseEntity<Void>editarAvaliacao(@RequestParam String comentario, @RequestParam Integer qtdEstrela, @PathVariable Long id){

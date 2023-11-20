@@ -1,7 +1,9 @@
 package com.be.two.c.apibetwoc.service;
 
+
 import com.be.two.c.apibetwoc.controller.avaliacao.dto.AvaliacaoRequestDTO;
 import com.be.two.c.apibetwoc.controller.avaliacao.mapper.AvaliacaoMapper;
+import com.be.two.c.apibetwoc.controller.avaliacao.dto.AvaliacaoResponseDTO;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Avaliacao;
 import com.be.two.c.apibetwoc.model.Consumidor;
@@ -9,16 +11,19 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.AvaliacaoRepository;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
+
 public class AvaliacaoService {
 
     private final AvaliacaoRepository avaliacaoRepository;
@@ -26,6 +31,8 @@ public class AvaliacaoService {
     private final ConsumidorRepository consumidorRepository;
 
     private final ProdutoRepository produtoRepository;
+
+    private final ImagemService imagemService;
 
     public Avaliacao publicar(AvaliacaoRequestDTO avaliacaoRequestDTO){
         Consumidor consumidor = consumidorRepository.findById(avaliacaoRequestDTO.getConsumidor()).orElseThrow(
@@ -44,12 +51,19 @@ public class AvaliacaoService {
     }
     public List<Avaliacao> buscarAvaliacaoPorProduto(Long id){
         Produto produto = buscarProdutoPorId(id);
-        return avaliacaoRepository.buscaPorProduto(id);
+        List<Avaliacao> avalicoes = produto.getAvaliacoes();
+        return avalicoes;
     }
     private Avaliacao buscarPorId(Long id){
         Avaliacao avaliacao = avaliacaoRepository.findById(id).orElseThrow(
                 ()->new EntidadeNaoExisteException("Avaliação não encontrada")
         );
+        Consumidor consumidor = avaliacao.getConsumidor();
+
+        if(consumidor.getImagem()!=null) {
+            consumidor.setImagem(imagemService.formatterImagensURI(consumidor.getImagem()));
+        }
+        avaliacao.setConsumidor(consumidor);
         return avaliacao;
     }
     private Produto buscarProdutoPorId(Long id){

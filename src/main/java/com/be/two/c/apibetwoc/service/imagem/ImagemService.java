@@ -28,9 +28,9 @@ public class ImagemService {
     }
 
 
-    public List<Imagem> formatterImagensURI(List<Imagem> imagens){
+    public Imagem formatterImagensURI(Imagem imagem){
         String dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/");
-        imagens.forEach(element-> element.setNomeReferencia(dominio +""+ element.getNomeReferencia()));
-        return imagens;
+        imagem.setNomeReferencia(dominio +""+ imagem.getNomeReferencia());
+        return imagem;
     }
 }

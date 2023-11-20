@@ -22,6 +22,6 @@ public class ProdutoDetalhamentoDto {
     private Boolean isAtivo;
     private Boolean isPromocaoAtiva;
     private List<String> imagens;
-    private SecaoDetalhamentoDto secao;
+    private ProdutoSecaoResponseDTO secao;
 
 }

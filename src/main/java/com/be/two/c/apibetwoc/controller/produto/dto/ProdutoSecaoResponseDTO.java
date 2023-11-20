@@ -1,6 +1,6 @@
-package com.be.two.c.apibetwoc.controller.secao.dto;
+package com.be.two.c.apibetwoc.controller.produto.dto;
 
-import com.be.two.c.apibetwoc.model.Secao;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SecaoDetalhamentoDto {
+public class ProdutoSecaoResponseDTO {
     private Long id;
     private String descricao;
-
+    private ProdutoEstabelecimentoResponseDTO estabelecimento;
 }
