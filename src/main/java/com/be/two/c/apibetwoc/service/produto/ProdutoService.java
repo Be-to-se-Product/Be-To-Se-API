@@ -9,7 +9,9 @@ import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.SecaoService;
+import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
+import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
@@ -36,6 +38,7 @@ public class ProdutoService {
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final ImagemService imagemService;
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
+    private final ImagemRepository imagemRepository;
 
 
     public Produto buscarPorId(Long id) {
@@ -72,6 +75,7 @@ public class ProdutoService {
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto, List<MultipartFile> imagens ) {
+        PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
         Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao);
@@ -90,7 +94,9 @@ public class ProdutoService {
                 produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
             }
         }
-        List<Imagem> imagensCadastradas = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produtoSalvo)).toList();
+
+        List<Imagem> imagensSalvasLocal = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produtoSalvo,imagensSalvas)).toList();
+        List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
         imagensCadastradas.stream().forEach(element->element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         produtoSalvo.setImagens(imagensCadastradas);
         return produtoSalvo;

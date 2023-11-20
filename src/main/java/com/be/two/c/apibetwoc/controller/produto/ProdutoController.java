@@ -6,12 +6,13 @@ import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
+import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
 import com.be.two.c.apibetwoc.service.produto.ProdutoService;
 
 
-
-
+import com.be.two.c.apibetwoc.util.FilaRequisicao;
+import com.be.two.c.apibetwoc.util.PilhaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ public class ProdutoController {
 
     private final ProdutoService produtoService;
     private final ProdutoMapaService produtoMapaService;
+    public FilaRequisicao filaRequisicao = new FilaRequisicao();
 
         @GetMapping
         public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
@@ -57,9 +59,9 @@ public class ProdutoController {
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoDetalhamentoDto> atualizarProduto(@PathVariable Long id, @Valid @RequestBody CadastroProdutoDto produto){
         Produto produtoAtualizado = produtoService.atualizarProduto(id, produto);
-//        ProdutoDetalhamentoDto dto = new ProdutoDetalhamentoDto(produtoAtualizado,);
 
-        return ResponseEntity.ok(new ProdutoDetalhamentoDto());
+
+        return ResponseEntity.ok(ProdutoMapper.toProdutoDetalhamento(produtoAtualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -140,6 +142,7 @@ public class ProdutoController {
 
         return ResponseEntity.ok(produtos.stream().map(ProdutoMapper::toProdutoMapaReponse).toList());
     }
+
 
 
 }
