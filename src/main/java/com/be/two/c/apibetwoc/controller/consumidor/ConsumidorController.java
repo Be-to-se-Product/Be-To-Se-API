@@ -1,14 +1,14 @@
 package com.be.two.c.apibetwoc.controller.consumidor;
-
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorCriacaoDto;
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ResponseConsumidorDto;
+import com.be.two.c.apibetwoc.controller.consumidor.mapper.ConsumidorMapper;
+import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.service.ConsumidorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
 
@@ -35,13 +35,15 @@ public class ConsumidorController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ResponseConsumidorDto> buscarPorId(Long id) {
+    public ResponseEntity<ResponseConsumidorDto> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(consumidorService.buscarPorId(id));
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Void> atualizar(){
-        return null;
+    public ResponseEntity<Void> atualizar(@Valid @RequestBody ConsumidorCriacaoDto consumidor, @PathVariable Long id){
+        Consumidor consumidorAtualizado = ConsumidorMapper.of(consumidor);
+        consumidorService.atualizar(consumidorAtualizado,id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")

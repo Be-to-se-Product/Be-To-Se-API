@@ -3,6 +3,8 @@ package com.be.two.c.apibetwoc.controller.produto.mapper;
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 
 import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoEstabelecimentoResponseDTO;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoSecaoResponseDTO;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.*;
 
 import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
@@ -123,7 +125,7 @@ public class ProdutoMapper {
         produtoDto.setId(produto.getId());
         produtoDto.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
         produtoDto.setCategoria(produto.getCategoria());
-        produtoDto.setSecao(SecaoMapper.toResponse(produto.getSecao()));
+        produtoDto.setSecao(toProdutoSecaoResponse(produto.getSecao()));
         produtoDto.setNome(produto.getNome());
         produtoDto.setCodigoSku(produto.getCodigoSku());
         produtoDto.setPreco(produto.getPreco());
@@ -132,8 +134,26 @@ public class ProdutoMapper {
         produtoDto.setCodigoBarras(produto.getCodigoBarras());
         produtoDto.setIsAtivo(produto.getIsAtivo());
         produtoDto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
+
         return produtoDto;
  }
+
+    public static ProdutoSecaoResponseDTO toProdutoSecaoResponse(Secao secao){
+        ProdutoSecaoResponseDTO secaoDetalhamentoDto = new ProdutoSecaoResponseDTO();
+        secaoDetalhamentoDto.setId(secao.getId());
+        secaoDetalhamentoDto.setDescricao(secao.getDescricao());
+        secaoDetalhamentoDto.setEstabelecimento(toProdutoEstabeleciementoResponse(secao.getEstabelecimento()));
+        return secaoDetalhamentoDto;
+    }
+
+
+    public static ProdutoEstabelecimentoResponseDTO toProdutoEstabeleciementoResponse(Estabelecimento estabelecimento){
+        ProdutoEstabelecimentoResponseDTO estabelecimentoResponse = new ProdutoEstabelecimentoResponseDTO();
+        estabelecimentoResponse.setId(estabelecimento.getId());
+        estabelecimentoResponse.setNome(estabelecimento.getNome());
+        estabelecimentoResponse.setIdMetodo(estabelecimento.getMetodoPagamentoAceito().stream().map(element->element.getId()).toList());
+        return estabelecimentoResponse;
+    }
 
 
 }

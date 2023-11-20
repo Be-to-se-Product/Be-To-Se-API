@@ -12,5 +12,5 @@ public class ResponseConsumidorDto{
         private String genero;
         private String celular;
         private LocalDate dataNascimento;
-
+        private String cpf;
 }

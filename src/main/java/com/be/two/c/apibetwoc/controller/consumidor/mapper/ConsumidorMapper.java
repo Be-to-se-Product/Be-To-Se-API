@@ -28,6 +28,7 @@ public class ConsumidorMapper {
        consumidorDto.setGenero(consumidor.getGenero());
        consumidorDto.setCelular(consumidor.getCelular());
        consumidorDto.setDataNascimento(consumidor.getDataNascimento());
+       consumidorDto.setCpf(consumidor.getCpf());
       return consumidorDto;
     }
 }

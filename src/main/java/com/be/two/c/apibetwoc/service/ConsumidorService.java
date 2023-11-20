@@ -38,12 +38,26 @@ public class ConsumidorService {
         return consumidores.stream()
                 .map(ConsumidorMapper::of).toList();
     }
+    public Consumidor existeConsumidor(Long id){
+        return consumidorRepository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("O consumidor procurado não existe")
+        );
+    }
 
     public ResponseConsumidorDto buscarPorId(Long id) {
         return consumidorRepository
                 .findById(id)
                 .map(ConsumidorMapper::of)
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum consumidor com esse id"));
+    }
+    public Consumidor atualizar(Consumidor consumidor, Long id){
+        Consumidor c = existeConsumidor(id);
+        consumidor.setId(id);
+        consumidor.setUsuario(c.getUsuario());
+        consumidor.setDataUltimaCompra(c.getDataUltimaCompra());
+        consumidor.setImagem(c.getImagem());
+        c = consumidorRepository.save(consumidor);
+        return c;
     }
 
     public void excluir(Long id) {
