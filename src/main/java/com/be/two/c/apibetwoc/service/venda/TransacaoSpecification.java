@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.venda;
 
 import com.be.two.c.apibetwoc.model.*;
 import jakarta.persistence.criteria.Join;
@@ -7,17 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 
 public class TransacaoSpecification {
-
-    public static Specification<Transacao> comIdPedido(Long idTransacao) {
-  return (root, query, criteriaBuilder) -> {
-
-
-      return criteriaBuilder
-              .equal(root
-                      .get("id"), idTransacao);
-
-  };
-    }
 
     public static Specification<Transacao> entreDatas(LocalDate dataUm, LocalDate dataDois) {
 

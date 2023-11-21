@@ -4,7 +4,7 @@ import com.be.two.c.apibetwoc.dto.historico.MetodoPagamentoHistoricoDto;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.controller.historico.dto.TransacaoHistoricoDto;
 import com.be.two.c.apibetwoc.model.Transacao;
-import com.be.two.c.apibetwoc.service.HistoricoVendaService;
+import com.be.two.c.apibetwoc.service.venda.HistoricoVendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;

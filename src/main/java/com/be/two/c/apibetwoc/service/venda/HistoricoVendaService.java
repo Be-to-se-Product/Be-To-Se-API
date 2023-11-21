@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.venda;
 
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
@@ -7,6 +7,8 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.model.Transacao;
 import com.be.two.c.apibetwoc.repository.MetodoPagamentoAceitoRepository;
 import com.be.two.c.apibetwoc.repository.TransacaoRepository;
+import com.be.two.c.apibetwoc.service.EstabelecimentoService;
+import com.be.two.c.apibetwoc.service.venda.TransacaoSpecification;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 import lombok.RequiredArgsConstructor;
@@ -44,22 +46,14 @@ public class HistoricoVendaService {
                                                  int size,
                                                  Long id) {
         Pageable pageable = PageRequest.of(page, size);
-        Specification<Transacao> specification = Specification.where(null);
 
-        if (de != null && ate != null) {
-            LocalDate deData = LocalDate.parse(de);
-            LocalDate ateData = LocalDate.parse(ate);
-            specification = specification.or(TransacaoSpecification.entreDatas(deData, ateData));
-        }
-        if (status != null) {
-            specification = specification.or(TransacaoSpecification.comStatus(status));
-        }
-        if (nomeMetodoPagamento != null) {
-            specification = specification.or(TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento));
-        }
-        System.out.println(specification);
-        System.out.println(id);
-        System.out.println(pageable);
+        LocalDate dataDe = de != null ? LocalDate.parse(de, DateTimeFormatter.ofPattern("dd-MM-yyyy")) : null;
+        LocalDate dataAte = ate != null ? LocalDate.parse(ate, DateTimeFormatter.ofPattern("dd-MM-yyyy")) : null;
+        Specification<Transacao> specification = Specification
+                .where(
+                TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento)
+                .and(TransacaoSpecification.comStatus(status)
+                .and(TransacaoSpecification.entreDatas(dataDe, dataAte))));
         return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(specification, pageable, id);
     }
 
