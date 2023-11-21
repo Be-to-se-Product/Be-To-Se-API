@@ -1,5 +1,8 @@
 package com.be.two.c.apibetwoc.util;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class FilaRequisicao {
     private FilaObj<Thread> fila;
     private final Object lock = new Object();
@@ -11,6 +14,7 @@ public class FilaRequisicao {
 
 
     public void entrarFila(){
+
         synchronized (lock) {
             Thread currentThread = Thread.currentThread();
             fila.insert(currentThread);
@@ -30,12 +34,13 @@ public class FilaRequisicao {
         }
     }
 
+
     public void sairFila() {
         synchronized (lock) {
             fila.poll();
             if (!fila.isEmpty()) {
                 lock.notify();
             }
+
         }
-    }
-}
+    }}
