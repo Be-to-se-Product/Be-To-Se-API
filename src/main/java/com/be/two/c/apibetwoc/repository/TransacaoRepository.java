@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.repository;
 
+import com.be.two.c.apibetwoc.model.StatusPedido;
 import com.be.two.c.apibetwoc.model.Transacao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 
-public interface TransacaoRepository extends JpaRepository<Transacao, Long>{
+public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
     Page<Transacao> findAll(Specification<Transacao> spec, Pageable pageable);
 
@@ -17,7 +18,7 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long>{
 
     Transacao findByPedidoId(Long id);
 
-    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(Pageable pageable, Long id);
-    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(Specification<Transacao> specification,Pageable pageable, Long id);
-
+    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNot(Pageable pageable,
+                                                                                                     Long id,
+                                                                                                     StatusPedido statusPedido);
 }

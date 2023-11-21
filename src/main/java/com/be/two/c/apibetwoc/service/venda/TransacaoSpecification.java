@@ -1,12 +1,24 @@
 package com.be.two.c.apibetwoc.service.venda;
 
 import com.be.two.c.apibetwoc.model.*;
-import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 
 public class TransacaoSpecification {
+
+    public static Specification<Transacao> comId(Long id) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (id == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.equal(root.
+                    join("pedido")
+                    .join("metodoPagamentoAceito")
+                    .join("estabelecimento")
+                    .get("id"), id);
+        };
+    }
 
     public static Specification<Transacao> entreDatas(LocalDate dataUm, LocalDate dataDois) {
 
@@ -21,16 +33,15 @@ public class TransacaoSpecification {
 
     }
 
-    public static Specification<Transacao> comStatus(String status) {
+    public static Specification<Transacao> comStatus(StatusPedido status) {
         if (status == null) {
             return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
         }
-        StatusPedido statusPedido = StatusPedido.valueOf(status.toUpperCase());
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder
                         .equal(root
                                 .join("pedido")
-                                .get("statusDescricao"), statusPedido);
+                                .get("statusDescricao"), status);
     }
 
     public static Specification<Transacao> comMetodoPagamento(String nomeMetodoPagamento) {
@@ -38,10 +49,11 @@ public class TransacaoSpecification {
             if (nomeMetodoPagamento == null) {
                 return criteriaBuilder.conjunction();
             }
-            Join<Transacao, Pedido> pedidoJoin = root.join("pedido");
-            Join<Pedido, MetodoPagamentoAceito> pedidoMetodoPagamentoAceitoJoin = pedidoJoin.join("metodoPagamentoAceito");
-            Join<MetodoPagamentoAceito, MetodoPagamento> metodoPagamentoAceitoMetodoPagamentoJoin = pedidoMetodoPagamentoAceitoJoin.join("metodoPagamento");
-            return criteriaBuilder.equal(metodoPagamentoAceitoMetodoPagamentoJoin.get("descricao"), nomeMetodoPagamento);
+            return criteriaBuilder.equal(root
+                    .join("pedido")
+                    .join("metodoPagamentoAceito")
+                    .join("metodoPagamento")
+                    .get("descricao"), nomeMetodoPagamento);
 
         };
     }

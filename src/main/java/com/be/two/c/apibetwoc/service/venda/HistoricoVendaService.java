@@ -1,14 +1,9 @@
 package com.be.two.c.apibetwoc.service.venda;
 
-import com.be.two.c.apibetwoc.model.Estabelecimento;
-import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
-import com.be.two.c.apibetwoc.model.ItemVenda;
-import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.model.Transacao;
+import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.MetodoPagamentoAceitoRepository;
 import com.be.two.c.apibetwoc.repository.TransacaoRepository;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
-import com.be.two.c.apibetwoc.service.venda.TransacaoSpecification;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +18,7 @@ import java.util.List;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 
 @Service
@@ -35,7 +31,9 @@ public class HistoricoVendaService {
 
     public Page<Transacao> getHistoricoVenda(int page, int size, Long id) {
         Pageable pageable = PageRequest.of(page, size);
-        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(pageable, id);
+        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNot(pageable,
+                id,
+                StatusPedido.PENDENTE);
     }
 
     public Page<Transacao> getHistoricoPorFiltro(String de,
@@ -49,18 +47,20 @@ public class HistoricoVendaService {
 
         LocalDate dataDe = de != null ? LocalDate.parse(de) : null;
         LocalDate dataAte = ate != null ? LocalDate.parse(ate) : null;
+        StatusPedido statusPedido = status != null ? getStatusPedido(status) : null;
         Specification<Transacao> specification = Specification
-                .where(
-                TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento)
-                .and(TransacaoSpecification.comStatus(status)
-                .and(TransacaoSpecification.entreDatas(dataDe, dataAte))));
-        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoId(specification, pageable, id);
+                .where(TransacaoSpecification.comId(id)
+                        .and(TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento))
+                        .and(TransacaoSpecification.comStatus(statusPedido)
+                                .and(TransacaoSpecification.entreDatas(dataDe, dataAte))));
+        return transacaoRepository.findAll(specification, pageable);
     }
 
     public List<MetodoPagamentoAceito> listarMetodosPagamentoAceitos(Long id) {
         Estabelecimento estabelecimento = estabelecimentoService.listarPorId(id);
         return metodoPagamentoAceitoRepository.findByEstabelecimento(estabelecimento);
     }
+
     public byte[] downloadTxt(Long idEstabelecimento) {
         List<Transacao> vendas = transacaoRepository
                 .findByPedidoMetodoPagamentoAceitoEstabelecimentoId(idEstabelecimento);
@@ -77,12 +77,12 @@ public class HistoricoVendaService {
 
             for (Transacao t : vendas) {
                 String corpo = "02 ";
-                corpo += String.format("%06d ",t.getPedido().getId());
-                corpo += String.format("%-10.10s ",t.getPedido().getDataHoraPedido().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                corpo += String.format("%-11.11s ",t.getPedido().getItens().get(0).getConsumidor().getCpf());
-                corpo += String.format("%-14.14s ",t.getPedido().getIsPagamentoOnline() ? "Pago pelo site" : "Pago na loja");
-                corpo += String.format("%-17.17s ",t.getPedido().getMetodoPagamentoAceito().getMetodoPagamento().getDescricao());
-                corpo += String.format("%10.2f",t.getValor());
+                corpo += String.format("%06d ", t.getPedido().getId());
+                corpo += String.format("%-10.10s ", t.getPedido().getDataHoraPedido().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                corpo += String.format("%-11.11s ", t.getPedido().getItens().get(0).getConsumidor().getCpf());
+                corpo += String.format("%-14.14s ", t.getPedido().getIsPagamentoOnline() ? "Pago pelo site" : "Pago na loja");
+                corpo += String.format("%-17.17s ", t.getPedido().getMetodoPagamentoAceito().getMetodoPagamento().getDescricao());
+                corpo += String.format("%10.2f", t.getValor());
 
                 outputStreamWriter.write(corpo + "\n");
             }
@@ -111,7 +111,7 @@ public class HistoricoVendaService {
                     .withSeparator(';')
                     .build();
 
-            String[] cabecalho = {"Nome", "Codigo SKU", "Preço", "Descrição", "Categoria","Seção"};
+            String[] cabecalho = {"Nome", "Codigo SKU", "Preço", "Descrição", "Categoria", "Seção"};
             csvWriter.writeNext(cabecalho);
 
             for (ItemVenda item : venda.getPedido().getItens()) {
@@ -131,6 +131,16 @@ public class HistoricoVendaService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private StatusPedido getStatusPedido(String status) {
+        return switch (status.toLowerCase(Locale.ROOT)) {
+            case "aguardando retirada" -> StatusPedido.AGUARDANDO_RETIRADA;
+            case "entregue" -> StatusPedido.ENTREGUE;
+            case "pendente" -> StatusPedido.PENDENTE;
+            case "preparo" -> StatusPedido.PREPARO;
+            case "cancelado" -> StatusPedido.CANCELADO;
+            default -> throw new IllegalStateException("Unexpected value: " + status);
+        };
     }
 }
