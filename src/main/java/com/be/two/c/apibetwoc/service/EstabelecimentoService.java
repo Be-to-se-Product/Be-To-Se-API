@@ -8,14 +8,8 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoM
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.ResponseEstabelecimentoDto;
 import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
-import com.be.two.c.apibetwoc.model.Agenda;
-import com.be.two.c.apibetwoc.model.Comerciante;
-import com.be.two.c.apibetwoc.model.Estabelecimento;
-import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
-import com.be.two.c.apibetwoc.repository.AgendaRepository;
-import com.be.two.c.apibetwoc.repository.ComercianteRepository;
-import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
-import com.be.two.c.apibetwoc.repository.SecaoRepository;
+import com.be.two.c.apibetwoc.model.*;
+import com.be.two.c.apibetwoc.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +25,7 @@ public class EstabelecimentoService {
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
     private final AgendaRepository agendaRepository;
     private final SecaoRepository secaoRepository;
+    private final EnderecoRepository enderecoRepository;
 
     public Estabelecimento listarPorId(Long id){
         return estabelecimentoRepository
@@ -38,16 +33,7 @@ public class EstabelecimentoService {
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
     }
 
-    public ResponseEstabelecimentoDto listarPorId2(Long id){
-        Estabelecimento estabelecimento = estabelecimentoRepository
-                .findById(id)
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
 
-        List<Agenda> agenda = agendaRepository.findByEstabelecimentoId(id);
-        List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);
-
-        return EstabelecimentoMapper.toResponseEstabelecimento(estabelecimento, agenda, metodos);
-    }
 
     public List<Estabelecimento> listarTodos(){
         return estabelecimentoRepository.findAll();
@@ -57,20 +43,27 @@ public class EstabelecimentoService {
         return estabelecimentoRepository.findBySegmento(segmento);
     }
 
+
     @Transactional
-    public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto estabelecimento){
+    public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto cadastroEstabelecimentoDto){
         Comerciante comerciante = comercianteRepository
-                .findById(estabelecimento.getIdComerciante())
+                .findById(cadastroEstabelecimentoDto.getIdComerciante())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
 
-        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(EstabelecimentoMapper.toEstabelecimento(estabelecimento, comerciante));
+        Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(cadastroEstabelecimentoDto, comerciante);
+        Endereco enderecoEntity = EstabelecimentoMapper.of(cadastroEstabelecimentoDto.getEnderecoDto());
 
-        metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimento.getIdMetodoPagamento());
 
-        agendaRepository.saveAll(AgendaMapper.of(estabelecimento.getAgenda(), estabelecimentoCriado));
+        Endereco endereco =  enderecoRepository.save(enderecoEntity);
 
-        secaoRepository.saveAll(SecaoMapper.of(estabelecimento.getSecao(), estabelecimentoCriado));
-
+        estabelecimento.setEndereco(endereco);
+        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
+        List<MetodoPagamentoAceito> metodoPagamentoAceitos = metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, cadastroEstabelecimentoDto.getIdMetodoPagamento());
+        List<Agenda> agenda =agendaRepository.saveAll(AgendaMapper.of(cadastroEstabelecimentoDto.getAgenda(), estabelecimentoCriado));
+        List<Secao> secao =  secaoRepository.saveAll(SecaoMapper.of(cadastroEstabelecimentoDto.getSecao(), estabelecimentoCriado));
+        estabelecimentoCriado.setAgenda(agenda);
+        estabelecimentoCriado.setSecao(secao);
+        estabelecimentoCriado.setMetodoPagamentoAceito(metodoPagamentoAceitos);
         return estabelecimentoCriado;
     }
 

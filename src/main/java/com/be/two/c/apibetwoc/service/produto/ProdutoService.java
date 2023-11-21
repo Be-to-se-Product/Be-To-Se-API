@@ -1,20 +1,20 @@
 package com.be.two.c.apibetwoc.service.produto;
 
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.TagDTO;
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.SecaoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
-import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
-import com.be.two.c.apibetwoc.service.produto.mapper.ImagemMapper;
+import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,12 +37,23 @@ public class ProdutoService {
     private final ProdutoTagRepository produtoTagRepository;
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final ImagemService imagemService;
+    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
+    private final ImagemRepository imagemRepository;
 
 
     public Produto buscarPorId(Long id) {
         return produtoRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Produto não encontrado")
         );
+    }
+    public ProdutoDetalhamentoDto buscarProdutoPorId(Long id){
+        Produto produto = buscarPorId(id);
+        ProdutoDetalhamentoDto pd = ProdutoMapper.toProdutoDetalhamento(produto);
+        List<MetodoPagamentoAceito> ma = metodoPagamentoAceitoService.findByEstabelecimentoId(pd.getSecao().getEstabelecimento().getId());
+        List<Long> listaIds = ma.stream()
+                .map(MetodoPagamentoAceito::getId).toList();
+        pd.getSecao().getEstabelecimento().setIdMetodo(listaIds);
+        return pd ;
     }
 
     public List<Produto> listarProdutos() {
@@ -64,6 +75,7 @@ public class ProdutoService {
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto, List<MultipartFile> imagens ) {
+        PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
         Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao);
@@ -82,8 +94,11 @@ public class ProdutoService {
                 produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
             }
         }
-        List<Imagem> imagensCadastradas = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produtoSalvo)).toList();
-        produtoSalvo.setImagens(imagemService.formatterImagensURI(imagensCadastradas));
+
+        List<Imagem> imagensSalvasLocal = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produtoSalvo,imagensSalvas)).toList();
+        List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
+        imagensCadastradas.stream().forEach(element->element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        produtoSalvo.setImagens(imagensCadastradas);
         return produtoSalvo;
     }
 

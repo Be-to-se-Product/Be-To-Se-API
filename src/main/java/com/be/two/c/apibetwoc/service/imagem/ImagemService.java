@@ -6,7 +6,8 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.ImagemRepository;
 import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
-import com.be.two.c.apibetwoc.service.produto.mapper.ImagemMapper;
+import com.be.two.c.apibetwoc.service.imagem.mapper.ImagemMapper;
+import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +23,15 @@ public class ImagemService {
     private final ImagemRepository imagemRepository;
     private final ArquivoService arquivoService;
     private final HttpServletRequest request;
-    public Imagem cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo, Produto produto){
-        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo);
-        return imagemRepository.save(ImagemMapper.of(arquivo,produto));
+    public Imagem cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo, Produto produto, PilhaObj<ArquivoSaveDTO> arquivos){
+        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo,arquivos);
+        return ImagemMapper.of(arquivo,produto);
     }
 
 
-    public List<Imagem> formatterImagensURI(List<Imagem> imagens){
+    public Imagem formatterImagensURI(Imagem imagem){
         String dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/");
-        imagens.forEach(element-> element.setNomeReferencia(dominio +""+ element.getNomeReferencia()));
-        return imagens;
+        imagem.setNomeReferencia(dominio +""+ imagem.getNomeReferencia());
+        return imagem;
     }
 }

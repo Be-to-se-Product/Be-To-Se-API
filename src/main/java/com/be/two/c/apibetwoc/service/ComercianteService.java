@@ -1,5 +1,4 @@
 package com.be.two.c.apibetwoc.service;
-
 import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteCriacaoDto;
 import com.be.two.c.apibetwoc.controller.comerciante.mapper.ComercianteMapper;
 import com.be.two.c.apibetwoc.controller.comerciante.dto.ResponseComercianteDto;
@@ -11,7 +10,6 @@ import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.ComercianteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -40,14 +38,13 @@ public class ComercianteService {
                 .map(ComercianteMapper :: of)
                 .toList();
     }
+    public Comerciante buscarPorId(Long id){
+        Comerciante comerciante = comercianteRepository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Comerciante não encontrado")
+        );
 
-    public ResponseComercianteDto buscarPorId(Long id){
-        return comercianteRepository
-                .findById(id)
-                .map(ComercianteMapper :: of)
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
+       return comerciante;
     }
-
     public void excluir(Long id){
         if(!comercianteRepository.existsById(id)){
             throw new EntidadeNaoExisteException("O comerciante procurado não existe.");

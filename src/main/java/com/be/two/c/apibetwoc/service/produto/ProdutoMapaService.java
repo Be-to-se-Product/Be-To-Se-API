@@ -26,7 +26,7 @@ public class ProdutoMapaService{
         List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
         Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
         List<Produto> produtos = produtoRepository.findAll(estabelecimentoSpecification);
-        produtos.stream().forEach(produto1 -> produto1.setImagens(imagemService.formatterImagensURI(produto1.getImagens())));
+        produtos.stream().forEach(produto1 -> produto1.setImagens(produto1.getImagens().stream().map(imagemService::formatterImagensURI).toList()));
         return produtos;
     }
 

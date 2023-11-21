@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Endereco;
+import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.repository.EnderecoRepository;
 import com.be.two.c.apibetwoc.util.ApiCepAberto;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,14 @@ public class EnderecoService {
         endereco.setGeolocalizacaoY(info.getLongitude());
 
         return enderecoRepository.save(endereco);
+    }
+
+    public Endereco cadastrar(Endereco endereco) {
+        return enderecoRepository.save(endereco);
+    }
+    public Endereco buscarPorId(Long id){
+        return enderecoRepository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Endereco não encontrado")
+        );
     }
 }

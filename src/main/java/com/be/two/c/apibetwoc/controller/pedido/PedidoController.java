@@ -5,6 +5,7 @@ import com.be.two.c.apibetwoc.controller.pedido.mapper.PedidoMapper;
 import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.service.ItemVendaService;
 import com.be.two.c.apibetwoc.service.PedidoService;
+import com.be.two.c.apibetwoc.util.FilaRequisicao;
 import com.be.two.c.apibetwoc.util.ListaObj;
 import com.be.two.c.apibetwoc.model.StatusPedido;
 import jakarta.validation.Valid;
@@ -22,10 +23,15 @@ public class PedidoController {
     private final PedidoService pedidoService;
     private final ItemVendaService itemVendaService;
 
+
+
     @PostMapping
     public ResponseEntity<ResponsePedidoDTO> cadastrar(@RequestBody @Valid List<ItemVendaCriacaoDto> itensVenda) {
+
         Pedido pedido = itemVendaService.cadastrarItensVenda(itensVenda);
+
         return ResponseEntity.ok(PedidoMapper.of(pedido));
+
     }
 
     @PatchMapping("{idPedido}/status")
