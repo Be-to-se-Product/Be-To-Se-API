@@ -47,8 +47,8 @@ public class HistoricoVendaService {
                                                  Long id) {
         Pageable pageable = PageRequest.of(page, size);
 
-        LocalDate dataDe = de != null ? LocalDate.parse(de, DateTimeFormatter.ofPattern("dd-MM-yyyy")) : null;
-        LocalDate dataAte = ate != null ? LocalDate.parse(ate, DateTimeFormatter.ofPattern("dd-MM-yyyy")) : null;
+        LocalDate dataDe = de != null ? LocalDate.parse(de) : null;
+        LocalDate dataAte = ate != null ? LocalDate.parse(ate) : null;
         Specification<Transacao> specification = Specification
                 .where(
                 TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento)
