@@ -21,16 +21,15 @@ public class HistoricoController {
     private final HistoricoVendaService historicoVendaService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<TransacaoHistoricoDto>> getHistoricoVenda(@PathVariable Long id,
+    public ResponseEntity<Page<TransacaoHistoricoDto>> getHistoricoVenda(@PathVariable Long id,
                                                                          @RequestParam(required = false) @DefaultValue(value = "0") int page,
                                                                          @RequestParam(required = false) @DefaultValue(value = "10") int size) {
-        List<Transacao> transacoes = historicoVendaService.getHistoricoVenda(page, size, id).toList();
+        Page<Transacao> transacoes = historicoVendaService.getHistoricoVenda(page, size, id);
         if (transacoes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<TransacaoHistoricoDto> historico = transacoes
-                .stream()
-                .map(TransacaoHistoricoDto::new).toList();
+        Page<TransacaoHistoricoDto> historico = transacoes
+                .map(TransacaoHistoricoDto::new);
         return ResponseEntity.ok(historico);
     }
 
