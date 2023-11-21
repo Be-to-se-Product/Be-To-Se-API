@@ -114,6 +114,6 @@ public class PedidoService {
     public void deletar(Long id) {
     Pedido pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new EntidadeNaoExisteException("Pedido não encontrado"));
-    pedido.setStatusDescricao(StatusPedido.PENDENTE);
+    pedido.setStatusDescricao(StatusPedido.CANCELADO);
     }
 }
