@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseConsumidorDto{
+      private Long id;
+      private String nome;
       private String token;
       private TipoUsuario tipoUsuario;
 }

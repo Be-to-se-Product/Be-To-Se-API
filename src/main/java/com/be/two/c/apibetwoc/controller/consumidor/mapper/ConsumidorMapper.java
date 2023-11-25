@@ -23,6 +23,8 @@ public class ConsumidorMapper {
 
     public static ResponseConsumidorDto of(Consumidor consumidor, UsuarioTokenDTO usuario){
        ResponseConsumidorDto consumidorDto = new ResponseConsumidorDto();
+       consumidorDto.setId(usuario.getId());
+       consumidorDto.setNome(consumidor.getNome());
        consumidorDto.setToken(usuario.getToken());
        consumidorDto.setTipoUsuario(consumidor.getUsuario().getTipoUsuario());
       return consumidorDto;
