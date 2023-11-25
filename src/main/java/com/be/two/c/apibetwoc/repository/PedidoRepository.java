@@ -15,7 +15,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     @Query("SELECT DISTINCT p FROM Pedido p " +
             "JOIN p.itens iv " +
-            "WHERE iv.produto.secao.estabelecimento.id = :idEstabelecimento")
+            "WHERE iv.produto.secao.estabelecimento.id = :idEstabelecimento ")
     List<Pedido> searchByEstabelecimento(Long idEstabelecimento);
 
 
