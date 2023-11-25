@@ -5,6 +5,10 @@ import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.model.Produto;
+import com.be.two.c.apibetwoc.service.Bicicleta;
+import com.be.two.c.apibetwoc.service.Carro;
+import com.be.two.c.apibetwoc.service.ITempoPercurso;
+import com.be.two.c.apibetwoc.service.Pessoa;
 import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
@@ -35,6 +39,7 @@ public class ProdutoController {
         @GetMapping
         public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
             List<Produto> produtos = produtoService.listarProdutos();
+
 
             if(produtos.isEmpty()) {
                 return ResponseEntity.noContent().build();
@@ -140,7 +145,9 @@ public class ProdutoController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(produtos.stream().map(ProdutoMapper::toProdutoMapaReponse).toList());
+        return ResponseEntity.ok(produtos.stream().map(element->{
+            return ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude);
+        }).toList());
     }
 
 

@@ -1,14 +1,15 @@
 package com.be.two.c.apibetwoc.controller.produto.mapper;
 
-import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.*;
 
-import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
-import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoEstabelecimentoResponseDTO;
-import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoSecaoResponseDTO;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.*;
 
 import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.model.*;
+import com.be.two.c.apibetwoc.service.Bicicleta;
+import com.be.two.c.apibetwoc.service.Carro;
+import com.be.two.c.apibetwoc.service.ITempoPercurso;
+import com.be.two.c.apibetwoc.service.Pessoa;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +51,20 @@ public class ProdutoMapper {
         return produto;
     }
 
+    public static TempoPercurssoDTO toTempoPercurso(Estabelecimento estabelecimento,Double x, Double y){
+        TempoPercurssoDTO tempoPercursso = new TempoPercurssoDTO();
+        List<ITempoPercurso> calculo = List.of(
+                new Carro(),
+                new Pessoa(),
+                new Bicicleta()
+        );
+        tempoPercursso.setCarro(calculo.get(0).calcularTempoDeslocamento(x,y,estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY()));
+        tempoPercursso.setPessoa(calculo.get(0).calcularTempoDeslocamento(x,y,estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY()));
+        tempoPercursso.setBicicleta(calculo.get(0).calcularTempoDeslocamento(x,y,estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY()));
+        return tempoPercursso;
+    }
 
-    public static ProdutoMapaResponseDTO toProdutoMapaReponse(Produto produto){
+    public static ProdutoMapaResponseDTO toProdutoMapaReponse(Produto produto, Double x, Double y){
         ProdutoMapaResponseDTO produtoResponse = new ProdutoMapaResponseDTO();
         List<AvaliacaoMapaResponse> avaliacao = produto.getAvaliacoes().stream().map(element->toAvaliacaoResponse(element)).toList();
         produtoResponse.setId(produto.getId());
@@ -60,8 +73,9 @@ public class ProdutoMapper {
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element->element.getQtdEstrela()).average().orElse(0));
-        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento()));
+        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
         produtoResponse.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
+
         return produtoResponse;
     }
 
@@ -74,7 +88,12 @@ public class ProdutoMapper {
         avaliacaoMapaResponse.setUsuario(avaliacao.getConsumidor().getNome());
         return avaliacaoMapaResponse;
     }
-    public static EstabelecimentoMapaResponse toEstabelecimentoResponse(Estabelecimento estabelecimento){
+    public static EstabelecimentoMapaResponse toEstabelecimentoResponse(Estabelecimento estabelecimento, Double x, Double y){
+        List<ITempoPercurso> tempoPercursos = List.of(
+                new Carro(),
+                new Pessoa(),
+                new Bicicleta());
+
         EstabelecimentoMapaResponse estabelecimentoMapaResponse = new EstabelecimentoMapaResponse();
         List<AgendaResponseDTO> agenda = estabelecimento.getAgenda().stream().map(element->toAgendaResponse(element)).toList();
         estabelecimentoMapaResponse.setAgenda(agenda);
@@ -86,9 +105,10 @@ public class ProdutoMapper {
         estabelecimentoMapaResponse.setTelefone(estabelecimento.getTelefoneContato());
         estabelecimentoMapaResponse.setSite(estabelecimento.getReferenciaInstagram());
         estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element->toMetodoPagamentoResponse(element.getMetodoPagamento())).toList());
-        estabelecimentoMapaResponse.setTempoCarro(null);
-        estabelecimentoMapaResponse.setTempoPessoa(null);
-        estabelecimentoMapaResponse.setTempoBike(null);
+
+        estabelecimentoMapaResponse.setTempoCarro(tempoPercursos.get(0).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY(),x,y));
+        estabelecimentoMapaResponse.setTempoPessoa(tempoPercursos.get(1).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY(),x,y));
+        estabelecimentoMapaResponse.setTempoBike(tempoPercursos.get(2).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY(),x,y));
         return estabelecimentoMapaResponse;
 
     }
@@ -108,7 +128,6 @@ public class ProdutoMapper {
         enderecoResponseDTO.setNumero(endereco.getNumero());
         enderecoResponseDTO.setRua(endereco.getRua());
         enderecoResponseDTO.setBairro(endereco.getBairro());
-
         return enderecoResponseDTO;
 
     }

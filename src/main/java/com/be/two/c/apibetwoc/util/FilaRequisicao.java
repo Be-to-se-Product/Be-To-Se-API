@@ -11,10 +11,7 @@ public class FilaRequisicao {
         this.fila = new FilaObj<>(10);
     }
 
-
-
     public void entrarFila(){
-
         synchronized (lock) {
             Thread currentThread = Thread.currentThread();
             fila.insert(currentThread);

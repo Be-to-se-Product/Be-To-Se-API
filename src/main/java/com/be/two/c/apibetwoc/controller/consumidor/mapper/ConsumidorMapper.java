@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.controller.consumidor.mapper;
 
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorCriacaoDto;
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ResponseConsumidorDto;
+import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioTokenDTO;
 import com.be.two.c.apibetwoc.model.Consumidor;
 
 import java.time.LocalDateTime;
@@ -20,15 +21,12 @@ public class ConsumidorMapper {
         return consumidor;
     }
 
-    public static ResponseConsumidorDto of(Consumidor consumidor){
+    public static ResponseConsumidorDto of(Consumidor consumidor, UsuarioTokenDTO usuario){
        ResponseConsumidorDto consumidorDto = new ResponseConsumidorDto();
-       consumidorDto.setId(consumidor.getId());
-       consumidorDto.setEmail(consumidor.getUsuario().getEmail());
+       consumidorDto.setId(usuario.getId());
        consumidorDto.setNome(consumidor.getNome());
-       consumidorDto.setGenero(consumidor.getGenero());
-       consumidorDto.setCelular(consumidor.getCelular());
-       consumidorDto.setDataNascimento(consumidor.getDataNascimento());
-       consumidorDto.setCpf(consumidor.getCpf());
+       consumidorDto.setToken(usuario.getToken());
+       consumidorDto.setTipoUsuario(consumidor.getUsuario().getTipoUsuario());
       return consumidorDto;
     }
 }

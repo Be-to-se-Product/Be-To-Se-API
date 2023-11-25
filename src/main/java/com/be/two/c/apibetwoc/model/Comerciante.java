@@ -18,9 +18,13 @@ public class Comerciante {
     private LocalDate dataCriacao;
     private LocalDate dataUltimoAcesso;
     private String razaoSocial;
+
+
     @OneToOne
     @JoinColumn(name = "fk_usuario")
     private Usuario usuario;
+
+
     @OneToOne
     @JoinColumn(name = "fk_endereco")
     private Endereco endereco;

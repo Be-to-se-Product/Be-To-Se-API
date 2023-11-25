@@ -11,6 +11,6 @@ public class Carro implements ITempoPercurso {
         Geodesic geod = Geodesic.WGS84;
         GeodesicData result = geod.Inverse(x, y, toX, toY);
 
-        return TimeUnit.MINUTES.toHours(Math.round(result.s12 / 3.0));
+        return Math.round(result.s12 / 5.0);
     }
 }
