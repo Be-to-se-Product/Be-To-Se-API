@@ -19,7 +19,7 @@ public class EstabelecimentoMapaResponse {
     private List<MetodoPagamentoMapaResponse> metodoPagamento;
     private String telefone;
     private String site;
-    private LocalDate tempoCarro;
-    private LocalDate tempoPessoa;
-    private LocalDate tempoBike;
+    private Long tempoCarro;
+    private Long tempoPessoa;
+    private Long tempoBike;
 }

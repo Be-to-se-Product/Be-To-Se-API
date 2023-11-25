@@ -69,9 +69,7 @@ public class ProdutoService {
                 }
             }
         }
-
         return produtos;
-
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto, List<MultipartFile> imagens ) {
