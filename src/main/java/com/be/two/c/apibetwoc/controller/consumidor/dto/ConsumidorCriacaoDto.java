@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,7 @@ public class ConsumidorCriacaoDto {
     @NotBlank
     public String nome;
     @NotBlank
+    @CPF
     private String cpf;
     @NotBlank
     private String celular;
