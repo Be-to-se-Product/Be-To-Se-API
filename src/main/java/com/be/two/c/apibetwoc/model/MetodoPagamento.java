@@ -1,11 +1,10 @@
 package com.be.two.c.apibetwoc.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -14,4 +13,7 @@ public class MetodoPagamento {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String descricao;
+    @OneToMany(mappedBy = "metodoPagamento")
+    private List<MetodoPagamentoAceito> metodosPagamentoAceitos;
+
 }

@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioLoginDTO;
 import com.be.two.c.apibetwoc.controller.usuario.mapper.UsuarioMapper;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioTokenDTO;
+import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.infra.security.jwt.GerenciadorTokenJwt;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.UsuarioRepository;
@@ -47,7 +48,7 @@ public class UsuarioService {
 
         Usuario usuarioAutenticado =
                 repository.findByEmail(usuarioLoginDTO.getEmail()).orElseThrow(
-                        () -> new RuntimeException("Usuário não encontrado"));
+                        () -> new EntidadeNaoExisteException("Usuário não encontrado"));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
