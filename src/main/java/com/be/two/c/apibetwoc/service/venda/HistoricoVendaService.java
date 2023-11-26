@@ -31,17 +31,18 @@ public class HistoricoVendaService {
 
     public Page<Transacao> getHistoricoVenda(int page, int size, Long id) {
         Pageable pageable = PageRequest.of(page, size);
-        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNot(pageable,
+        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNotAndPedidoStatusDescricaoNot(pageable,
                 id,
-                StatusPedido.PENDENTE);
+                StatusPedido.PENDENTE,
+                StatusPedido.AGUARDANDO_RETIRADA);
     }
 
     public Page<Transacao> getHistoricoPorFiltro(String de,
                                                  String ate,
                                                  String status,
                                                  String nomeMetodoPagamento,
-                                                 int page,
-                                                 int size,
+                                                 Integer page,
+                                                 Integer size,
                                                  Long id) {
         Pageable pageable = PageRequest.of(page, size);
 
@@ -51,8 +52,10 @@ public class HistoricoVendaService {
         Specification<Transacao> specification = Specification
                 .where(TransacaoSpecification.comId(id)
                         .and(TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento))
-                        .and(TransacaoSpecification.comStatus(statusPedido)
-                                .and(TransacaoSpecification.entreDatas(dataDe, dataAte))));
+                        .and(TransacaoSpecification.comStatus(statusPedido))
+                        .and(TransacaoSpecification.entreDatas(dataDe, dataAte))
+                        .and(TransacaoSpecification.comStatusDiferente(StatusPedido.PENDENTE))
+                        .and(TransacaoSpecification.comStatusDiferente(StatusPedido.AGUARDANDO_RETIRADA)));
         return transacaoRepository.findAll(specification, pageable);
     }
 
@@ -63,7 +66,7 @@ public class HistoricoVendaService {
 
     public byte[] downloadTxt(Long idEstabelecimento) {
         List<Transacao> vendas = transacaoRepository
-                .findByPedidoMetodoPagamentoAceitoEstabelecimentoId(idEstabelecimento);
+                .findByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNotAndPedidoStatusDescricaoNot(idEstabelecimento, StatusPedido.PENDENTE, StatusPedido.AGUARDANDO_RETIRADA);
 
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

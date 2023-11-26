@@ -57,4 +57,16 @@ public class TransacaoSpecification {
 
         };
     }
+
+    public static Specification<Transacao> comStatusDiferente(StatusPedido statusPedido){
+        return (root, query, criteriaBuilder) -> {
+            if (statusPedido == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.notEqual(root
+                    .join("pedido")
+                    .get("statusDescricao"), statusPedido);
+
+        };
+    }
 }

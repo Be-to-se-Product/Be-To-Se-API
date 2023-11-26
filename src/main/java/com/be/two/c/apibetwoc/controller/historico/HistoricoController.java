@@ -8,6 +8,8 @@ import com.be.two.c.apibetwoc.service.venda.HistoricoVendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +24,8 @@ public class HistoricoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Page<TransacaoHistoricoDto>> getHistoricoVenda(@PathVariable Long id,
-                                                                         @RequestParam(required = false) @DefaultValue(value = "0") int page,
-                                                                         @RequestParam(required = false) @DefaultValue(value = "10") int size) {
+                                                                         @RequestParam(required = false,defaultValue = "0") int  page,
+                                                                         @RequestParam(required = false,defaultValue = "10") int size) {
         Page<Transacao> transacoes = historicoVendaService.getHistoricoVenda(page, size, id);
         if (transacoes.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -39,8 +41,8 @@ public class HistoricoController {
                                                                              @RequestParam(required = false) String ate,
                                                                              @RequestParam(required = false) String status,
                                                                              @RequestParam(required = false) String metodoPagamento,
-                                                                             @RequestParam(required = false) @DefaultValue("0") int page,
-                                                                             @RequestParam(required = false) @DefaultValue("25") int size) {
+                                                                             @RequestParam(required = false,defaultValue = "0") int page,
+                                                                             @RequestParam(required = false,defaultValue = "10")  int size) {
 
         Page<Transacao> transacoes = historicoVendaService
                 .getHistoricoPorFiltro(de, ate, status, metodoPagamento, page, size, id);
@@ -62,5 +64,20 @@ public class HistoricoController {
                 .stream()
                 .map(MetodoPagamentoHistoricoDto::new).toList();
         return ResponseEntity.ok(metodosPagamentoDto);
+    }
+
+    @GetMapping("/{id}/download-txt")
+    public ResponseEntity<byte[]> downloadTxt(@PathVariable Long idEstabelecimento) {
+        try {
+            byte[] txtData = historicoVendaService.downloadTxt(idEstabelecimento);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transacoes_" + idEstabelecimento + ".txt");
+            headers.add(HttpHeaders.CONTENT_TYPE, "text/plain; charset=UTF-8");
+
+            return new ResponseEntity<>(txtData, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -14,11 +14,14 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
     Page<Transacao> findAll(Specification<Transacao> spec, Pageable pageable);
 
-    List<Transacao> findByPedidoMetodoPagamentoAceitoEstabelecimentoId(Long id);
+    List<Transacao> findByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNotAndPedidoStatusDescricaoNot(Long id,
+                                                                                                                             StatusPedido statusPedido,
+                                                                                                                             StatusPedido statusPedido2);
 
     Transacao findByPedidoId(Long id);
 
-    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNot(Pageable pageable,
-                                                                                                     Long id,
-                                                                                                     StatusPedido statusPedido);
+    Page<Transacao> findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNotAndPedidoStatusDescricaoNot(Pageable pageable,
+                                                                                                                                Long id,
+                                                                                                                                StatusPedido statusPedido,
+                                                                                                                                StatusPedido statusPedido2);
 }

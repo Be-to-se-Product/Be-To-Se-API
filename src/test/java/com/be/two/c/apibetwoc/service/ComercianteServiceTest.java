@@ -60,8 +60,10 @@ class ComercianteServiceTest {
         Comerciante comerciante = new Comerciante();
         comerciante.setId(1L);
         comerciante.setNome("Comerciante 1");
+        comerciante.setIsAtivo(true);
 
         Mockito.when(comercianteRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(comercianteRepository.getReferenceById(1L)).thenReturn(comerciante);
 
         comercianteService.excluir(1L);
 
