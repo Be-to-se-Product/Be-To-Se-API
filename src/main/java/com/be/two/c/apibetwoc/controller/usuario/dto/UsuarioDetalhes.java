@@ -1,5 +1,7 @@
 package com.be.two.c.apibetwoc.controller.usuario.dto;
 
+import com.be.two.c.apibetwoc.model.Comerciante;
+import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,8 +17,6 @@ public class UsuarioDetalhes implements UserDetails {
     private final String senha;
 
     private final TipoUsuario tipo;
-
-
 
     public UsuarioDetalhes(Usuario usuario) {
         this.id = usuario.getId();

@@ -69,13 +69,24 @@ public class ProdutoService {
                 }
             }
         }
-
         return produtos;
-
     }
 
-    public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto, List<MultipartFile> imagens ) {
+
+    public List<Imagem> cadastrarImagens(List<MultipartFile> imagens,Long id){
+
+        Produto produto =  produtoRepository.findById(id).orElseThrow(()->new EntidadeNaoExisteException("Produto não existe"));
+
         PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
+        List<Imagem> imagensSalvasLocal = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produto,imagensSalvas)).toList();
+        List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
+        imagensCadastradas.stream().forEach(element->element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        return imagensCadastradas;
+    }
+
+    public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto) {
+
+
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
         Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao);
@@ -95,10 +106,7 @@ public class ProdutoService {
             }
         }
 
-        List<Imagem> imagensSalvasLocal = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produtoSalvo,imagensSalvas)).toList();
-        List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
-        imagensCadastradas.stream().forEach(element->element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-        produtoSalvo.setImagens(imagensCadastradas);
+
         return produtoSalvo;
     }
 

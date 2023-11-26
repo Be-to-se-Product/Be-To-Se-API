@@ -41,11 +41,11 @@ public class ArquivoService {
     put("xlsx", MediaType.APPLICATION_OCTET_STREAM);
   }};
 
-  final Map<TipoArquivo, String> diretorios = new HashMap<>() {{
+  private final Map<TipoArquivo, String> diretorios = new HashMap<>() {{
     put(TipoArquivo.IMAGEM, "imagens/");
     put(TipoArquivo.DOCUMENTO, "documentos/");
   }};
-    final String DIRETORIO_PRINCIPAL = "./";
+    private final String DIRETORIO_PRINCIPAL = "./";
 
 
 
@@ -125,6 +125,9 @@ public class ArquivoService {
         Resource resource = null;
         try {
             resource = new UrlResource(url.toUri());
+          System.out.println(resource.getURI());
+
+          System.out.println(resource.getFilename());
         } catch (Exception e) {
             e.printStackTrace();
         }

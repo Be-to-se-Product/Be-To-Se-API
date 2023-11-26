@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.controller.produto.dto.mapa;
 
+import com.be.two.c.apibetwoc.service.ITempoPercurso;
 import lombok.Data;
 
 import java.util.List;
@@ -15,5 +16,7 @@ public class ProdutoMapaResponseDTO {
     private List<AvaliacaoMapaResponse> avaliacao;
     private Double mediaAvaliacao;
     private EstabelecimentoMapaResponse estabelecimento;
+
+
 
 }

@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.usuario;
 
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioLoginDTO;
@@ -8,6 +8,7 @@ import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.infra.security.jwt.GerenciadorTokenJwt;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.UsuarioRepository;
+import com.be.two.c.apibetwoc.service.usuario.exception.UsuarioConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,9 +33,10 @@ public class UsuarioService {
     private AuthenticationManager authenticationManager;
 
     public Usuario cadastrar(UsuarioCriacaoDTO usuarioCriacaoDTO){
+        if(repository.existsByEmail(usuarioCriacaoDTO.email())) throw new UsuarioConflictException("Email já cadastrado no sistema");
         final Usuario novoUsuario = UsuarioMapper.of(usuarioCriacaoDTO);
         String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
-            novoUsuario.setSenha(senhaCriptografada);
+        novoUsuario.setSenha(senhaCriptografada);
         return repository.save(novoUsuario);
     }
 

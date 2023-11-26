@@ -14,13 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class ImagemService {
 
-    private final ImagemRepository imagemRepository;
     private final ArquivoService arquivoService;
     private final HttpServletRequest request;
     public Imagem cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo, Produto produto, PilhaObj<ArquivoSaveDTO> arquivos){
@@ -31,6 +30,8 @@ public class ImagemService {
 
     public Imagem formatterImagensURI(Imagem imagem){
         String dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/");
+        System.out.println(request.getRequestURL());
+        System.out.println(request.getRequestURI());
         imagem.setNomeReferencia(dominio +""+ imagem.getNomeReferencia());
         return imagem;
     }

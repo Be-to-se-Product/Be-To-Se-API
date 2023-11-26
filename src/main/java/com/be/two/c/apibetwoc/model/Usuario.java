@@ -17,4 +17,10 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
 
+    @OneToOne(mappedBy = "usuario")
+    private Consumidor consumidor;
+
+    @OneToOne(mappedBy = "usuario")
+    private Comerciante comerciante;
+
 }
