@@ -272,3 +272,39 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     (false, 2, 4, 8, 6),
     (true, 1, 5, 9, 8),
     (false, 4, 5, 10, 10);
+
+    INSERT INTO pedido (is_pagamento_online, data_hora_pedido, data_hora_retirada, fk_metodo_aceito, nf, status_descricao) VALUES
+        (true, '2023-03-09 12:30:00', '2023-03-09 17:00:00', 1, '99999', 'CANCELADO'),
+        (false, '2023-03-13 09:45:00', '2023-03-13 14:30:00', 2, '101010', 'PENDENTE'),
+        (true, '2023-03-17 14:00:00', '2023-03-17 18:30:00', 3, '111111', 'CANCELADO'),
+        (false, '2023-03-21 10:30:00', '2023-03-21 15:15:00', 1, '121212', 'PENDENTE'),
+        (true, '2023-03-25 12:45:00', '2023-03-25 17:00:00', 1, '131313', 'CANCELADO'),
+        (false, '2023-03-29 09:00:00', '2023-03-29 13:45:00', 2, '141414', 'PENDENTE'),
+        (true, '2023-04-02 16:30:00', '2023-04-02 20:45:00', 2, '151515', 'CANCELADO'),
+        (false, '2023-04-06 11:15:00', '2023-04-06 15:30:00', 3, '161616', 'PENDENTE'),
+        (true, '2023-04-10 13:45:00', '2023-04-10 18:00:00', 2, '171717', 'CANCELADO'),
+        (false, '2023-04-14 08:30:00', '2023-04-14 12:45:00', 1, '181818', 'PENDENTE');
+
+    INSERT INTO transacao (is_estornado, taxa, valor, fk_pedido, data_transacao) VALUES
+           (false, 0.05, 30.00, 11, '2023-03-09'),
+            (false, 0.03, 15.00, 12, '2023-03-13'),
+            (false, 0.08, 40.00, 13, '2023-03-17'),
+            (false, 0.02, 25.00, 14, '2023-03-21'),
+            (false, 0.07, 35.00, 15, '2023-03-25'),
+            (false, 0.04, 20.00, 16, '2023-03-29'),
+            (false, 0.06, 30.00, 17, '2023-04-02'),
+            (false, 0.01, 10.00, 18, '2023-04-06'),
+            (false, 0.09, 45.00, 19, '2023-04-10'),
+            (false, 0.03, 15.00, 20, '2023-04-14');
+
+    INSERT INTO item_venda (is_promocao_ativa, quantidade, fk_consumidor, fk_pedido, fk_produto) VALUES
+            (true, 2, 1, 11, 1),
+            (false, 1, 1, 12, 3),
+            (true, 3, 2, 13, 2),
+            (false, 2, 2, 14, 3),
+            (true, 1, 3, 15, 2),
+            (false, 4, 3, 16, 3),
+            (true, 3, 4, 17, 1),
+            (false, 2, 4, 18, 2),
+            (true, 1, 5, 19, 3),
+            (false, 4, 5, 20, 3);
