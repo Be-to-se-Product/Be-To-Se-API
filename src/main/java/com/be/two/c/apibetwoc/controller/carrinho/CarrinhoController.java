@@ -16,8 +16,8 @@ import java.util.List;
 public class CarrinhoController {
     @Autowired
     private CarrinhoService carrinhoService;
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Carrinho>> carrinhoDoConsumidor(@PathVariable Long id){
+    @GetMapping
+    public ResponseEntity<List<Carrinho>> carrinhoDoConsumidor(@RequestParam Long id){
         List<Carrinho> carrinho = carrinhoService.carrinhoDoConsumidor(id);
         if (carrinho.isEmpty()){
             return ResponseEntity.noContent().build();

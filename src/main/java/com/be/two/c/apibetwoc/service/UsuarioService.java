@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioCriacaoDTO;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioLoginDTO;
 import com.be.two.c.apibetwoc.controller.usuario.mapper.UsuarioMapper;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioTokenDTO;
+import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.infra.security.jwt.GerenciadorTokenJwt;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.UsuarioRepository;
@@ -36,7 +37,14 @@ public class UsuarioService {
             novoUsuario.setSenha(senhaCriptografada);
         return repository.save(novoUsuario);
     }
-
+    public Usuario editar(String email, Long id){
+        Usuario existeUsuario = repository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Usuário não existe")
+        );
+        existeUsuario.setEmail(email);
+        existeUsuario.setId(id);
+        return repository.save(existeUsuario);
+    }
     public UsuarioTokenDTO autenticar(UsuarioLoginDTO usuarioLoginDTO){
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
