@@ -3,6 +3,7 @@ package com.be.two.c.apibetwoc.service;
 import com.be.two.c.apibetwoc.controller.pedido.dto.*;
 
 import com.be.two.c.apibetwoc.controller.pedido.mapper.PedidoMapper;
+import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.exception.ForbidenPedidoException;
 import com.be.two.c.apibetwoc.exception.NaoAutorizadoException;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
@@ -10,6 +11,7 @@ import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
 import com.be.two.c.apibetwoc.repository.MetodoPagamentoAceitoRepository;
 import com.be.two.c.apibetwoc.repository.PedidoRepository;
+import com.be.two.c.apibetwoc.repository.UsuarioRepository;
 import com.be.two.c.apibetwoc.util.ListaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PedidoService {
 
-
     private final PedidoRepository pedidoRepository;
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final AutenticacaoService autenticacaoService;
+    private final UsuarioRepository repository;
 
 
 
@@ -64,7 +66,9 @@ public class PedidoService {
         }
 
         if(status != null){
-            return pedidoRepository.searchByConsumidorEStatus(autenticacaoService.loadUsuarioDetails().getId(), status).stream().map(PedidoMapper::ofResponseUsuario).toList();
+            UsuarioDetalhes usuarioDetalhes = autenticacaoService.loadUsuarioDetails();
+            Usuario usuario =  repository.findById(usuarioDetalhes.getId()).get();
+            return pedidoRepository.searchByConsumidorEStatus(usuario.getConsumidor().getId(), status).stream().map(PedidoMapper::ofResponseUsuario).toList();
         }
 
         List <Pedido> pedidos = pedidoRepository.searchByConsumidor(autenticacaoService.loadUsuarioDetails().getId());
@@ -80,7 +84,6 @@ public class PedidoService {
             List<Pedido> pedidos = pedidoRepository.searchByEstabelecimento(idEstabelecimento);
             ListaObj<ResponsePedidoDTO> listaPedidos = new ListaObj<>(pedidos.size());
             for (Pedido pedido : pedidos) {
-
                 listaPedidos.adiciona(PedidoMapper.of(pedido));
             }
 
@@ -93,27 +96,11 @@ public class PedidoService {
        return  pedidoRepository.searchByEstabelecimentoEStatus(idEstabelecimento, status).stream().map(PedidoMapper::of).toList();
     }
 
-//    public ListaObj<ResponsePedidoDto> ordenacao(ListaObj<ResponsePedidoDto> listaPedidos) {
-//        int tamanho = listaPedidos.getTamanho();
-//
-//        for (int i = 0; i < tamanho - 1; i++) {
-//            for (int j = 0; j < tamanho - 1 - i; j++) {
-//                ResponsePedidoDto pedidoAtual = listaPedidos.getElemento(j);
-//                ResponsePedidoDto proximoPedido = listaPedidos.getElemento(j + 1);
-//
-//                if (pedidoAtual.getDataHoraPedido().isBefore(proximoPedido.getDataHoraPedido())) {
-//                    listaPedidos.troca(j, j + 1);
-//                }
-//            }
-//        }
-//
-//        return listaPedidos;
-//    }
 
 
     public void deletar(Long id) {
     Pedido pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new EntidadeNaoExisteException("Pedido não encontrado"));
-    pedido.setStatusDescricao(StatusPedido.PENDENTE);
+    pedido.setStatusDescricao(StatusPedido.CANCELADO);
     }
 }

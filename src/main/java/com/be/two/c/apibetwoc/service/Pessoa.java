@@ -11,6 +11,6 @@ public class Pessoa implements ITempoPercurso {
         Geodesic geod = Geodesic.WGS84;
         GeodesicData result = geod.Inverse(x, y, toX, toY);
 
-        return TimeUnit.MINUTES.toHours(Math.round(result.s12 / 0.8));
+        return Math.round(result.s12 / 0.8);
     }
 }

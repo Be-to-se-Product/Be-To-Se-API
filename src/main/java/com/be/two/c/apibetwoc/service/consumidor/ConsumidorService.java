@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.consumidor;
 
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorCriacaoDto;
 import com.be.two.c.apibetwoc.controller.consumidor.mapper.ConsumidorMapper;
@@ -8,7 +8,9 @@ import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
-import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
+import com.be.two.c.apibetwoc.service.InteresseService;
+import com.be.two.c.apibetwoc.service.usuario.UsuarioService;
+import com.be.two.c.apibetwoc.service.consumidor.exception.ConsumidorConflitoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,33 +25,29 @@ public class ConsumidorService {
     private final InteresseService interesseService;
 
 
-    public ResponseConsumidorDto cadastrar(ConsumidorCriacaoDto consumidorCriacaoDto) {
-        Usuario usuario = usuarioService.cadastrar(consumidorCriacaoDto.getUsuarioCriacaoDTO());
+    public Consumidor cadastrar(ConsumidorCriacaoDto consumidorCriacaoDto) {
+
+        if(consumidorRepository.existsByCelular(consumidorCriacaoDto.getCelular())) throw new ConsumidorConflitoException("Esse telefone esta em uso");
+
+        if(consumidorRepository.existsByCpf(consumidorCriacaoDto.getCpf())) throw new ConsumidorConflitoException("Esse CPF já esta em uso");
+
+
+        Usuario usuario = usuarioService.cadastrar(consumidorCriacaoDto.getUsuario());
         usuario.setTipoUsuario(TipoUsuario.CONSUMIDOR);
         Consumidor consumidor = ConsumidorMapper.of(consumidorCriacaoDto);
         consumidor.setUsuario(usuario);
         Consumidor consumidorSalvo = consumidorRepository.save(consumidor);
-        //interesseService.cadastrar(consumidorSalvo.getId(), consumidorCriacaoDto.getInteresses());
-        return ConsumidorMapper.of(consumidorSalvo);
+        return consumidorSalvo;
     }
 
-    public List<ResponseConsumidorDto> listar() {
-        final List<Consumidor> consumidores = consumidorRepository.findAll();
-        return consumidores.stream()
-                .map(ConsumidorMapper::of).toList();
-    }
+
     public Consumidor existeConsumidor(Long id){
         return consumidorRepository.findById(id).orElseThrow(
                 ()->new EntidadeNaoExisteException("O consumidor procurado não existe")
         );
     }
 
-    public ResponseConsumidorDto buscarPorId(Long id) {
-        return consumidorRepository
-                .findById(id)
-                .map(ConsumidorMapper::of)
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum consumidor com esse id"));
-    }
+
     public Consumidor atualizar(Consumidor consumidor, Long id){
         Consumidor c = existeConsumidor(id);
         consumidor.setId(id);

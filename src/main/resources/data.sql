@@ -235,17 +235,17 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     (false, '2023-03-28 08:30:00', '2023-03-28 12:45:00', 10, '88888', 'CANCELADO');
 
     -- Dados para a tabela 'transacao'
-    INSERT INTO transacao (is_estornado, taxa, valor, fk_pedido) VALUES
-    (false, 0.05, 30.00, 1),
-    (false, 0.03, 15.00, 2),
-    (false, 0.08, 40.00, 3),
-    (false, 0.02, 25.00, 4),
-    (false, 0.07, 35.00, 5),
-    (false, 0.04, 20.00, 6),
-    (false, 0.06, 30.00, 7),
-    (false, 0.01, 10.00, 8),
-    (false, 0.09, 45.00, 9),
-    (false, 0.03, 15.00, 10);
+    INSERT INTO transacao (is_estornado, taxa, valor, fk_pedido, data_transacao) VALUES
+    (false, 0.05, 30.00, 1, '2023-03-01'),
+    (false, 0.03, 15.00, 2, '2023-03-02'),
+    (false, 0.08, 40.00, 3, '2023-03-05'),
+    (false, 0.02, 25.00, 4, '2023-03-08'),
+    (false, 0.07, 35.00, 5, '2023-03-12'),
+    (false, 0.04, 20.00, 6, '2023-03-15'),
+    (false, 0.06, 30.00, 7, '2023-03-18'),
+    (false, 0.01, 10.00, 8, '2023-03-22'),
+    (false, 0.09, 45.00, 9, '2023-03-25'),
+    (false, 0.03, 15.00, 10, '2023-03-28');
 
     -- Dados para a tabela 'carrinho'
     INSERT INTO carrinho (quantidade, data_hora_alocacao, fk_consumidor, fk_produto) VALUES

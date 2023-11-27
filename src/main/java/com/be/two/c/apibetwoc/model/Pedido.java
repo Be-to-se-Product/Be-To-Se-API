@@ -26,4 +26,6 @@ public class Pedido {
     private MetodoPagamentoAceito metodoPagamentoAceito;
     @OneToMany(mappedBy = "pedido")
     private List<ItemVenda> itens;
+    @OneToMany(mappedBy = "pedido")
+    private List<Transacao> transacoes;
 }

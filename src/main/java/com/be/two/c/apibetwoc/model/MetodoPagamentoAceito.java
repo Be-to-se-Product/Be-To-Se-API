@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -21,4 +23,7 @@ public class MetodoPagamentoAceito {
     @ManyToOne
     @JoinColumn(name = "fk_metodo_pagamento")
     private MetodoPagamento metodoPagamento;
+
+    @OneToMany(mappedBy = "metodoPagamentoAceito")
+    List<Pedido> pedidos;
 }

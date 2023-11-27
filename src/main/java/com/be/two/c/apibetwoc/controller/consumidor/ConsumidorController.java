@@ -2,8 +2,13 @@ package com.be.two.c.apibetwoc.controller.consumidor;
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorCriacaoDto;
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ResponseConsumidorDto;
 import com.be.two.c.apibetwoc.controller.consumidor.mapper.ConsumidorMapper;
+import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioLoginDTO;
+import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioTokenDTO;
 import com.be.two.c.apibetwoc.model.Consumidor;
-import com.be.two.c.apibetwoc.service.ConsumidorService;
+import com.be.two.c.apibetwoc.model.Usuario;
+import com.be.two.c.apibetwoc.service.AutenticacaoService;
+import com.be.two.c.apibetwoc.service.consumidor.ConsumidorService;
+import com.be.two.c.apibetwoc.service.usuario.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,25 +23,15 @@ import java.util.List;
 public class ConsumidorController {
 
     private final ConsumidorService consumidorService;
+   private final UsuarioService usuarioService;
 
     @PostMapping
     public ResponseEntity<ResponseConsumidorDto> cadastrar(@Valid @RequestBody ConsumidorCriacaoDto consumidorCriacaoDto,
                                                            UriComponentsBuilder uriBuilder) {
-        ResponseConsumidorDto consumidor = consumidorService.cadastrar(consumidorCriacaoDto);
+        Consumidor consumidor = consumidorService.cadastrar(consumidorCriacaoDto);
+        UsuarioTokenDTO usuario =  usuarioService.autenticar(new UsuarioLoginDTO(consumidorCriacaoDto.getUsuario().email(),consumidorCriacaoDto.getUsuario().senha()));
         URI uri = uriBuilder.path("{id}").buildAndExpand(consumidor.getId()).toUri();
-        return ResponseEntity.created(uri).body(consumidor);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ResponseConsumidorDto>> listar() {
-        List<ResponseConsumidorDto> consumidores = consumidorService.listar();
-        if (consumidores.isEmpty()) return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(consumidores);
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<ResponseConsumidorDto> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(consumidorService.buscarPorId(id));
+        return ResponseEntity.created(uri).body(ConsumidorMapper.of(consumidor,usuario));
     }
 
     @PatchMapping("{id}")

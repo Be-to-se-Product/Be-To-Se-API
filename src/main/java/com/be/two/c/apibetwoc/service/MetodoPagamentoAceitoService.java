@@ -25,7 +25,8 @@ public class MetodoPagamentoAceitoService {
             MetodoPagamento metodo = metodoPagamentoRepository.findById(l)
                     .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum metodo de pagamento com esse id"));
 
-            metodosPagamentos.add(metodoPagamentoAceitoRepository.save(new MetodoPagamentoAceito(null, estabelecimento, metodo)));
+            metodoPagamentoAceitoRepository.save(new MetodoPagamentoAceito(null, estabelecimento, metodo,null));
+            metodosPagamentos.add(metodoPagamentoAceitoRepository.save(new MetodoPagamentoAceito(null, estabelecimento, metodo, null)));
         }
         return metodosPagamentos;
     }
