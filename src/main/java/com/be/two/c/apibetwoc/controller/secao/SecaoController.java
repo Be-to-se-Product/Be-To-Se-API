@@ -1,6 +1,8 @@
 package com.be.two.c.apibetwoc.controller.secao;
 
 import com.be.two.c.apibetwoc.controller.secao.dto.CadastroSecaoDto;
+import com.be.two.c.apibetwoc.controller.secao.dto.ResponseSecaoDto;
+import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.model.Secao;
 import com.be.two.c.apibetwoc.service.SecaoService;
 import jakarta.validation.Valid;
@@ -17,12 +19,12 @@ public class SecaoController {
     private final SecaoService secaoService;
 
     @GetMapping
-    public ResponseEntity<List<Secao>> listarSecoes(){
+    public ResponseEntity<List<ResponseSecaoDto>> listarSecoes(){
         List<Secao> secoes = secaoService.listarSecoes();
 
         return secoes.isEmpty()
                 ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(secoes);
+                : ResponseEntity.status(200).body(secoes.stream().map(SecaoMapper::of).toList());
     }
 
     @GetMapping("/{id}")
