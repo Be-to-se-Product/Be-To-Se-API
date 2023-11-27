@@ -1,9 +1,6 @@
 package com.be.two.c.apibetwoc.controller.comerciante.mapper;
 
-import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteCriacaoDto;
-import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteEnderecoResponseDTO;
-import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteResponseDTO;
-import com.be.two.c.apibetwoc.controller.comerciante.dto.ResponseComercianteDto;
+import com.be.two.c.apibetwoc.controller.comerciante.dto.*;
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Endereco;
 
@@ -20,7 +17,14 @@ public class ComercianteMapper {
         comerciante.setRazaoSocial(comercianteCriacaoDto.getRazaoSocial());
         return comerciante;
     }
-
+    public static Comerciante of(ComercianteAtualizarDTO dto){
+        Comerciante comerciante = new Comerciante();
+        comerciante.setNome(dto.getNome());
+        comerciante.setCnpj(dto.getCnpj());
+        comerciante.setDataUltimoAcesso(LocalDate.now());
+        comerciante.setRazaoSocial(dto.getRazaoSocial());
+        return comerciante;
+    }
     public static ResponseComercianteDto of(Comerciante comerciante){
         ResponseComercianteDto responseComercianteDto = new ResponseComercianteDto();
         responseComercianteDto.setId(comerciante.getId());
