@@ -1,4 +1,5 @@
 package com.be.two.c.apibetwoc.service;
+import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.comerciante.dto.ComercianteCriacaoDto;
 import com.be.two.c.apibetwoc.controller.comerciante.mapper.ComercianteMapper;
 import com.be.two.c.apibetwoc.controller.comerciante.dto.ResponseComercianteDto;
@@ -31,7 +32,20 @@ public class ComercianteService {
 
         return comercianteRepository.save(comerciante);
     }
+    public Comerciante editar(ComercianteAtualizarDTO dto, Long id){
+        Comerciante c = buscarPorId(id);
+        Usuario usuario = usuarioService.editar(dto.getEmail(), id);
+        usuario.setTipoUsuario(TipoUsuario.COMERCIANTE);
+        Endereco endereco = enderecoService.editar(dto.getCep(), id, dto.getNumero());
+        Comerciante comerciante = ComercianteMapper.of(dto);
+        comerciante.setUsuario(usuario);
+        comerciante.setEndereco(endereco);
+        comerciante.setIsAtivo(true);
+        comerciante.setDataCriacao(c.getDataCriacao());
+        comerciante.setId(id);
 
+        return comercianteRepository.save(comerciante);
+    }
     public List<ResponseComercianteDto> listar(){
         return comercianteRepository
                 .findAll()

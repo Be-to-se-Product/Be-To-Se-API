@@ -39,7 +39,6 @@ public class UsuarioService {
         novoUsuario.setSenha(senhaCriptografada);
         return repository.save(novoUsuario);
     }
-
     public UsuarioTokenDTO autenticar(UsuarioLoginDTO usuarioLoginDTO){
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
@@ -55,5 +54,13 @@ public class UsuarioService {
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         return UsuarioMapper.of(usuarioAutenticado, token);
+    }
+    public Usuario editar(String email, Long id){
+        Usuario existeUsuario = repository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Usuário não existe")
+        );
+        existeUsuario.setEmail(email);
+        existeUsuario.setId(id);
+        return repository.save(existeUsuario);
     }
 }
