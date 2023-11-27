@@ -10,11 +10,13 @@ import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,8 @@ public class EstabelecimentoService {
     private final AgendaRepository agendaRepository;
     private final SecaoRepository secaoRepository;
     private final EnderecoRepository enderecoRepository;
+    private final AutenticacaoService autenticacaoService;
+    private final UsuarioRepository usuarioRepository;
 
     public Estabelecimento listarPorId(Long id){
         return estabelecimentoRepository
@@ -46,8 +50,11 @@ public class EstabelecimentoService {
 
     @Transactional
     public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto cadastroEstabelecimentoDto){
+        Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
+        Optional<Comerciante> optionalComerciante = Optional.ofNullable(usuario.getComerciante());
+
         Comerciante comerciante = comercianteRepository
-                .findById(cadastroEstabelecimentoDto.getIdComerciante())
+                .findById(optionalComerciante.orElseThrow(EntityNotFoundException::new).getId())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
 
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(cadastroEstabelecimentoDto, comerciante);

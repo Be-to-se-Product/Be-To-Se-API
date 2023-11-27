@@ -25,8 +25,7 @@ public class CadastroEstabelecimentoDto {
     private String referenciaFacebook;
     @Email
     private String emailContato;
-    @NotNull
-    private Long idComerciante;
+
     @NotNull
     private EnderacoCricaoEstabelecimentoDto enderecoDto;
     @NotNull
