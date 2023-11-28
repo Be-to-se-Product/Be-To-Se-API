@@ -202,9 +202,9 @@ public class ProdutoService {
         return produtoRepository.findByIsPromocaoAtivaTrue();
     }
 
-    public List<Produto> uploadCsv(MultipartFile file, String secaoSelecionada) {
+    public List<Produto> uploadCsv(MultipartFile file, Long secaoSelecionada) {
         List<Produto> produtos = new ArrayList<>();
-        Secao secao = secaoService.listarSecaoPorDescricao(secaoSelecionada);
+        Secao secao = secaoService.listarPorId(secaoSelecionada);
 
         try {
             CSVParser parser = new CSVParserBuilder()
@@ -242,6 +242,42 @@ public class ProdutoService {
         }
 
         return produtos;
+    }
+
+    public List<Produto> uploadTxt (MultipartFile file, Long secaoId){
+        List<Produto> produtos = new ArrayList<>();
+        Secao secao = secaoService.listarPorId(secaoId);
+
+        try {
+            InputStreamReader reader = new InputStreamReader(file.getInputStream());
+            BufferedReader entrada = new BufferedReader(reader);
+
+            String registro = entrada.readLine();
+
+            while (registro != null){
+                if (registro.substring(0, 2).equals("02")){
+                    Produto produto = new Produto();
+
+                    produto.setNome(registro.substring(2, 22));
+                    produto.setCodigoSku(registro.substring(22, 32));
+                    produto.setPreco(Double.valueOf(registro.substring(32, 38)));
+                    produto.setDescricao(registro.substring(38, 68));
+                    produto.setPrecoOferta(Double.valueOf(registro.substring(68, 74)));
+                    produto.setCodigoBarras(registro.substring(74, 87));
+                    produto.setCategoria(registro.substring(87, 107));
+
+                    Produto produtoCriado = produtoRepository.save(produto);
+                    produtos.add(produtoCriado);
+                }
+
+                registro = entrada.readLine();
+            }
+
+            entrada.close();
+            return produtos;
+        } catch (IOException e){
+            throw new RuntimeException("Falha ao processar arquivo");
+        }
     }
 
     public byte[] downloadCsv(Long idEstabelecimento) {

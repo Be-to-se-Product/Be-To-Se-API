@@ -137,7 +137,7 @@ public class ProdutoController {
 
 
     @PostMapping("/upload-csv")
-    public ResponseEntity<List<ProdutoDetalhamentoDto>> uploadCsv(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao")String secao){
+    public ResponseEntity<List<ProdutoDetalhamentoDto>> uploadCsv(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao") Long secao){
         if(file.isEmpty()){
             return ResponseEntity.status(400).build();
         }
@@ -158,6 +158,14 @@ public class ProdutoController {
         }).toList());
     }
 
-
+    @PostMapping("/upload-txt")
+    public ResponseEntity<List<ProdutoDetalhamentoDto>> uploadTxt(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao") Long secao){
+            if (file.isEmpty()){
+                return ResponseEntity.status(400).build();
+            }
+            List<Produto> produtos = produtoService.uploadTxt(file, secao);
+            List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
+            return ResponseEntity.status(201).body(dtos);
+    }
 
 }

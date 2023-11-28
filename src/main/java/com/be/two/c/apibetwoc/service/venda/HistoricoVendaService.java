@@ -68,6 +68,8 @@ public class HistoricoVendaService {
         List<Transacao> vendas = transacaoRepository
                 .findByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNotAndPedidoStatusDescricaoNot(idEstabelecimento, StatusPedido.PENDENTE, StatusPedido.AGUARDANDO_RETIRADA);
 
+        Estabelecimento estabelecimento = estabelecimentoService.listarPorId(idEstabelecimento);
+
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
@@ -78,8 +80,15 @@ public class HistoricoVendaService {
 
             outputStreamWriter.write(header + "\n");
 
+            String corpoComerciante = "02 ";
+            corpoComerciante += String.format("%06d ", estabelecimento.getId());
+            corpoComerciante += String.format("%-20.20s", estabelecimento.getNome());
+            corpoComerciante += String.format("%-14.14s", estabelecimento.getComerciante().getCnpj());
+
+            outputStreamWriter.write(corpoComerciante + "\n");
+
             for (Transacao t : vendas) {
-                String corpo = "02 ";
+                String corpo = "03 ";
                 corpo += String.format("%06d ", t.getPedido().getId());
                 corpo += String.format("%-10.10s ", t.getPedido().getDataHoraPedido().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
                 corpo += String.format("%-11.11s ", t.getPedido().getItens().get(0).getConsumidor().getCpf());
