@@ -217,6 +217,7 @@ public class ProdutoService {
                 produto.setIsAtivo(true);
                 produto.setIsPromocaoAtiva(false);
                 produto.setSecao(secao);
+                produto.setImagens(new ArrayList<>());
 
                 produtos.add(produto);
             }
@@ -249,7 +250,7 @@ public class ProdutoService {
             csvWriter.writeNext(cabecalho);
 
             for (Produto p : produtos) {
-                String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getPrecoOferta().toString(), p.getCodigoBarras(), p.getCategoria(), p.getIsAtivo() ? "Ativo" : "Inativo", p.getIsPromocaoAtiva() ? "Ativo" : "Inativo", p.getSecao().getDescricao()};
+                String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getPrecoOferta() != null ? p.getPrecoOferta().toString() : "0,00", p.getCodigoBarras(), p.getCategoria(), p.getIsAtivo() ? "Ativo" : "Inativo", p.getIsPromocaoAtiva() ? "Ativo" : "Inativo", p.getSecao().getDescricao()};
 
                 csvWriter.writeNext(linha);
             }

@@ -125,7 +125,6 @@ public class ProdutoController {
         if(file.isEmpty()){
             return ResponseEntity.status(400).build();
         }
-
         List<Produto> produtos = produtoService.uploadCsv(file, secaoId);
         List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
 
