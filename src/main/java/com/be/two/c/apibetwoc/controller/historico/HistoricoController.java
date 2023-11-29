@@ -67,12 +67,12 @@ public class HistoricoController {
     }
 
     @GetMapping("/{id}/download-txt")
-    public ResponseEntity<byte[]> downloadTxt(@PathVariable Long idEstabelecimento) {
+    public ResponseEntity<byte[]> downloadTxt(@PathVariable Long id) {
         try {
-            byte[] txtData = historicoVendaService.downloadTxt(idEstabelecimento);
+            byte[] txtData = historicoVendaService.downloadTxt(id);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transacoes_" + idEstabelecimento + ".txt");
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transacoes_" + id + ".txt");
             headers.add(HttpHeaders.CONTENT_TYPE, "text/plain; charset=UTF-8");
 
             return new ResponseEntity<>(txtData, headers, HttpStatus.OK);
