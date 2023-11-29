@@ -33,8 +33,6 @@ public class EstabelecimentoService {
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
     }
 
-
-
     public List<Estabelecimento> listarTodos(){
         return estabelecimentoRepository.findAll();
     }
@@ -42,7 +40,6 @@ public class EstabelecimentoService {
     public List<Estabelecimento> listarPorSegmento(String segmento){
         return estabelecimentoRepository.findBySegmento(segmento);
     }
-
 
     @Transactional
     public Estabelecimento cadastroEstabelecimento(CadastroEstabelecimentoDto cadastroEstabelecimentoDto){

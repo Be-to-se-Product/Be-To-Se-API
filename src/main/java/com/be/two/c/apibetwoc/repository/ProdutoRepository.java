@@ -24,6 +24,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     Integer statusProduto(boolean status, Long id);
     @Query("SELECT DISTINCT p FROM ProdutoTag pt JOIN pt.tag t JOIN pt.produto p WHERE LOWER(t.descricao) LIKE LOWER(CONCAT('%', :pesquisa, '%')) OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :pesquisa, '%'))")
     List<Produto> buscarProdutoPorNomeOuTag(String pesquisa);
+
+    List<Produto> findBySecaoEstabelecimentoIdAndNomeContainsIgnoreCase(Long idEstabelecimento, String nome);
+
     List<Produto> findByIsPromocaoAtivaTrue();
 
     @Query("SELECT e FROM Estabelecimento e  WHERE (6371 * acos(cos(radians(?1)) * cos(radians(e.endereco.geolocalizacaoY)) * cos(radians(e.endereco.geolocalizacaoX) - radians(?2)) + sin(radians(?1)) * sin(radians(e.endereco.geolocalizacaoX)))) < ?3 ")

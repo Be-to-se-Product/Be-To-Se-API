@@ -1,7 +1,7 @@
 package com.be.two.c.apibetwoc.service.produto;
 
 import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
-import com.be.two.c.apibetwoc.controller.produto.dto.TagDTO;
+
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
@@ -23,7 +23,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,9 +68,7 @@ public class ProdutoService {
                 }
             }
         }
-
         return produtos;
-
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto, List<MultipartFile> imagens ) {
@@ -81,15 +78,9 @@ public class ProdutoService {
         Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao);
         Produto produtoSalvo = produtoRepository.save(produto);
 
-        if (cadastroProdutoDto.getTag() != null) {
-            for (TagDTO tags : cadastroProdutoDto.getTag()) {
-                Tag tag = tagRepository.findById(tags.getId()).orElse(null);
-
-                if (tag == null) {
-                    tag = new Tag();
-                    tag.setDescricao(tags.getDescricao());
-                    tag = tagRepository.save(tag);
-                }
+        if (cadastroProdutoDto.getTag() != null){
+            for (Long idTag : cadastroProdutoDto.getTag()) {
+                Tag tag = tagRepository.findById(idTag).orElse(null);
 
                 produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
             }
@@ -116,24 +107,17 @@ public class ProdutoService {
 
         Produto produtoSalvo = produtoRepository.save(produto);
         List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produto.getId());
-        List<TagDTO> tagEdicao = cadastroProdutoDto.getTag();
+        List<Long> tagEdicao = cadastroProdutoDto.getTag();
 
-        for (TagDTO tags : tagEdicao) {
+        for (Long tagAtualizada : tagEdicao) {
             boolean tagJaAssociada = false;
-            assert tags.getId() != null;
-            Tag tag = tagRepository.findById(tags.getId()).orElse(null);
+            Tag tag = tagRepository.findById(tagAtualizada).orElse(null);
 
-            if (tag != null) {
-                for (ProdutoTag produtoTag : tagsProduto) {
-                    if (produtoTag.getTag().getId().equals(tags.getId())) {
-                        tagJaAssociada = true;
-                        break;
-                    }
+            for (ProdutoTag produtoTag : tagsProduto) {
+                if (produtoTag.getTag().getId().equals(tagAtualizada)) {
+                    tagJaAssociada = true;
+                    break;
                 }
-            } else {
-                tag = new Tag();
-                tag.setDescricao(tags.getDescricao());
-                tag = tagRepository.save(tag);
             }
 
             if (!tagJaAssociada) {
@@ -144,8 +128,8 @@ public class ProdutoService {
 
         for (ProdutoTag produtoTag : tagsProduto) {
             boolean encontrada = false;
-            for (TagDTO tags : tagEdicao) {
-                if (produtoTag.getTag().getId().equals(tags.getId())) {
+            for (Long tagAtualizada : tagEdicao) {
+                if (produtoTag.getTag().getId().equals(tagAtualizada)) {
                     encontrada = true;
                     break;
                 }
@@ -158,15 +142,10 @@ public class ProdutoService {
         return produtoSalvo;
     }
 
-    public void deletarProduto(Long id) {
+    public void inativarProduto(Long id) {
         Produto produto = buscarPorId(id);
-        List<ProdutoTag> tags = produtoTagRepository.buscarPorProduto(produto.getId());
-        List<Long> produtoTagIds = tags.stream().map(ProdutoTag::getId).collect(Collectors.toList());
-
-        for (Long tagDeletar : produtoTagIds) {
-            produtoTagRepository.deleteById(tagDeletar);
-        }
-        produtoRepository.deleteById(id);
+        produto.setIsAtivo(false);
+        produtoRepository.save(produto);
     }
 
     public void statusProduto(boolean status, Long id) {
@@ -183,20 +162,23 @@ public class ProdutoService {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoExisteException("Estabelecimento não encontrado")
         );
-        return produtoRepository.buscaProdutosPorLoja(id);
+
+        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
+
+        return produtos;
     }
 
-    public List<Produto> barraDePesquisa(String pesquisa) {
-        return produtoRepository.buscarProdutoPorNomeOuTag(pesquisa);
+    public List<Produto> barraDePesquisa(Long id, String pesquisa) {
+        return produtoRepository.findBySecaoEstabelecimentoIdAndNomeContainsIgnoreCase(id, pesquisa);
     }
 
     public List<Produto> produtoEmPromocao() {
         return produtoRepository.findByIsPromocaoAtivaTrue();
     }
 
-    public List<Produto> uploadCsv(MultipartFile file, String secaoSelecionada) {
+    public List<Produto> uploadCsv(MultipartFile file, Long secaoId) {
         List<Produto> produtos = new ArrayList<>();
-        Secao secao = secaoService.listarSecaoPorDescricao(secaoSelecionada);
+        Secao secao = secaoService.listarPorId(secaoId);
 
         try {
             CSVParser parser = new CSVParserBuilder()
@@ -213,15 +195,29 @@ public class ProdutoService {
 
             List<String[]> linhas = csvReader.readAll();
 
+            if (linhas.isEmpty()) {
+                throw new RuntimeException("Arquivo vazio");
+            }
+
             for (String[] linha : linhas) {
+
                 String valor = linha[2].replaceAll(",", ".")
                         .replaceAll("R\\$", "");
                 String valorPromocao = linha[4].replaceAll(",", ".")
                         .replaceAll("R\\$", "");
 
-
                 Produto produto = new Produto();
-//linha[0], linha[1], Double.parseDouble(valor), linha[3], Double.parseDouble(valorPromocao), linha[5], linha[6], true, false, secao
+                produto.setNome(linha[0]);
+                produto.setCodigoSku(linha[1]);
+                produto.setPreco(Double.parseDouble(valor));
+                produto.setDescricao(linha[3]);
+                produto.setPrecoOferta(Double.parseDouble(valorPromocao));
+                produto.setCodigoBarras(linha[5]);
+                produto.setCategoria(linha[6]);
+                produto.setIsAtivo(true);
+                produto.setIsPromocaoAtiva(false);
+                produto.setSecao(secao);
+
                 produtos.add(produto);
             }
 
@@ -231,6 +227,8 @@ public class ProdutoService {
             throw new RuntimeException("Falha ao processar arquivo");
         } catch (CsvException e) {
             throw new RuntimeException("Falha ao ler arquivo");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Arquivo inválido");
         }
 
         return produtos;
