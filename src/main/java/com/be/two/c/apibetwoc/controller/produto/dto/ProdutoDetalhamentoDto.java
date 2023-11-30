@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.controller.produto.dto;
 
+import com.be.two.c.apibetwoc.service.tag.dto.TagResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,6 @@ public class ProdutoDetalhamentoDto {
     private Boolean isPromocaoAtiva;
     private List<String> imagens;
     private ProdutoSecaoResponseDTO secao;
+    private List<TagResponseDTO> tags;
 
 }

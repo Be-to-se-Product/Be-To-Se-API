@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
+import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
@@ -20,7 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -52,10 +57,11 @@ public class ProdutoController {
     @PostMapping
     public ResponseEntity<ProdutoDetalhamentoDto> cadastrarProduto(@RequestBody CadastroProdutoDto produto)  {
                 Produto produtoCadastrado = produtoService.cadastrarProduto(produto);
-                return ResponseEntity.ok(ProdutoMapper.toProdutoDetalhamento(produtoCadastrado));
+                URI uri = ServletUriComponentsBuilder.fromPath("{id}").buildAndExpand(produtoCadastrado.getId()).toUri();
+                return ResponseEntity.created(uri).body(ProdutoMapper.toProdutoDetalhamento(produtoCadastrado));
     }
 
-    @PostMapping("/imagens/{id}")
+    @PostMapping("/{id}/imagens")
     public ResponseEntity<Void> cadastrarImagens(@RequestParam List<MultipartFile> imagens, @PathVariable Long id){
             produtoService.cadastrarImagens(imagens,id);
             return ResponseEntity.created(null).build();
@@ -65,8 +71,6 @@ public class ProdutoController {
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoDetalhamentoDto> atualizarProduto(@PathVariable Long id, @Valid @RequestBody CadastroProdutoDto produto){
         Produto produtoAtualizado = produtoService.atualizarProduto(id, produto);
-
-
         return ResponseEntity.ok(ProdutoMapper.toProdutoDetalhamento(produtoAtualizado));
     }
 
@@ -97,6 +101,7 @@ public class ProdutoController {
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(dtos);
     }
+
     @GetMapping("/pesquisa/{id}")
     public ResponseEntity<List<ProdutoDetalhamentoDto>> pesquisa(@PathVariable Long id, @RequestParam String pesquisa){
         List<Produto> produtos = produtoService.barraDePesquisa(id, pesquisa);
@@ -117,6 +122,7 @@ public class ProdutoController {
 
         return ResponseEntity.ok(dtos);
     }
+
     @GetMapping("/download-csv")
     public ResponseEntity<byte[]> downloadCsv(@RequestParam("idEmpresa") Long id) {
         byte[] data = produtoService.downloadCsv(id);

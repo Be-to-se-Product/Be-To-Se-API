@@ -9,4 +9,13 @@ import java.util.List;
 public interface ProdutoTagRepository extends JpaRepository<ProdutoTag, Long> {
     @Query("SELECT pt FROM ProdutoTag pt WHERE pt.produto.id =:id")
     List<ProdutoTag> buscarPorProduto(Long id);
+
+    void deleteByIdIn(List<Long> idTag);
+
+    void deleteByProdutoId(Long id);
+
+    List<ProdutoTag> findByProdutoId(Long id);
+    List<ProdutoTag> findByTagDescricaoIgnoreCase(String nome);
+
+    void deleteAllByProdutoId(Long id);
 }

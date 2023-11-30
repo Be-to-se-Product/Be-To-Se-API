@@ -34,8 +34,7 @@ public class ComercianteController {
     public ResponseEntity<ResponseComercianteDto> editar(@RequestBody @Valid ComercianteAtualizarDTO comercianteAtualizarDTO, @PathVariable Long id){
         Comerciante comerciante = comercianteService.editar(comercianteAtualizarDTO, id);
         ResponseComercianteDto responseComercianteDto = ComercianteMapper.of(comerciante);
-        URI uri = UriComponentsBuilder.fromPath("{id}").buildAndExpand(responseComercianteDto.getId()).toUri();
-        return ResponseEntity.created(uri).body(responseComercianteDto);
+        return ResponseEntity.ok(responseComercianteDto);
     }
     @GetMapping
     public ResponseEntity<List<ResponseComercianteDto>> listar(){

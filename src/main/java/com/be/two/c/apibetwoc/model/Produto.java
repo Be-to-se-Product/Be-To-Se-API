@@ -38,4 +38,11 @@ public class Produto {
     @OneToMany(mappedBy = "produto")
     private List<Avaliacao> avaliacoes;
 
+
+    @OneToMany(mappedBy = "produto")
+    private List<Carrinho> carrinhos;
+
+    @OneToMany(mappedBy = "produto")
+    private List<ItemVenda> itemVendas;
+
 }

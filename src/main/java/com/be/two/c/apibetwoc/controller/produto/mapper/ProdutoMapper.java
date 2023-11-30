@@ -10,10 +10,13 @@ import com.be.two.c.apibetwoc.service.Bicicleta;
 import com.be.two.c.apibetwoc.service.Carro;
 import com.be.two.c.apibetwoc.service.ITempoPercurso;
 import com.be.two.c.apibetwoc.service.Pessoa;
+import com.be.two.c.apibetwoc.service.produto.mapper.ProdutoTagMapper;
+import com.be.two.c.apibetwoc.service.tag.mapper.TagMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,8 +24,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutoMapper {
 
-    private  static  HttpServletRequest request;
-    public static Produto toProduto(CadastroProdutoDto cadastroProdutoDto,Secao secao,Long id){
+    private static HttpServletRequest request;
+
+    public static Produto toProduto(CadastroProdutoDto cadastroProdutoDto, Secao secao, Long id) {
         Produto produto = new Produto();
         produto.setId(id);
         produto.setNome(cadastroProdutoDto.getNome());
@@ -33,11 +37,12 @@ public class ProdutoMapper {
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
         produto.setIsAtivo(true);
+        produto.setTags(List.of());
         produto.setSecao(secao);
         return produto;
     }
 
-    public static Produto toProduto(CadastroProdutoDto cadastroProdutoDto,Secao secao){
+    public static Produto toProduto(CadastroProdutoDto cadastroProdutoDto, Secao secao) {
         Produto produto = new Produto();
         produto.setNome(cadastroProdutoDto.getNome());
         produto.setCodigoSku(cadastroProdutoDto.getCodigoSku());
@@ -48,39 +53,40 @@ public class ProdutoMapper {
         produto.setCategoria(cadastroProdutoDto.getCategoria());
         produto.setIsAtivo(true);
         produto.setSecao(secao);
+        produto.setImagens(new ArrayList<>());
         return produto;
     }
 
-    public static TempoPercurssoDTO toTempoPercurso(Estabelecimento estabelecimento,Double x, Double y){
+    public static TempoPercurssoDTO toTempoPercurso(Estabelecimento estabelecimento, Double x, Double y) {
         TempoPercurssoDTO tempoPercursso = new TempoPercurssoDTO();
         List<ITempoPercurso> calculo = List.of(
                 new Carro(),
                 new Pessoa(),
                 new Bicicleta()
         );
-        tempoPercursso.setCarro(calculo.get(0).calcularTempoDeslocamento(x,y,estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY()));
-        tempoPercursso.setPessoa(calculo.get(0).calcularTempoDeslocamento(x,y,estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY()));
-        tempoPercursso.setBicicleta(calculo.get(0).calcularTempoDeslocamento(x,y,estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY()));
+        tempoPercursso.setCarro(calculo.get(0).calcularTempoDeslocamento(x, y, estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY()));
+        tempoPercursso.setPessoa(calculo.get(0).calcularTempoDeslocamento(x, y, estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY()));
+        tempoPercursso.setBicicleta(calculo.get(0).calcularTempoDeslocamento(x, y, estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY()));
         return tempoPercursso;
     }
 
-    public static ProdutoMapaResponseDTO toProdutoMapaReponse(Produto produto, Double x, Double y){
+    public static ProdutoMapaResponseDTO toProdutoMapaReponse(Produto produto, Double x, Double y) {
         ProdutoMapaResponseDTO produtoResponse = new ProdutoMapaResponseDTO();
-        List<AvaliacaoMapaResponse> avaliacao = produto.getAvaliacoes().stream().map(element->toAvaliacaoResponse(element)).toList();
+        List<AvaliacaoMapaResponse> avaliacao = produto.getAvaliacoes().stream().map(element -> toAvaliacaoResponse(element)).toList();
         produtoResponse.setId(produto.getId());
         produtoResponse.setNome(produto.getNome());
         produtoResponse.setCategoria(produto.getCategoria());
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
-        produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element->element.getQtdEstrela()).average().orElse(0));
-        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
-        produtoResponse.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
+        produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element -> element.getQtdEstrela()).average().orElse(0));
+        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(), x, y));
+        produtoResponse.setImagens(produto.getImagens().stream().map(element -> element.getNomeReferencia()).toList());
 
         return produtoResponse;
     }
 
 
-    public static AvaliacaoMapaResponse toAvaliacaoResponse (Avaliacao avaliacao){
+    public static AvaliacaoMapaResponse toAvaliacaoResponse(Avaliacao avaliacao) {
         AvaliacaoMapaResponse avaliacaoMapaResponse = new AvaliacaoMapaResponse();
         avaliacaoMapaResponse.setData(avaliacao.getDataCriacao());
         avaliacaoMapaResponse.setDescricao(avaliacao.getComentario());
@@ -88,14 +94,15 @@ public class ProdutoMapper {
         avaliacaoMapaResponse.setUsuario(avaliacao.getConsumidor().getNome());
         return avaliacaoMapaResponse;
     }
-    public static EstabelecimentoMapaResponse toEstabelecimentoResponse(Estabelecimento estabelecimento, Double x, Double y){
+
+    public static EstabelecimentoMapaResponse toEstabelecimentoResponse(Estabelecimento estabelecimento, Double x, Double y) {
         List<ITempoPercurso> tempoPercursos = List.of(
                 new Carro(),
                 new Pessoa(),
                 new Bicicleta());
 
         EstabelecimentoMapaResponse estabelecimentoMapaResponse = new EstabelecimentoMapaResponse();
-        List<AgendaResponseDTO> agenda = estabelecimento.getAgenda().stream().map(element->toAgendaResponse(element)).toList();
+        List<AgendaResponseDTO> agenda = estabelecimento.getAgenda().stream().map(element -> toAgendaResponse(element)).toList();
         estabelecimentoMapaResponse.setAgenda(agenda);
         estabelecimentoMapaResponse.setNome(estabelecimento.getNome());
         estabelecimentoMapaResponse.setId(estabelecimento.getId());
@@ -104,24 +111,24 @@ public class ProdutoMapper {
         estabelecimentoMapaResponse.setEndereco(toEnderecoResponse(estabelecimento.getEndereco()));
         estabelecimentoMapaResponse.setTelefone(estabelecimento.getTelefoneContato());
         estabelecimentoMapaResponse.setSite(estabelecimento.getReferenciaInstagram());
-        estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element->toMetodoPagamentoResponse(element.getMetodoPagamento())).toList());
+        estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element -> toMetodoPagamentoResponse(element.getMetodoPagamento())).toList());
 
-        estabelecimentoMapaResponse.setTempoCarro(tempoPercursos.get(0).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY(),x,y));
-        estabelecimentoMapaResponse.setTempoPessoa(tempoPercursos.get(1).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY(),x,y));
-        estabelecimentoMapaResponse.setTempoBike(tempoPercursos.get(2).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(),estabelecimento.getEndereco().getGeolocalizacaoY(),x,y));
+        estabelecimentoMapaResponse.setTempoCarro(tempoPercursos.get(0).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY(), x, y));
+        estabelecimentoMapaResponse.setTempoPessoa(tempoPercursos.get(1).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY(), x, y));
+        estabelecimentoMapaResponse.setTempoBike(tempoPercursos.get(2).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY(), x, y));
         return estabelecimentoMapaResponse;
 
     }
 
-    public static AgendaResponseDTO toAgendaResponse(Agenda agenda){
-    AgendaResponseDTO agendaResponseDTO = new AgendaResponseDTO();
-    agendaResponseDTO.setDia(agenda.getDia());
-    agendaResponseDTO.setHorarioInicio(agenda.getHorarioInicio());
-    agendaResponseDTO.setHorarioFim(agenda.getHorarioFim());
-    return agendaResponseDTO;
+    public static AgendaResponseDTO toAgendaResponse(Agenda agenda) {
+        AgendaResponseDTO agendaResponseDTO = new AgendaResponseDTO();
+        agendaResponseDTO.setDia(agenda.getDia());
+        agendaResponseDTO.setHorarioInicio(agenda.getHorarioInicio());
+        agendaResponseDTO.setHorarioFim(agenda.getHorarioFim());
+        return agendaResponseDTO;
     }
 
-    public static EnderecoResponseDTO toEnderecoResponse(Endereco endereco){
+    public static EnderecoResponseDTO toEnderecoResponse(Endereco endereco) {
         EnderecoResponseDTO enderecoResponseDTO = new EnderecoResponseDTO();
         enderecoResponseDTO.setLatitude(endereco.getGeolocalizacaoX());
         enderecoResponseDTO.setLongitude(endereco.getGeolocalizacaoY());
@@ -132,17 +139,19 @@ public class ProdutoMapper {
 
     }
 
-    public static MetodoPagamentoMapaResponse toMetodoPagamentoResponse (MetodoPagamento metodoPagamento){
+    public static MetodoPagamentoMapaResponse toMetodoPagamentoResponse(MetodoPagamento metodoPagamento) {
         MetodoPagamentoMapaResponse metodoPagamentoMapaResponse = new MetodoPagamentoMapaResponse();
         metodoPagamentoMapaResponse.setNome(metodoPagamento.getDescricao());
         metodoPagamentoMapaResponse.setId(metodoPagamento.getId());
         return metodoPagamentoMapaResponse;
     }
 
-    public static ProdutoDetalhamentoDto toProdutoDetalhamento (Produto produto){
+    public static ProdutoDetalhamentoDto toProdutoDetalhamento(Produto produto) {
         ProdutoDetalhamentoDto produtoDto = new ProdutoDetalhamentoDto();
         produtoDto.setId(produto.getId());
-        produtoDto.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
+        if (produto.getImagens() != null) {
+            produtoDto.setImagens(produto.getImagens().stream().map(element -> element.getNomeReferencia()).toList());
+        }
         produtoDto.setCategoria(produto.getCategoria());
         produtoDto.setSecao(toProdutoSecaoResponse(produto.getSecao()));
         produtoDto.setNome(produto.getNome());
@@ -153,11 +162,29 @@ public class ProdutoMapper {
         produtoDto.setCodigoBarras(produto.getCodigoBarras());
         produtoDto.setIsAtivo(produto.getIsAtivo());
         produtoDto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
-
+        if (produto.getTags() != null) {
+            List<Tag> tags = produto.getTags().stream().map(e -> e.getTag()).toList();
+            produtoDto.setTags(tags.stream().map(TagMapper::toTagResponse).toList());
+        }
         return produtoDto;
- }
+    }
 
-    public static ProdutoSecaoResponseDTO toProdutoSecaoResponse(Secao secao){
+
+    public static Produto toProduto(Produto produto, Secao secao, ProdutoAtualizarDTO produtoAtualizacao, Long id) {
+        produto.setNome(produtoAtualizacao.getNome());
+        produto.setCodigoSku(produtoAtualizacao.getCodigoSku());
+        produto.setPreco(produtoAtualizacao.getPreco());
+        produto.setDescricao(produtoAtualizacao.getDescricao());
+        produto.setPrecoOferta(produto.getPrecoOferta());
+        produto.setPreco(produto.getPreco());
+        produto.setCodigoBarras(produto.getCodigoBarras());
+        produto.setCategoria(produto.getCategoria());
+        produto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
+        produto.setSecao(secao);
+        return produto;
+    }
+
+    public static ProdutoSecaoResponseDTO toProdutoSecaoResponse(Secao secao) {
         ProdutoSecaoResponseDTO secaoDetalhamentoDto = new ProdutoSecaoResponseDTO();
         secaoDetalhamentoDto.setId(secao.getId());
         secaoDetalhamentoDto.setDescricao(secao.getDescricao());
@@ -166,11 +193,11 @@ public class ProdutoMapper {
     }
 
 
-    public static ProdutoEstabelecimentoResponseDTO toProdutoEstabeleciementoResponse(Estabelecimento estabelecimento){
+    public static ProdutoEstabelecimentoResponseDTO toProdutoEstabeleciementoResponse(Estabelecimento estabelecimento) {
         ProdutoEstabelecimentoResponseDTO estabelecimentoResponse = new ProdutoEstabelecimentoResponseDTO();
         estabelecimentoResponse.setId(estabelecimento.getId());
         estabelecimentoResponse.setNome(estabelecimento.getNome());
-        estabelecimentoResponse.setIdMetodo(estabelecimento.getMetodoPagamentoAceito().stream().map(element->element.getId()).toList());
+        estabelecimentoResponse.setIdMetodo(estabelecimento.getMetodoPagamentoAceito().stream().map(element -> element.getId()).toList());
         return estabelecimentoResponse;
     }
 

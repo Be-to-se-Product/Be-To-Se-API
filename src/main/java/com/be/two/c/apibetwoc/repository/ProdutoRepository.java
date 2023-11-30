@@ -33,4 +33,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Estabelecimento> buscarPorLocalizacao(Double latitude, Double longitude, Double distancia);
 
     List<Produto> findAll(Specification<Produto> produtoSpecification);
+
+
+
+
 }

@@ -109,7 +109,7 @@ public class ArquivoService {
     }
   }
 
-  private void deletarArquivo(String nomeReferencia, TipoArquivo tipoArquivo){
+  public void deletarArquivo(String nomeReferencia, TipoArquivo tipoArquivo){
     Path caminhoArquivo = Paths.get(diretorios.get(tipoArquivo)+nomeReferencia).toAbsolutePath().normalize();
     try {
       Files.delete(caminhoArquivo);

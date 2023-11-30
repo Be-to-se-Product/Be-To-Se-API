@@ -17,4 +17,6 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
     Avaliacao editarAvaliacao( Long id, Integer novaNota, String novoComentario, LocalDateTime dataEdicao);
     @Query("SELECT a FROM Avaliacao a WHERE a.produto.id = :id ORDER BY a.dataCriacao ASC")
     List<Avaliacao>buscaPorProduto(Long id);
+
+    void deleteByIdIn(List<Long> idAvaliacao);
 }
