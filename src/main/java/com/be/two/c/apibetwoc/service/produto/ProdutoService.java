@@ -265,6 +265,8 @@ public class ProdutoService {
                     produto.setPrecoOferta(Double.valueOf(registro.substring(68, 74)));
                     produto.setCodigoBarras(registro.substring(74, 87));
                     produto.setCategoria(registro.substring(87, 107));
+                    produto.setImagens(new ArrayList<>());
+                    produto.setSecao(secao);
 
                     Produto produtoCriado = produtoRepository.save(produto);
                     produtos.add(produtoCriado);
