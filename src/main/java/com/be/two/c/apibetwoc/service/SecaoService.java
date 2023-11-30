@@ -41,4 +41,9 @@ public class SecaoService {
     public Secao listarSecaoPorDescricao(String descricao){
         return secaoRepository.findByDescricao(descricao);
     }
+
+    public Secao listarPorId(Long id){
+        return secaoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Secao não encontrada"));
+    }
 }

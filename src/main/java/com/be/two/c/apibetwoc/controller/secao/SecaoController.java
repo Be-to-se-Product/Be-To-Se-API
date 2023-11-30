@@ -27,13 +27,17 @@ public class SecaoController {
                 : ResponseEntity.status(200).body(secoes.stream().map(SecaoMapper::of).toList());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Secao>> listarPorEstabelecimento(@PathVariable Long id){
+    @GetMapping("/estabelecimento/{id}")
+    public ResponseEntity<List<ResponseSecaoDto>> listarPorEstabelecimento(@PathVariable Long id){
         List<Secao> secoes = secaoService.listarPorEstabelecimento(id);
 
-        return secoes.isEmpty()
+        List<ResponseSecaoDto> dtos = secoes.stream()
+                .map(SecaoMapper::of)
+                .toList();
+
+        return dtos.isEmpty()
                 ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(secoes);
+                : ResponseEntity.status(200).body(dtos);
     }
 
     @PostMapping

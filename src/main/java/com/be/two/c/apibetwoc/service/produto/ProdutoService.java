@@ -1,9 +1,10 @@
 package com.be.two.c.apibetwoc.service.produto;
 
 import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
-import com.be.two.c.apibetwoc.controller.produto.dto.TagDTO;
+
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
+import com.be.two.c.apibetwoc.controller.tag.TagDTO;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
@@ -69,7 +70,9 @@ public class ProdutoService {
                 }
             }
         }
+
         return produtos;
+
     }
 
 
@@ -166,15 +169,10 @@ public class ProdutoService {
         return produtoSalvo;
     }
 
-    public void deletarProduto(Long id) {
+    public void inativarProduto(Long id) {
         Produto produto = buscarPorId(id);
-        List<ProdutoTag> tags = produtoTagRepository.buscarPorProduto(produto.getId());
-        List<Long> produtoTagIds = tags.stream().map(ProdutoTag::getId).collect(Collectors.toList());
-
-        for (Long tagDeletar : produtoTagIds) {
-            produtoTagRepository.deleteById(tagDeletar);
-        }
-        produtoRepository.deleteById(id);
+        produto.setIsAtivo(false);
+        produtoRepository.save(produto);
     }
 
     public void statusProduto(boolean status, Long id) {
@@ -191,20 +189,23 @@ public class ProdutoService {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoExisteException("Estabelecimento não encontrado")
         );
-        return produtoRepository.buscaProdutosPorLoja(id);
+
+        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
+
+        return produtos;
     }
 
-    public List<Produto> barraDePesquisa(String pesquisa) {
-        return produtoRepository.buscarProdutoPorNomeOuTag(pesquisa);
+    public List<Produto> barraDePesquisa(Long id, String pesquisa) {
+        return produtoRepository.findBySecaoEstabelecimentoIdAndNomeContainsIgnoreCase(id, pesquisa);
     }
 
     public List<Produto> produtoEmPromocao() {
         return produtoRepository.findByIsPromocaoAtivaTrue();
     }
 
-    public List<Produto> uploadCsv(MultipartFile file, Long secaoSelecionada) {
+    public List<Produto> uploadCsv(MultipartFile file, Long secaoId) {
         List<Produto> produtos = new ArrayList<>();
-        Secao secao = secaoService.listarPorId(secaoSelecionada);
+        Secao secao = secaoService.listarPorId(secaoId);
 
         try {
             CSVParser parser = new CSVParserBuilder()
@@ -221,15 +222,30 @@ public class ProdutoService {
 
             List<String[]> linhas = csvReader.readAll();
 
+            if (linhas.isEmpty()) {
+                throw new RuntimeException("Arquivo vazio");
+            }
+
             for (String[] linha : linhas) {
+
                 String valor = linha[2].replaceAll(",", ".")
                         .replaceAll("R\\$", "");
                 String valorPromocao = linha[4].replaceAll(",", ".")
                         .replaceAll("R\\$", "");
 
-
                 Produto produto = new Produto();
-//linha[0], linha[1], Double.parseDouble(valor), linha[3], Double.parseDouble(valorPromocao), linha[5], linha[6], true, false, secao
+                produto.setNome(linha[0]);
+                produto.setCodigoSku(linha[1]);
+                produto.setPreco(Double.parseDouble(valor));
+                produto.setDescricao(linha[3]);
+                produto.setPrecoOferta(Double.parseDouble(valorPromocao));
+                produto.setCodigoBarras(linha[5]);
+                produto.setCategoria(linha[6]);
+                produto.setIsAtivo(true);
+                produto.setIsPromocaoAtiva(false);
+                produto.setSecao(secao);
+                produto.setImagens(new ArrayList<>());
+
                 produtos.add(produto);
             }
 
@@ -239,6 +255,8 @@ public class ProdutoService {
             throw new RuntimeException("Falha ao processar arquivo");
         } catch (CsvException e) {
             throw new RuntimeException("Falha ao ler arquivo");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Arquivo inválido");
         }
 
         return produtos;
@@ -297,7 +315,7 @@ public class ProdutoService {
             csvWriter.writeNext(cabecalho);
 
             for (Produto p : produtos) {
-                String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getPrecoOferta().toString(), p.getCodigoBarras(), p.getCategoria(), p.getIsAtivo() ? "Ativo" : "Inativo", p.getIsPromocaoAtiva() ? "Ativo" : "Inativo", p.getSecao().getDescricao()};
+                String[] linha = {p.getNome(), p.getCodigoSku(), p.getPreco().toString(), p.getDescricao(), p.getPrecoOferta() != null ? p.getPrecoOferta().toString() : "0,00", p.getCodigoBarras(), p.getCategoria(), p.getIsAtivo() ? "Ativo" : "Inativo", p.getIsPromocaoAtiva() ? "Ativo" : "Inativo", p.getSecao().getDescricao()};
 
                 csvWriter.writeNext(linha);
             }

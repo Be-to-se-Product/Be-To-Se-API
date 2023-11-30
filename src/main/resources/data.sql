@@ -160,15 +160,6 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     (5, 'Hortifruti'),
     (5, 'Congelados');
 
-    -- Dados para a tabela 'imagem'
-    INSERT INTO imagem (data_criacao, fk_estabelecimento, fk_produto, nome_imagem, nome_referencia) VALUES
-    ('2022-05-01', 1, NULL, 'logo_mercado.jpg', 'Logo Mercado Bom Preço'),
-    ('2022-07-01', 1, NULL, 'logo_padaria.jpg', 'Logo Padaria Sabor Artesanal'),
-    ('2022-08-15', 3, NULL, 'logo_acougue.jpg', 'Logo Açougue da Esquina'),
-    ('2022-09-10', 3, NULL, 'logo_padaria_acougue.jpg', 'Logo Padaria e Açougue da Esquina'),
-    ('2022-11-01', 5, NULL, 'logo_conveniencia.jpg', 'Logo Loja de Conveniência'),
-    ('2023-01-15', 5, NULL, 'logo_supermercado.jpg', 'Logo Supermercado Mega');
-
     -- Dados para a tabela 'produto'
     INSERT INTO produto (is_ativo, is_promocao_ativa, preco, preco_oferta, qtd_vendido, fk_secao, categoria, codigo_barras, codigo_sku, descricao, nome) VALUES
     (true, false, 5.99, NULL, 100, 1, 'Alimentos', '1234567890123', 'PROD001', 'Arroz Integral 1kg', 'Arroz Integral'),
@@ -181,6 +172,18 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     (true, true, 4.99, 3.99, 55, 8, 'Mercado', '3210987654321', 'PROD008', 'Sabonete Líquido 250ml', 'Sabonete Líquido'),
     (true, false, 6.50, NULL, 40, 9, 'Supermercado', '0123456789012', 'PROD009', 'Detergente 500ml', 'Detergente'),
     (true, true, 11.99, 9.99, 25, 10, 'Gourmet', '9876543210123', 'PROD010', 'Azeite Extra Virgem 500ml', 'Azeite Extra Virgem');
+
+    -- Dados para a tabela 'imagem'
+    INSERT INTO imagem (data_criacao, fk_estabelecimento, fk_produto, nome_imagem, nome_referencia) VALUES
+    ('2022-05-01', 1, NULL, 'logo_mercado.jpg', 'Logo Mercado Bom Preço'),
+    ('2022-07-01', 1, NULL, 'logo_padaria.jpg', 'Logo Padaria Sabor Artesanal'),
+    ('2022-08-15', 3, NULL, 'logo_acougue.jpg', 'Logo Açougue da Esquina'),
+    ('2022-09-10', 3, NULL, 'logo_padaria_acougue.jpg', 'Logo Padaria e Açougue da Esquina'),
+    ('2022-11-01', 5, NULL, 'logo_conveniencia.jpg', 'Logo Loja de Conveniência'),
+    ('2023-01-15', NULL, 1, 'arroz_integral.jpg', 'Arroz Integral'),
+    ('2023-01-15', NULL, 3, 'feijao_preto.jpg', 'Feijão Preto'),
+    ('2023-01-15', NULL, 2, 'pao_frances.jpg', 'Pão Francês'),
+    ('2023-01-15', 5, NULL, 'logo_supermercado.jpg', 'Logo Supermercado Mega');
 
     -- Dados para a tabela 'produto_tag'
     INSERT INTO produto_tag (fk_produto, fk_tag) VALUES

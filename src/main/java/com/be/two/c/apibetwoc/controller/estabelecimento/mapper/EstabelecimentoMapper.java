@@ -66,13 +66,11 @@ public class EstabelecimentoMapper {
         responseEstabelecimentoDto.setId(estabelecimento.getId());
         responseEstabelecimentoDto.setNome(estabelecimento.getNome());
         responseEstabelecimentoDto.setSegmento(estabelecimento.getSegmento());
-        responseEstabelecimentoDto.setDataCriacao(estabelecimento.getDataCriacao());
         responseEstabelecimentoDto.setTelefoneContato(estabelecimento.getTelefoneContato());
-        responseEstabelecimentoDto.setEnquadramentoJuridico(estabelecimento.getEnquadramentoJuridico());
+
         responseEstabelecimentoDto.setReferenciaInstagram(estabelecimento.getReferenciaInstagram());
         responseEstabelecimentoDto.setReferenciaFacebook(estabelecimento.getReferenciaFacebook());
         responseEstabelecimentoDto.setEmailContato(estabelecimento.getEmailContato());
-        responseEstabelecimentoDto.setIsAtivo(estabelecimento.getIsAtivo());
         responseEstabelecimentoDto.setIdComerciante(estabelecimento.getComerciante().getId());
         responseEstabelecimentoDto.setCnpj(estabelecimento.getComerciante().getCnpj());
         responseEstabelecimentoDto.setEndereco(toEstabelecimentoEnderecoResponse(estabelecimento.getEndereco()));
