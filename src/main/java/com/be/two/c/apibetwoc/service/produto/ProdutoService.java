@@ -181,7 +181,9 @@ public class ProdutoService {
         );
 
         List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
-
+        for (Produto produto : produtos) {
+            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        }
         return produtos;
     }
 
