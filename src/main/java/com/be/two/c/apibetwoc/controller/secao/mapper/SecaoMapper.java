@@ -34,7 +34,6 @@ public class SecaoMapper {
         ResponseSecaoDto responseSecaoDto = new ResponseSecaoDto();
         responseSecaoDto.setId(secao.getId());
         responseSecaoDto.setDescricao(secao.getDescricao());
-        responseSecaoDto.setEstabelecimento(secao.getEstabelecimento());
         return responseSecaoDto;
     }
 

@@ -1,12 +1,12 @@
 package com.be.two.c.apibetwoc.controller.estabelecimento;
 
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.AtualizarEstabelecimentoDto;
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CadastroEstabelecimentoDto;
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.CoordenadaDto;
-import com.be.two.c.apibetwoc.controller.estabelecimento.dto.ResponseEstabelecimentoDto;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.*;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
+import com.be.two.c.apibetwoc.service.AgendaService;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
+import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,9 @@ import java.util.List;
 public class EstabelecimentoController {
 
     private final EstabelecimentoService estabelecimentoService;
+    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
+    private final AgendaService agendaService;
+    private final ImagemService imagemService;
 
     @GetMapping
     public ResponseEntity<List<ResponseEstabelecimentoDto>> listarTodos() {
@@ -34,8 +37,6 @@ public class EstabelecimentoController {
     public ResponseEntity<ResponseEstabelecimentoDto> listarPorId(@PathVariable Long id){
         return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoService.listarPorId(id)));
     }
-
-
 
     @GetMapping("/segmento")
     public ResponseEntity<List<ResponseEstabelecimentoDto>> listarPorSegmento(@RequestParam String segmento){
@@ -55,6 +56,7 @@ public class EstabelecimentoController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseEstabelecimentoDto> atualizarEstabelecimento(@Valid @RequestBody AtualizarEstabelecimentoDto estabelecimentoDto, @PathVariable Long id) {
         Estabelecimento estabelecimentoAtualizado = estabelecimentoService.atualizarEstabelecimento(estabelecimentoDto, id);
+
         return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoAtualizado));
     }
 

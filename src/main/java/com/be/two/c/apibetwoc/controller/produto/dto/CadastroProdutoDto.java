@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.controller.produto.dto;
 
+import com.be.two.c.apibetwoc.controller.tag.TagDTO;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +34,7 @@ public class CadastroProdutoDto {
 
     @Nullable
     private List<@Valid TagDTO> tag;
-
+    @Nullable
+    private List<String> imagens;
 
 }

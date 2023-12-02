@@ -1,10 +1,13 @@
-package com.be.two.c.apibetwoc.controller.produto.dto;
+package com.be.two.c.apibetwoc.controller.tag;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TagDTO {
     @Nullable
     private Long id;
