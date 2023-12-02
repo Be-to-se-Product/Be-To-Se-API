@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EnderacoCricaoEstabelecimentoDto {
+public class EstabelecimentoEnderecoCadastroDTO {
     private String cep;
     private String rua;
     private String bairro;
