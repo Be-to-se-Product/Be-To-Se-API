@@ -274,5 +274,13 @@ public class ProdutoService {
             throw new RuntimeException(e);
         }
     }
+    public List<Produto> buscarProdutosParaVenda(List<Long> ids){
+        List<Produto> produtos = new ArrayList<>();
+        for (Long id:ids){
+            Produto produto = buscarPorId(id);
+            produtos.add(produto);
+        }
+        return produtos;
+    }
 
 }

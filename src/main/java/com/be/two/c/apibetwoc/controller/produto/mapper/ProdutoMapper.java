@@ -173,6 +173,12 @@ public class ProdutoMapper {
         estabelecimentoResponse.setIdMetodo(estabelecimento.getMetodoPagamentoAceito().stream().map(element->element.getId()).toList());
         return estabelecimentoResponse;
     }
+    public static ProdutoVendaResponseDto toprodutoVendaResponse(ProdutoVendaDto dto){
+        ProdutoVendaResponseDto produto = new ProdutoVendaResponseDto();
+        produto.setId(dto.getId());
+        produto.setQtd(dto.getQtd());
+        return produto;
+    }
 
 
 }

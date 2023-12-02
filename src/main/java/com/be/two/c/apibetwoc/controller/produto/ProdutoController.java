@@ -2,23 +2,16 @@ package com.be.two.c.apibetwoc.controller.produto;
 
 import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoVendaDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoVendaResponseDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.service.Bicicleta;
-import com.be.two.c.apibetwoc.service.Carro;
-import com.be.two.c.apibetwoc.service.ITempoPercurso;
-import com.be.two.c.apibetwoc.service.Pessoa;
-import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
-import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
 import com.be.two.c.apibetwoc.service.produto.ProdutoService;
 
 
 import com.be.two.c.apibetwoc.util.FilaRequisicao;
-import com.be.two.c.apibetwoc.util.PilhaObj;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/produtos")
@@ -157,7 +152,15 @@ public class ProdutoController {
             return ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude);
         }).toList());
     }
+    public ResponseEntity<List<ProdutoVendaResponseDto>> listaProdutoVenda(@RequestBody List<ProdutoVendaDto> produtos){
+        List<ProdutoVendaResponseDto> dtos = new ArrayList<>();
+        for (ProdutoVendaDto produto: produtos){
+            ProdutoVendaResponseDto dto = ProdutoMapper.toprodutoVendaResponse(produto);
+            dtos.add(dto);
+        }
+        List<Long> ids = produtos.stream().map(ProdutoVendaDto::getId).collect(Collectors.toList());
+        List<Produto> produtosExistentes = produtoService.buscarProdutosParaVenda(ids);
 
-
-
+        return null;
+    }
 }
