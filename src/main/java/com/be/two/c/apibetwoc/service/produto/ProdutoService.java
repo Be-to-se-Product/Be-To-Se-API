@@ -176,9 +176,9 @@ public class ProdutoService {
 
     public List<Produto> produtoPorEstabelecimento(Long id) {
 
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoExisteException("Estabelecimento não encontrado")
-        );
+        if(!estabelecimentoRepository.existsById(id)){
+            throw new EntidadeNaoExisteException("Entidade não existe");
+        }
 
         List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
         for (Produto produto : produtos) {
@@ -190,7 +190,6 @@ public class ProdutoService {
     public List<Produto> barraDePesquisa(Long id, String pesquisa) {
         return produtoRepository.findBySecaoEstabelecimentoIdAndNomeContainsIgnoreCase(id, pesquisa);
     }
-
 
     public List<Produto> uploadCsv(MultipartFile file, Long secaoId) {
 

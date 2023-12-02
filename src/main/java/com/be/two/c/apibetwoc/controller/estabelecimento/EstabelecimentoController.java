@@ -20,6 +20,15 @@ public class EstabelecimentoController {
 
 
 
+
+    @GetMapping("/comerciante")
+    public ResponseEntity<List<EstabelecimentoResponseDTO>> listarPorComerciante(){
+         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante();
+
+         if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
+
+         return ResponseEntity.ok(estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList());
+    }
     @GetMapping
     public ResponseEntity<List<EstabelecimentoResponseDTO>> listarTodos() {
         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarTodos();
