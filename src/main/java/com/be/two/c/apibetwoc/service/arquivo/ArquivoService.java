@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.service.arquivo;
 
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
+import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.repository.ImagemRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
 import com.be.two.c.apibetwoc.service.AutenticacaoService;
@@ -9,6 +10,7 @@ import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.arquivo.exception.ArquivoNaoPermitidoException;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -17,7 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -120,17 +124,23 @@ public class ArquivoService {
 
     public ArquivoReponseDTO getArquivo(String nomeReferencia, TipoArquivo tipoArquivo) {
 
-        Path url = Paths.get(diretorios.get(tipoArquivo)+nomeReferencia).toAbsolutePath().normalize();
-        String tipoImagem = nomeReferencia.substring(nomeReferencia.lastIndexOf(".") + 1);
-        Resource resource = null;
-        try {
-            resource = new UrlResource(url.toUri());
-          System.out.println(resource.getURI());
 
-          System.out.println(resource.getFilename());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+      Path url = Paths.get(diretorios.get(tipoArquivo)+nomeReferencia).toAbsolutePath().normalize();
+
+      String tipoImagem = nomeReferencia.substring(nomeReferencia.lastIndexOf(".") + 1);
+        Resource resource = null;
+      try {
+        resource = new UrlResource(url.toUri());
+        System.out.println(resource.getFilename());
+      } catch (MalformedURLException e) {
+        throw new EntidadeNaoExisteException("Imagem não existe");
+      } catch (IOException e) {
+        // Capturar outras exceções de IO se necessário
+        e.printStackTrace();
+        throw new RuntimeException("Erro ao obter o recurso do arquivo");
+      }
+
+
         return new ArquivoReponseDTO(resource, tiposArquivosPermitidos.get(tipoImagem));
     }
 }

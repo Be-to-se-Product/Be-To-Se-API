@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.controller.historico.dto;
 
+import com.be.two.c.apibetwoc.model.StatusPedido;
 import com.be.two.c.apibetwoc.model.Transacao;
 
 public record TransacaoHistoricoDto(Long id,
@@ -7,7 +8,8 @@ public record TransacaoHistoricoDto(Long id,
                                     Double taxa,
                                     boolean isEstornado,
                                     String nomeMetodoPagamento,
-                                    PedidoHistoricoDto pedido) {
+                                    PedidoHistoricoDto pedido,
+                                    StatusPedido status) {
 
     public TransacaoHistoricoDto(Transacao transacao) {
         this(transacao.getId(),
@@ -18,6 +20,7 @@ public record TransacaoHistoricoDto(Long id,
                         .getMetodoPagamentoAceito()
                         .getMetodoPagamento()
                         .getDescricao(),
-                new PedidoHistoricoDto(transacao.getPedido()));
+                new PedidoHistoricoDto(transacao.getPedido()),
+                transacao.getPedido().getStatusDescricao());
     }
 }

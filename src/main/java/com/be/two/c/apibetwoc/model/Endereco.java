@@ -1,9 +1,6 @@
 package com.be.two.c.apibetwoc.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,5 +21,8 @@ public class Endereco {
     private String numero;
     private double geolocalizacaoX;
     private double geolocalizacaoY;
+
+    @OneToOne(mappedBy = "endereco")
+    private Estabelecimento estabelecimento;
 
 }

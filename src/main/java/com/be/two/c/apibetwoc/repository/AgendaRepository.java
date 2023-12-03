@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface AgendaRepository extends JpaRepository<Agenda, Long> {
     List<Agenda> findByEstabelecimentoId(Long id);
+
+    void deleteByEstabelecimentoId(Long id);
 }

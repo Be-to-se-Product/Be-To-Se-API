@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class EstabelecimentoAtualizarDTO {
     @NotBlank
@@ -15,13 +17,19 @@ public class EstabelecimentoAtualizarDTO {
     //@Pattern(regexp = "^(?:\\(\\d{2}\\)\\s*|\\d{2}-?)?\\d{4,5}-?\\d{4}$")
     private String telefoneContato;
     @NotBlank
-    private String enquadramentoJuridico;
-    @NotBlank
     private String referenciaInstagram;
     @NotBlank
     private String referenciaFacebook;
+    
     @Email
     private String emailContato;
+
     @NotNull
-    private Endereco endereco;
+    private EstabelecimentoEnderecoCadastroDTO endereco;
+    @NotNull
+    private List<Long> metodoPagamento;
+    @NotNull
+    private List<EstabelecimentoCadastroAgendaDTO> agenda;
+    @NotNull
+    private List<EstabelecimentoSecaoAtualizarDTO> secao;
 }

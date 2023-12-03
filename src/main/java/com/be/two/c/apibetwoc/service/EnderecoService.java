@@ -52,4 +52,6 @@ public class EnderecoService {
                 ()->new EntidadeNaoExisteException("Endereco não encontrado")
         );
     }
+
+
 }

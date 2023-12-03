@@ -78,9 +78,16 @@ public class ProdutoMapper {
         produtoResponse.setCategoria(produto.getCategoria());
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
-        produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element -> element.getQtdEstrela()).average().orElse(0));
-        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(), x, y));
-        produtoResponse.setImagens(produto.getImagens().stream().map(element -> element.getNomeReferencia()).toList());
+
+        produtoResponse.setPrecoAntigo(produto.getPreco());
+        if(!produto.getIsPromocaoAtiva()){
+            produtoResponse.setPrecoAtual(produto.getPreco());
+            produtoResponse.setPrecoAtual(produto.getPrecoOferta());
+
+        }
+        produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element->element.getQtdEstrela()).average().orElse(0));
+        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
+        produtoResponse.setImagens(produto.getImagens().stream().map(element->element.getNomeReferencia()).toList());
 
         return produtoResponse;
     }

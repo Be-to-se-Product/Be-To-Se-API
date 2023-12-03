@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.AgendaMapper;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoCadastroDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
+import com.be.two.c.apibetwoc.controller.produto.dto.mapa.AgendaResponseDTO;
 import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
@@ -37,6 +38,8 @@ public class EstabelecimentoService {
     private final ImagemService imagemService;
     private final ImagemRepository imagemRepository;
     private final EnderecoService enderecoService;
+    private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
+
 
     public Estabelecimento listarPorId(Long id){
 
@@ -80,9 +83,18 @@ public class EstabelecimentoService {
 
     public Estabelecimento atualizarEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoDto, Long id){
         Estabelecimento estabelecimento = listarPorId(id);
-        Estabelecimento estabelecimentoAtualizado = EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto, estabelecimento);
-        estabelecimentoAtualizado.setId(id);
-        return estabelecimentoRepository.save(estabelecimentoAtualizado) ;
+        agendaRepository.deleteByEstabelecimentoId(id);
+        metodoPagamentoAceitoRepository.deleteByEstabelecimentoId(id);
+        enderecoRepository.deleteByEstabelecimentoId(id);
+
+        List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream().map(e->EstabelecimentoMapper.toSecao(e,estabelecimento)).toList();
+        List<Secao> secaos = secaoRepository.saveAll(secaoSalvar);
+        List<Agenda> agenda= agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream().map(AgendaMapper::toAgenda).toList());
+        List<MetodoPagamentoAceito> metodoPagamentoAceito =  metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimento,estabelecimentoDto.getMetodoPagamento());
+        Endereco endereco = enderecoService.cadastrar(estabelecimento.getEndereco().getCep(),estabelecimento.getEndereco().getNumero());
+        Estabelecimento estabelecimentoSave = EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto,estabelecimento,agenda,endereco,metodoPagamentoAceito);
+        return estabelecimentoRepository.save(estabelecimentoSave);
+
     }
 
     public void deletar(Long id){

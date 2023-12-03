@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -25,6 +26,11 @@ public class Exception {
     public ResponseEntity<List<ErrosValidacao>> tratarErrosValidacao(MethodArgumentNotValidException ex){
         List<FieldError> erros =ex.getFieldErrors();
         return ResponseEntity.badRequest().body(erros.stream().map(ErrosValidacao::new).toList());
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<Void> tratarErroImagem(){
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(EntidadeNaoExisteException.class)

@@ -8,9 +8,9 @@ import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 
 import com.be.two.c.apibetwoc.model.*;
-import com.be.two.c.apibetwoc.service.imagem.ImagemService;
-import com.be.two.c.apibetwoc.service.imagem.mapper.ImagemMapper;
-import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public class EstabelecimentoMapper {
@@ -28,20 +28,20 @@ public class EstabelecimentoMapper {
         return estabelecimento;
     }
 
-    public static Estabelecimento toEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoAtualizarDTO, Estabelecimento estabelecimentoAntigo){
+    public static Estabelecimento toEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoAtualizarDTO, Estabelecimento estabelecimentoAntigo, List<Agenda> agenda, Endereco endereco,List<MetodoPagamentoAceito> metodos){
         Estabelecimento estabelecimento = new Estabelecimento();
         estabelecimento.setNome(estabelecimentoAtualizarDTO.getNome());
         estabelecimento.setSegmento(estabelecimentoAtualizarDTO.getSegmento());
         estabelecimento.setDataCriacao(estabelecimentoAntigo.getDataCriacao());
         estabelecimento.setTelefoneContato(estabelecimentoAtualizarDTO.getTelefoneContato());
-        estabelecimento.setEnquadramentoJuridico(estabelecimentoAtualizarDTO.getEnquadramentoJuridico());
         estabelecimento.setReferenciaInstagram(estabelecimentoAtualizarDTO.getReferenciaInstagram());
         estabelecimento.setReferenciaFacebook(estabelecimentoAtualizarDTO.getReferenciaFacebook());
         estabelecimento.setEmailContato(estabelecimentoAtualizarDTO.getEmailContato());
         estabelecimento.setIsAtivo(estabelecimentoAntigo.getIsAtivo());
         estabelecimento.setComerciante(estabelecimentoAntigo.getComerciante());
-        estabelecimento.setEndereco(estabelecimentoAtualizarDTO.getEndereco());
-
+        estabelecimento.setAgenda(agenda);
+        estabelecimento.setMetodoPagamentoAceito(metodos);
+        estabelecimento.setEndereco(endereco);
         return estabelecimento;
     }
 
@@ -105,8 +105,23 @@ public class EstabelecimentoMapper {
     public static EstabelecimentoEnderecoResponseDTO toEstabelecimentoEnderecoResponse( Endereco endereco){
         EstabelecimentoEnderecoResponseDTO estabelecimentoEnderecoResponse = new EstabelecimentoEnderecoResponseDTO();
         estabelecimentoEnderecoResponse.setNumero(endereco.getNumero());
+        estabelecimentoEnderecoResponse.setCep(endereco.getCep());
         estabelecimentoEnderecoResponse.setBairro(endereco.getBairro());
         estabelecimentoEnderecoResponse.setRua(endereco.getRua());
         return estabelecimentoEnderecoResponse;
     }
+
+    public static Secao toSecao(EstabelecimentoSecaoAtualizarDTO secao, Estabelecimento estabelecimento){
+        Secao secaoEntity = new Secao();
+        Optional<Long> optIdSecao = Optional.ofNullable(secao.getId());
+
+        if(optIdSecao.isPresent()){
+            secaoEntity.setId(optIdSecao.get());
+        }
+        secaoEntity.setEstabelecimento(estabelecimento);
+        secaoEntity.setDescricao(secao.getDescricao());
+        return secaoEntity;
+    }
+
+
 }

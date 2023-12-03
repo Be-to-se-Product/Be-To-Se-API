@@ -24,5 +24,13 @@ public class AgendaMapper {
         return agendaFinal;
     }
 
+    public static Agenda toAgenda(EstabelecimentoCadastroAgendaDTO estabelecimentoCadastroAgendaDTO){
+            Agenda agenda = new Agenda();
+            agenda.setHorarioInicio(estabelecimentoCadastroAgendaDTO.getHorarioInicio());
+            agenda.setHorarioFim(estabelecimentoCadastroAgendaDTO.getHorarioFim());
+            agenda.setDia(estabelecimentoCadastroAgendaDTO.getDia());
+        return agenda;
+    }
+
 
 }

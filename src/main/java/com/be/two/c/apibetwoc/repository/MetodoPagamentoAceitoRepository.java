@@ -9,4 +9,8 @@ import java.util.List;
 public interface MetodoPagamentoAceitoRepository extends JpaRepository<MetodoPagamentoAceito, Long> {
     List<MetodoPagamentoAceito> findByEstabelecimentoId(Long id);
     List<MetodoPagamentoAceito> findByEstabelecimento(Estabelecimento estabelecimento);
+
+
+
+    void deleteByEstabelecimentoId(Long id);
 }
