@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -37,8 +38,8 @@ public class HistoricoController {
 
     @GetMapping("/filtro/{id}")
     public ResponseEntity<Page<TransacaoHistoricoDto>> getHistoricoPorFiltro(@PathVariable Long id,
-                                                                             @RequestParam(required = false) String de,
-                                                                             @RequestParam(required = false) String ate,
+                                                                             @RequestParam(required = false) LocalDateTime de,
+                                                                             @RequestParam(required = false) LocalDateTime ate,
                                                                              @RequestParam(required = false) String status,
                                                                              @RequestParam(required = false) String metodoPagamento,
                                                                              @RequestParam(required = false,defaultValue = "0") int page,
