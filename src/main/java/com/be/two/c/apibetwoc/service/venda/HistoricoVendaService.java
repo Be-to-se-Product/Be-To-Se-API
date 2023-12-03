@@ -37,8 +37,8 @@ public class HistoricoVendaService {
                 StatusPedido.AGUARDANDO_RETIRADA);
     }
 
-    public Page<Transacao> getHistoricoPorFiltro(String de,
-                                                 String ate,
+    public Page<Transacao> getHistoricoPorFiltro(LocalDateTime de,
+                                                 LocalDateTime ate,
                                                  String status,
                                                  String nomeMetodoPagamento,
                                                  Integer page,
@@ -46,14 +46,12 @@ public class HistoricoVendaService {
                                                  Long id) {
         Pageable pageable = PageRequest.of(page, size);
 
-        LocalDate dataDe = de != null ? LocalDate.parse(de) : null;
-        LocalDate dataAte = ate != null ? LocalDate.parse(ate) : null;
         StatusPedido statusPedido = status != null ? getStatusPedido(status) : null;
         Specification<Transacao> specification = Specification
                 .where(TransacaoSpecification.comId(id)
                         .and(TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento))
                         .and(TransacaoSpecification.comStatus(statusPedido))
-                        .and(TransacaoSpecification.entreDatas(dataDe, dataAte))
+                        .and(TransacaoSpecification.entreDatas(de, ate))
                         .and(TransacaoSpecification.comStatusDiferente(StatusPedido.PENDENTE))
                         .and(TransacaoSpecification.comStatusDiferente(StatusPedido.AGUARDANDO_RETIRADA)));
         return transacaoRepository.findAll(specification, pageable);
