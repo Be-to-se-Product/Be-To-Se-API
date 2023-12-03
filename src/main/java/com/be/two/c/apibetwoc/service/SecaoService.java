@@ -41,4 +41,5 @@ public class SecaoService {
     public Secao listarSecaoPorDescricao(String descricao){
         return secaoRepository.findByDescricao(descricao);
     }
+
 }

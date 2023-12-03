@@ -41,4 +41,7 @@ public class Estabelecimento {
     @OneToMany
     @JoinColumn(name = "fk_estabelecimento")
     private List<Agenda> agenda;
+
+    @OneToMany(mappedBy = "estabelecimento")
+    private List<Imagem> imagens;
 }

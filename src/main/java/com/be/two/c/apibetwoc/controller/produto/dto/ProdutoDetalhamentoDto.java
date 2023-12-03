@@ -1,6 +1,5 @@
 package com.be.two.c.apibetwoc.controller.produto.dto;
 
-import com.be.two.c.apibetwoc.controller.secao.dto.SecaoDetalhamentoDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

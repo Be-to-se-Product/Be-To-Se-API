@@ -7,5 +7,4 @@ import lombok.Data;
 public class ResponseSecaoDto {
     private Long id;
     private String descricao;
-    private Estabelecimento estabelecimento;
 }

@@ -22,4 +22,20 @@ public class AgendaMapper {
 
         return agendaFinal;
     }
+
+    public static List<ResponseAgendaDto> of(List<Agenda> agenda){
+        List<ResponseAgendaDto> responseAgendaDto = new ArrayList<>();
+
+        for (Agenda a : agenda){
+            ResponseAgendaDto response = new ResponseAgendaDto();
+            response.setId(a.getId());
+            response.setDia(a.getDia());
+            response.setHorarioInicio(a.getHorarioInicio());
+            response.setHorarioFim(a.getHorarioFim());
+
+            responseAgendaDto.add(response);
+        }
+
+        return responseAgendaDto;
+    }
 }

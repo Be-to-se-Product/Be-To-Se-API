@@ -5,10 +5,6 @@ import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.service.Bicicleta;
-import com.be.two.c.apibetwoc.service.Carro;
-import com.be.two.c.apibetwoc.service.ITempoPercurso;
-import com.be.two.c.apibetwoc.service.Pessoa;
 import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
@@ -17,8 +13,6 @@ import com.be.two.c.apibetwoc.service.produto.ProdutoService;
 
 import com.be.two.c.apibetwoc.util.FilaRequisicao;
 import com.be.two.c.apibetwoc.util.PilhaObj;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -38,17 +32,16 @@ public class ProdutoController {
     private final ProdutoMapaService produtoMapaService;
     public FilaRequisicao filaRequisicao = new FilaRequisicao();
 
-        @GetMapping
-        public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
-            List<Produto> produtos = produtoService.listarProdutos();
+    @GetMapping
+    public ResponseEntity<List<ProdutoDetalhamentoDto>> listarProdutos(){
+        List<Produto> produtos = produtoService.listarProdutos();
 
-
-            if(produtos.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-
-            return ResponseEntity.ok(produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList());
+        if(produtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
+
+        return ResponseEntity.ok(produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoDetalhamentoDto> listarProdutoPorId(@PathVariable Long id){
@@ -78,8 +71,8 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarProduto(@PathVariable Long id){
-        produtoService.deletarProduto(id);
+    public ResponseEntity<Void> inativarProduto(@PathVariable Long id){
+        produtoService.inativarProduto(id);
         return ResponseEntity.noContent().build();
     }
     @PatchMapping("/{id}")
@@ -100,11 +93,13 @@ public class ProdutoController {
         }
          List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
 
-        return ResponseEntity.ok(dtos);
+        return dtos.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(dtos);
     }
-    @GetMapping("/pesquisa")
-    public ResponseEntity<List<ProdutoDetalhamentoDto>> pesquisa(@RequestParam String pesquisa){
-        List<Produto> produtos = produtoService.barraDePesquisa(pesquisa);
+    @GetMapping("/pesquisa/{id}")
+    public ResponseEntity<List<ProdutoDetalhamentoDto>> pesquisa(@PathVariable Long id, @RequestParam String pesquisa){
+        List<Produto> produtos = produtoService.barraDePesquisa(id, pesquisa);
         if (produtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
@@ -137,12 +132,13 @@ public class ProdutoController {
 
 
     @PostMapping("/upload-csv")
-    public ResponseEntity<List<ProdutoDetalhamentoDto>> uploadCsv(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao") Long secao){
+    public ResponseEntity<List<ProdutoDetalhamentoDto>> uploadCsv(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao")Long secaoId){
         if(file.isEmpty()){
             return ResponseEntity.status(400).build();
         }
-        List<Produto> produtos = produtoService.uploadCsv(file, secao);
+        List<Produto> produtos = produtoService.uploadCsv(file, secaoId);
         List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
+
         return ResponseEntity.status(201).body(dtos);
     }
 
