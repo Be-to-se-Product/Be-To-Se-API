@@ -8,4 +8,5 @@ public class ProdutoVendaResponseDto {
     private String nome;
     private Double preco;
     private Integer qtd;
+    private Long idEstabelecimento;
 }

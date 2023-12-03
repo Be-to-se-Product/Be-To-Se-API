@@ -175,8 +175,8 @@ public class ProdutoMapper {
     }
     public static ProdutoVendaResponseDto toprodutoVendaResponse(ProdutoVendaDto dto){
         ProdutoVendaResponseDto produto = new ProdutoVendaResponseDto();
-        produto.setId(dto.getId());
-        produto.setQtd(dto.getQtd());
+        produto.setId(dto.getIdProduto());
+        produto.setQtd(dto.getQuantidade());
         return produto;
     }
 

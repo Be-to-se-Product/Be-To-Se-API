@@ -157,16 +157,29 @@ public class ProdutoController {
             return ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude);
         }).toList());
     }
+    @PostMapping("/venda")
     public ResponseEntity<List<ProdutoVendaResponseDto>> listaProdutoVenda(@RequestBody List<ProdutoVendaDto> produtos){
+        List<Long> ids = produtos.stream().map(ProdutoVendaDto::getIdProduto).collect(Collectors.toList());
+        List<Produto> produtosExistentes = produtoService.buscarProdutosParaVenda(ids);
+
+        if (produtosExistentes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
         List<ProdutoVendaResponseDto> dtos = new ArrayList<>();
         for (ProdutoVendaDto produto: produtos){
             ProdutoVendaResponseDto dto = ProdutoMapper.toprodutoVendaResponse(produto);
+            for(Produto entidade:produtosExistentes){
+                if (entidade.getId().equals(dto.getId())){
+                    dto.setNome(entidade.getNome());
+                    dto.setPreco(entidade.getPreco());
+                    dto.setIdEstabelecimento(entidade.getSecao().getEstabelecimento().getId());
+                }
+            }
             dtos.add(dto);
         }
-        List<Long> ids = produtos.stream().map(ProdutoVendaDto::getId).collect(Collectors.toList());
-        List<Produto> produtosExistentes = produtoService.buscarProdutosParaVenda(ids);
 
-        return null;
+        return ResponseEntity.ok(dtos);
     }
     @PostMapping("/upload-txt")
     public ResponseEntity<List<ProdutoDetalhamentoDto>> uploadTxt(@RequestParam("arquivo") MultipartFile file, @RequestParam("secao") Long secao){

@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.dto.metodoPagamento;
+package com.be.two.c.apibetwoc.controller.metodoPagamento;
 
 import lombok.Data;
 

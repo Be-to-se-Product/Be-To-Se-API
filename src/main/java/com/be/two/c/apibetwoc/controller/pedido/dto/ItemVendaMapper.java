@@ -9,7 +9,11 @@ public class ItemVendaMapper {
         itemVenda.setQuantidade(itemVendaCriacaoDto.quantidade());
         return itemVenda;
     }
-
+    public static ItemVenda of(ItemVendaCreateDto dto){
+        ItemVenda itemVenda = new ItemVenda();
+        itemVenda.setQuantidade(dto.getQuantidade());
+        return itemVenda;
+    }
     public static ResponseItemVendaDto of(ItemVenda itemVenda){
         ResponseItemVendaDto responseItemVendaDto = new ResponseItemVendaDto(itemVenda.getProduto().getId(),itemVenda.getQuantidade(),itemVenda.getProduto().getNome(),itemVenda.getProduto().getPreco(),null);
         return responseItemVendaDto;
