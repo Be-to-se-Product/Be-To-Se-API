@@ -17,7 +17,7 @@ public class EnderecoService {
     private final EnderecoRepository enderecoRepository;
     private final ApiCepAberto apiCepAberto;
 
-    public Endereco cadastrar(String cep) {
+    public Endereco cadastrar(String cep,String numero) {
         Optional<ApiCepAberto.Cep> cepOpt = apiCepAberto.searchByCep(cep);
         if (cepOpt.isEmpty()) throw new EntidadeNaoExisteException("O Cep pesquisado não pôde ser encontrado");
         Endereco endereco = new Endereco();
@@ -27,6 +27,7 @@ public class EnderecoService {
         endereco.setRua(info.getLogradouro());
         endereco.setGeolocalizacaoX(info.getLatitude());
         endereco.setGeolocalizacaoY(info.getLongitude());
+        endereco.setNumero(numero);
 
         return enderecoRepository.save(endereco);
     }
@@ -45,9 +46,7 @@ public class EnderecoService {
 
         return enderecoRepository.save(endereco);
     }
-    public Endereco cadastrar(Endereco endereco) {
-        return enderecoRepository.save(endereco);
-    }
+
     public Endereco buscarPorId(Long id){
         return enderecoRepository.findById(id).orElseThrow(
                 ()->new EntidadeNaoExisteException("Endereco não encontrado")

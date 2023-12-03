@@ -13,12 +13,8 @@ public class EstabelecimentoCadastroDTO {
     private String nome;
     @NotBlank
     private String segmento;
-    @PastOrPresent
-    private LocalDate dataCriacao;
     //@Pattern(regexp = "^(?:\\(\\d{2}\\)\\s*|\\d{2}-?)?\\d{4,5}-?\\d{4}$")
     private String telefoneContato;
-    @NotBlank
-    private String enquadramentoJuridico;
     @NotBlank
     private String referenciaInstagram;
     @NotBlank
@@ -27,9 +23,9 @@ public class EstabelecimentoCadastroDTO {
     private String emailContato;
 
     @NotNull
-    private EstabelecimentoEnderecoCadastroDTO enderecoDto;
+    private EstabelecimentoEnderecoCadastroDTO endereco;
     @NotNull
-    private List<Long> idMetodoPagamento;
+    private List<Long> metodoPagamento;
     @NotNull
     private List<EstabelecimentoCadastroAgendaDTO> agenda;
     @NotNull

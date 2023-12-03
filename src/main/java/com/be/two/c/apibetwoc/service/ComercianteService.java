@@ -25,7 +25,7 @@ public class ComercianteService {
     public Comerciante cadastrar(ComercianteCriacaoDto comercianteCriacaoDto){
         Usuario usuario = usuarioService.cadastrar(comercianteCriacaoDto.getUsuarioCriacaoDTO());
         usuario.setTipoUsuario(TipoUsuario.COMERCIANTE);
-        Endereco endereco = enderecoService.cadastrar(comercianteCriacaoDto.getCep());
+        Endereco endereco = enderecoService.cadastrar(comercianteCriacaoDto.getCep(),null);
         Comerciante comerciante = ComercianteMapper.of(comercianteCriacaoDto);
         comerciante.setUsuario(usuario);
         comerciante.setEndereco(endereco);

@@ -9,10 +9,15 @@ import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
+import com.be.two.c.apibetwoc.util.PilhaObj;
+import com.be.two.c.apibetwoc.util.TipoArquivo;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +34,17 @@ public class EstabelecimentoService {
     private final EnderecoRepository enderecoRepository;
     private final AutenticacaoService autenticacaoService;
     private final UsuarioRepository usuarioRepository;
+    private final ImagemService imagemService;
+    private final ImagemRepository imagemRepository;
+    private final EnderecoService enderecoService;
 
     public Estabelecimento listarPorId(Long id){
-        return estabelecimentoRepository
+
+        Estabelecimento estabelecimento = estabelecimentoRepository
                 .findById(id)
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
+        formatarImagem(estabelecimento);
+        return estabelecimento;
     }
 
     public List<Estabelecimento> listarTodos(){
@@ -54,14 +65,11 @@ public class EstabelecimentoService {
                 .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
 
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
-        Endereco enderecoEntity = EstabelecimentoMapper.of(estabelecimentoCadastroDTO.getEnderecoDto());
-
-
-        Endereco endereco =  enderecoRepository.save(enderecoEntity);
-
+        Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(),estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
+
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
-        List<MetodoPagamentoAceito> metodoPagamentoAceitos = metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimentoCadastroDTO.getIdMetodoPagamento());
+        List<MetodoPagamentoAceito> metodoPagamentoAceitos = metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimentoCadastroDTO.getMetodoPagamento());
         List<Agenda> agenda =agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
         List<Secao> secao =  secaoRepository.saveAll(SecaoMapper.of(estabelecimentoCadastroDTO.getSecao(), estabelecimentoCriado));
         estabelecimentoCriado.setAgenda(agenda);
@@ -86,7 +94,11 @@ public class EstabelecimentoService {
         estabelecimentoRepository.save(estabelecimento);
     }
 
+private void  formatarImagem(Estabelecimento estabelecimento){
 
+        estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+
+}
 
     private Long retornarIdUsuario () {
         Long idUsuario = autenticacaoService.loadUsuarioDetails().getId();
@@ -94,6 +106,19 @@ public class EstabelecimentoService {
     }
     public List<Estabelecimento> listarPorComerciante() {
         Long usuarioId = retornarIdUsuario();
-        return estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);
+        List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);
+        for (Estabelecimento estabelecimento:
+             estabelecimentos) {
+            estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        }
+
+        return estabelecimentos;
+    }
+
+    public void salvarImagem(MultipartFile imagem, Long id) {
+        PilhaObj<ArquivoSaveDTO> arquivos = new PilhaObj<>(1);
+        Estabelecimento estabelecimento =  listarPorId(id);
+        Imagem imagemSalva=  imagemService.cadastrarImagensEstabelecimento(imagem, TipoArquivo.IMAGEM,estabelecimento,arquivos);
+        imagemRepository.save(imagemSalva);
     }
 }

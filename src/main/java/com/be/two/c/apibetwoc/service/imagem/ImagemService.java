@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.service.imagem;
 
 
+import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.ImagemRepository;
@@ -27,6 +28,10 @@ public class ImagemService {
         return ImagemMapper.of(arquivo,produto);
     }
 
+    public Imagem cadastrarImagensEstabelecimento(MultipartFile file, TipoArquivo tipoArquivo, Estabelecimento estabelecimento, PilhaObj<ArquivoSaveDTO> arquivos){
+        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo,arquivos);
+        return ImagemMapper.of(arquivo,estabelecimento);
+    }
 
     public Imagem formatterImagensURI(Imagem imagem){
         String dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/imagens/");

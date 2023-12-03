@@ -4,10 +4,12 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.dto.*;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class EstabelecimentoController {
 
     private final EstabelecimentoService estabelecimentoService;
+    private final ImagemService imagemService;
 
 
 
@@ -26,8 +29,9 @@ public class EstabelecimentoController {
          List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante();
 
          if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
+         List<EstabelecimentoResponseDTO> estabelecimentoResponseDTO = estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList();
 
-         return ResponseEntity.ok(estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList());
+         return ResponseEntity.ok(estabelecimentoResponseDTO);
     }
     @GetMapping
     public ResponseEntity<List<EstabelecimentoResponseDTO>> listarTodos() {
@@ -56,6 +60,14 @@ public class EstabelecimentoController {
     public ResponseEntity<EstabelecimentoResponseDTO> cadastrarEstabelecimento(@Valid @RequestBody EstabelecimentoCadastroDTO estabelecimento) {
         Estabelecimento estabelecimentoCriado = estabelecimentoService.cadastroEstabelecimento(estabelecimento);
         return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoCriado));
+    }
+
+    @PostMapping("/{id}/imagem")
+    public ResponseEntity<Void> salvarImagem(@RequestParam MultipartFile imagem, @PathVariable Long id){
+
+        estabelecimentoService.salvarImagem(imagem,id);
+        return ResponseEntity.noContent().build();
+
     }
 
     @PutMapping("/{id}")

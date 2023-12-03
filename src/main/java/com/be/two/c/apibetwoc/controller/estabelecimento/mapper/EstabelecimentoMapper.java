@@ -8,15 +8,17 @@ import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 
 import com.be.two.c.apibetwoc.model.*;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
+import com.be.two.c.apibetwoc.service.imagem.mapper.ImagemMapper;
+import lombok.RequiredArgsConstructor;
+
 
 public class EstabelecimentoMapper {
     public static Estabelecimento toEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO, Comerciante comerciante){
         Estabelecimento estabelecimento = new Estabelecimento();
         estabelecimento.setNome(estabelecimentoCadastroDTO.getNome());
         estabelecimento.setSegmento(estabelecimentoCadastroDTO.getSegmento());
-        estabelecimento.setDataCriacao(estabelecimentoCadastroDTO.getDataCriacao());
         estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefoneContato());
-        estabelecimento.setEnquadramentoJuridico(estabelecimentoCadastroDTO.getEnquadramentoJuridico());
         estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getReferenciaInstagram());
         estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getReferenciaFacebook());
         estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmailContato());
@@ -59,12 +61,13 @@ public class EstabelecimentoMapper {
     public static EstabelecimentoResponseDTO toResponseEstabelecimento(Estabelecimento estabelecimento){
 
         EstabelecimentoResponseDTO estabelecimentoResponseDTO = new EstabelecimentoResponseDTO();
-
+        if(estabelecimento.getImagens()!=null) {
+            estabelecimentoResponseDTO.setImagens(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList());
+        }
         estabelecimentoResponseDTO.setId(estabelecimento.getId());
         estabelecimentoResponseDTO.setNome(estabelecimento.getNome());
         estabelecimentoResponseDTO.setSegmento(estabelecimento.getSegmento());
         estabelecimentoResponseDTO.setTelefoneContato(estabelecimento.getTelefoneContato());
-
         estabelecimentoResponseDTO.setReferenciaInstagram(estabelecimento.getReferenciaInstagram());
         estabelecimentoResponseDTO.setReferenciaFacebook(estabelecimento.getReferenciaFacebook());
         estabelecimentoResponseDTO.setEmailContato(estabelecimento.getEmailContato());
