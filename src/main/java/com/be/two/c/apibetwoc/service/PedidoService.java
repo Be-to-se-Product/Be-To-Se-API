@@ -51,9 +51,17 @@ public class PedidoService {
         pedidoRepository.save(pedido);
     }
 
-    public Pedido cadastrar(@Valid PedidoCriacaoDto pedidoCriacaoDto){
+   /* public Pedido cadastrar(@Valid PedidoCriacaoDto pedidoCriacaoDto){
         Pedido pedido = PedidoMapper.of(pedidoCriacaoDto);
         MetodoPagamentoAceito metodoPagamentoAceito = metodoPagamentoAceitoRepository.findById(pedidoCriacaoDto.idMetodoPagamento())
+                .orElseThrow(() -> new EntidadeNaoExisteException("Método de pagamento informado não existe"));
+        pedido.setMetodoPagamentoAceito(metodoPagamentoAceito);
+        return pedidoRepository.save(pedido);
+    }*/
+
+    public Pedido cadastrar(@Valid MetodoDto metodoDto){
+        Pedido pedido = PedidoMapper.of(metodoDto);
+        MetodoPagamentoAceito metodoPagamentoAceito = metodoPagamentoAceitoRepository.findById(metodoDto.getIdMetodoPagamento())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Método de pagamento informado não existe"));
         pedido.setMetodoPagamentoAceito(metodoPagamentoAceito);
         return pedidoRepository.save(pedido);

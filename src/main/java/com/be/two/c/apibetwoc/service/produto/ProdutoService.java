@@ -330,5 +330,8 @@ public class ProdutoService {
             throw new RuntimeException(e);
         }
     }
+    public List<Produto> buscarProdutosParaVenda(List<Long> ids){
+        return produtoRepository.findByIdIn(ids);
+    }
 
 }

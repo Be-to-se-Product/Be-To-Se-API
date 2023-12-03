@@ -2,7 +2,10 @@ package com.be.two.c.apibetwoc.controller.estabelecimento;
 
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.*;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
+import com.be.two.c.apibetwoc.controller.metodoPagamento.ResponseMetodoPagamentoDto;
+import com.be.two.c.apibetwoc.controller.metodoPagamento.mapper.MetodoPagamentoAceitoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
+import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.service.AgendaService;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
@@ -80,6 +83,16 @@ public class EstabelecimentoController {
     @GetMapping("/rota-carro")
     public Long calcularRotaCarro(@Valid @RequestBody CoordenadaDto coordenadaDto) {
         return estabelecimentoService.calcularRotaCarro(coordenadaDto);
+    }
+    @GetMapping("/metodos/{id}")
+    public ResponseEntity<List<ResponseMetodoPagamentoDto>> metodosAceitos(@PathVariable Long id){
+        List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);
+        if (metodos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        List<ResponseMetodoPagamentoDto> metodosAceito = MetodoPagamentoAceitoMapper.of(metodos);
+
+        return ResponseEntity.ok(metodosAceito);
     }
 
 }
