@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.model.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TransacaoSpecification {
 
@@ -20,15 +21,18 @@ public class TransacaoSpecification {
         };
     }
 
-    public static Specification<Transacao> entreDatas(LocalDate dataUm, LocalDate dataDois) {
+    public static Specification<Transacao> entreDatas(LocalDateTime dataUm, LocalDateTime dataDois) {
 
         return (root, criteriaQuery, criteriaBuilder) -> {
             if (dataUm == null || dataDois == null) {
                 return criteriaBuilder.conjunction();
             }
+            System.out.println(dataUm);
+            System.out.println(dataDois);
             return criteriaBuilder
                     .between(root
-                            .get("dataTransacao"), dataUm, dataDois);
+                            .join("pedido")
+                            .get("dataHoraPedido"), dataUm, dataDois);
         };
 
     }
@@ -37,6 +41,7 @@ public class TransacaoSpecification {
         if (status == null) {
             return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
         }
+        System.out.println(status);
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder
                         .equal(root

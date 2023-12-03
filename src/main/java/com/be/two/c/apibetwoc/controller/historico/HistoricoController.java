@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -37,8 +38,8 @@ public class HistoricoController {
 
     @GetMapping("/filtro/{id}")
     public ResponseEntity<Page<TransacaoHistoricoDto>> getHistoricoPorFiltro(@PathVariable Long id,
-                                                                             @RequestParam(required = false) String de,
-                                                                             @RequestParam(required = false) String ate,
+                                                                             @RequestParam(required = false) LocalDateTime de,
+                                                                             @RequestParam(required = false) LocalDateTime ate,
                                                                              @RequestParam(required = false) String status,
                                                                              @RequestParam(required = false) String metodoPagamento,
                                                                              @RequestParam(required = false,defaultValue = "0") int page,
@@ -67,12 +68,12 @@ public class HistoricoController {
     }
 
     @GetMapping("/{id}/download-txt")
-    public ResponseEntity<byte[]> downloadTxt(@PathVariable Long idEstabelecimento) {
+    public ResponseEntity<byte[]> downloadTxt(@PathVariable Long id) {
         try {
-            byte[] txtData = historicoVendaService.downloadTxt(idEstabelecimento);
+            byte[] txtData = historicoVendaService.downloadTxt(id);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transacoes_" + idEstabelecimento + ".txt");
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transacoes_" + id + ".txt");
             headers.add(HttpHeaders.CONTENT_TYPE, "text/plain; charset=UTF-8");
 
             return new ResponseEntity<>(txtData, headers, HttpStatus.OK);
