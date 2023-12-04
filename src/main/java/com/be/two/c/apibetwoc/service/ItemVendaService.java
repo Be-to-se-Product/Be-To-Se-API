@@ -27,30 +27,11 @@ public class ItemVendaService {
     private final ConsumidorRepository consumidorRepository;
     private final ProdutoRepository produtoRepository;
 
-    /*public Pedido cadastrarItensVenda(List<ItemVendaCriacaoDto> itensVenda) {
-        List<ItemVenda> itensSalvos = new ArrayList<>();
-        Pedido pedido = pedidoService.cadastrar(itensVenda.get(0).pedido());
-        for (ItemVendaCriacaoDto i : itensVenda) {
-            ItemVenda itemVenda = ItemVendaMapper.of(i);
-            Consumidor consumidor = consumidorRepository.findById(i.idConsumidor())
-                    .orElseThrow(() -> new EntidadeNaoExisteException("Consumidor informado não existe"));
-            Produto produto = produtoRepository.findById(i.idProduto())
-                    .orElseThrow(() -> new EntidadeNaoExisteException("Produto informado não existe"));
-            itemVenda.setConsumidor(consumidor);
-            itemVenda.setProduto(produto);
-            itemVenda.setPedido(pedido);
-            itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
-            itensSalvos.add(itemVenda);
-            itemVendaRepository.save(itemVenda);
-        }
-        itemVendaRepository.saveAll(itensSalvos);
-        return pedido;
-    }*/
-
     public Pedido cadastrar(PedidoCreateDto pedidoCreate ){
         List<ItemVenda> itensVendas = new ArrayList<>();
         Pedido pedido = pedidoService.cadastrar(pedidoCreate.getMetodo());
         for (ItemVendaCreateDto i : pedidoCreate.getItens()){
+            System.out.println(pedidoCreate.getItens());
             ItemVenda itemVenda = ItemVendaMapper.of(i);
             Consumidor consumidor = consumidorRepository.findById(pedidoCreate.getIdConsumidor())
                     .orElseThrow(() -> new EntidadeNaoExisteException("Consumidor informado não existe"));

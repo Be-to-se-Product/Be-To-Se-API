@@ -29,9 +29,7 @@ public class PedidoService {
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final AutenticacaoService autenticacaoService;
     private final UsuarioRepository repository;
-
-
-
+    private final TransacaoService transacaoService;
     private void validarPedidosEstabelecimento(Long id){
         Optional<Estabelecimento> estabelecimentoOpt=  estabelecimentoRepository.findById(id);
         if(estabelecimentoOpt.isEmpty()){
@@ -42,32 +40,21 @@ public class PedidoService {
             throw new ForbidenPedidoException("Estabelecimento não encontrado");
         }
     }
-
-
     public void alterarStatusPedido(Long idPedido, PedidoDtoStatus novoStatus) {
         Pedido pedido = pedidoRepository.findById(idPedido).orElseThrow(() -> new EntidadeNaoExisteException("O pedido informado não existe"));
         validarPedidosEstabelecimento(pedido.getMetodoPagamentoAceito().getEstabelecimento().getId());
         pedido.setStatusDescricao(novoStatus.getStatus());
         pedidoRepository.save(pedido);
     }
-
-   /* public Pedido cadastrar(@Valid PedidoCriacaoDto pedidoCriacaoDto){
-        Pedido pedido = PedidoMapper.of(pedidoCriacaoDto);
-        MetodoPagamentoAceito metodoPagamentoAceito = metodoPagamentoAceitoRepository.findById(pedidoCriacaoDto.idMetodoPagamento())
-                .orElseThrow(() -> new EntidadeNaoExisteException("Método de pagamento informado não existe"));
-        pedido.setMetodoPagamentoAceito(metodoPagamentoAceito);
-        return pedidoRepository.save(pedido);
-    }*/
-
     public Pedido cadastrar(@Valid MetodoDto metodoDto){
         Pedido pedido = PedidoMapper.of(metodoDto);
         MetodoPagamentoAceito metodoPagamentoAceito = metodoPagamentoAceitoRepository.findById(metodoDto.getIdMetodoPagamento())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Método de pagamento informado não existe"));
         pedido.setMetodoPagamentoAceito(metodoPagamentoAceito);
-        return pedidoRepository.save(pedido);
+        pedido = pedidoRepository.save(pedido);
+        Transacao transacao = transacaoService.adicionar(pedido);
+        return pedido;
     }
-
-
     public List<ResponsePedidoConsumidorDto> listarPorConsumidor(StatusPedido status) {
         if(autenticacaoService.loadUsuarioDetails()==null){
                 throw new NaoAutorizadoException();
@@ -82,10 +69,6 @@ public class PedidoService {
         List <Pedido> pedidos = pedidoRepository.searchByConsumidor(autenticacaoService.loadUsuarioDetails().getId());
         return pedidos.stream().map(PedidoMapper::ofResponseUsuario).toList();
     }
-
-
-
-
     public ListaObj<ResponsePedidoDTO> listarPorEstabelecimento(Long idEstabelecimento) {
 
         validarPedidosEstabelecimento(idEstabelecimento);
@@ -98,14 +81,10 @@ public class PedidoService {
             return listaPedidos;
 
     }
-
     public List<ResponsePedidoDTO> listarPorEstabelecimentoEStatus(Long idEstabelecimento, StatusPedido status) {
         validarPedidosEstabelecimento(idEstabelecimento);
        return  pedidoRepository.searchByEstabelecimentoEStatus(idEstabelecimento, status).stream().map(PedidoMapper::of).toList();
     }
-
-
-
     public void deletar(Long id) {
     Pedido pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new EntidadeNaoExisteException("Pedido não encontrado"));
