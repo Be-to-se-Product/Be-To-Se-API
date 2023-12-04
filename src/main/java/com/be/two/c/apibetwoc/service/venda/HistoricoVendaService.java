@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.HTML;
 import java.time.LocalDate;
 import java.util.List;
 import java.io.*;
@@ -45,6 +46,7 @@ public class HistoricoVendaService {
                                                  Integer size,
                                                  Long id) {
         Pageable pageable = PageRequest.of(page, size);
+
 
         StatusPedido statusPedido = status != null ? getStatusPedido(status) : null;
         Specification<Transacao> specification = Specification
@@ -96,7 +98,6 @@ public class HistoricoVendaService {
 
                 outputStreamWriter.write(corpo + "\n");
             }
-
             String trailer = "01";
             trailer += String.format("%010d", vendas.size());
 

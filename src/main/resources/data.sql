@@ -33,12 +33,12 @@ INSERT INTO usuario (email, senha, tipo_usuario) VALUES
     ('Dinheiro'),
     ('Pix'),
     ('Boleto'),
-    ('Transferência Bancária'),
+    ('Cartão de Débito'),
     ('PicPay'),
     ('PayPal'),
     ('Vale Alimentação'),
     ('Vale Refeição'),
-    ('Cesta Básica');
+    ('Bitcoin');
 
     -- Dados para a tabela 'comerciante'
     INSERT INTO comerciante (data_criacao, data_ultimo_acesso, is_ativo, fk_endereco, fk_usuario, cnpj, nome, razao_social) VALUES
@@ -180,9 +180,6 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     ('2022-08-15', 3, NULL, 'logo_acougue.jpg', 'Logo Açougue da Esquina'),
     ('2022-09-10', 3, NULL, 'logo_padaria_acougue.jpg', 'Logo Padaria e Açougue da Esquina'),
     ('2022-11-01', 5, NULL, 'logo_conveniencia.jpg', 'Logo Loja de Conveniência'),
-    ('2023-01-15', NULL, 1, 'arroz_integral.jpg', 'Arroz Integral'),
-    ('2023-01-15', NULL, 3, 'feijao_preto.jpg', 'Feijão Preto'),
-    ('2023-01-15', NULL, 2, 'pao_frances.jpg', 'Pão Francês'),
     ('2023-01-15', 5, NULL, 'logo_supermercado.jpg', 'Logo Supermercado Mega');
 
     -- Dados para a tabela 'produto_tag'
