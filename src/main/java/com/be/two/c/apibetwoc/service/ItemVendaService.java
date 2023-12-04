@@ -12,6 +12,7 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
 import com.be.two.c.apibetwoc.repository.ItemVendaRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class ItemVendaService {
     private final PedidoService pedidoService;
     private final ConsumidorRepository consumidorRepository;
     private final ProdutoRepository produtoRepository;
+    private final TransacaoService transacaoService;
 
     public Pedido cadastrar(PedidoCreateDto pedidoCreate ){
         List<ItemVenda> itensVendas = new ArrayList<>();
@@ -42,9 +44,10 @@ public class ItemVendaService {
             itemVenda.setPedido(pedido);
             itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
             itensVendas.add(itemVenda);
-            itemVendaRepository.save(itemVenda);
         }
+        pedido.setItens(itensVendas);
         itemVendaRepository.saveAll(itensVendas);
+        transacaoService.adicionar(pedido);
         return pedido;
     }
 }

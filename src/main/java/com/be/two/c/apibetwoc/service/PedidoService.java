@@ -51,9 +51,7 @@ public class PedidoService {
         MetodoPagamentoAceito metodoPagamentoAceito = metodoPagamentoAceitoRepository.findById(metodoDto.getIdMetodoPagamento())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Método de pagamento informado não existe"));
         pedido.setMetodoPagamentoAceito(metodoPagamentoAceito);
-        pedido = pedidoRepository.save(pedido);
-        Transacao transacao = transacaoService.adicionar(pedido);
-        return pedido;
+        return pedidoRepository.save(pedido);
     }
     public List<ResponsePedidoConsumidorDto> listarPorConsumidor(StatusPedido status) {
         if(autenticacaoService.loadUsuarioDetails()==null){

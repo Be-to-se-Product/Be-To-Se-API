@@ -19,19 +19,18 @@ import java.util.stream.Collectors;
 public class TransacaoService {
     private final TransacaoRepository transacaoRepository;
     private final ItemVendaRepository itemVendaRepository;
-    public Transacao adicionar(Pedido pedido){
+    public void adicionar(Pedido pedido){
         Double total = 0.0;
-        List<ItemVenda> itens = pedido.getItens();
         List<Long> ids = pedido.getItens().stream().map(ItemVenda::getId).collect(Collectors.toList());
         List<ItemVenda> itensVenda = itemVendaRepository.findByIdIn(ids);
         for (ItemVenda i : itensVenda){
-            total += i.getProduto().getPreco();
+            total += i.getProduto().getPreco() * i.getQuantidade();
         }
         Transacao transacao = new Transacao();
         transacao.setPedido(pedido);
         transacao.setValor(total);
         transacao.setEstornado(false);
         transacao.setDataTransacao(LocalDate.now());
-        return transacaoRepository.save(transacao);
+        transacaoRepository.save(transacao);
     }
 }
