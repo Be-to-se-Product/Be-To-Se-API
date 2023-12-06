@@ -30,7 +30,6 @@ public class EstabelecimentoController {
 
          if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
          List<EstabelecimentoResponseDTO> estabelecimentoResponseDTO = estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList();
-
          return ResponseEntity.ok(estabelecimentoResponseDTO);
     }
     @GetMapping

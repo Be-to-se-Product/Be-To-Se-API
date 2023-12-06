@@ -1,10 +1,7 @@
 package com.be.two.c.apibetwoc.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,8 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(of="id")
 public class MetodoPagamentoAceito {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "fk_estabelecimento")
     private Estabelecimento estabelecimento;
@@ -23,6 +22,8 @@ public class MetodoPagamentoAceito {
     @ManyToOne
     @JoinColumn(name = "fk_metodo_pagamento")
     private MetodoPagamento metodoPagamento;
+
+    private Boolean isAtivo;
 
     @OneToMany(mappedBy = "metodoPagamentoAceito")
     List<Pedido> pedidos;

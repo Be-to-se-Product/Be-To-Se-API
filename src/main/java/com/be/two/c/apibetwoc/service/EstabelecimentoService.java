@@ -20,8 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,66 +38,100 @@ public class EstabelecimentoService {
     private final ImagemRepository imagemRepository;
     private final EnderecoService enderecoService;
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
+    private final MetodoPagamentoRepository metodoPagamentoRepository;
 
 
-    public Estabelecimento listarPorId(Long id){
+    public Estabelecimento listarPorId(Long id) {
 
-        Estabelecimento estabelecimento = estabelecimentoRepository
-                .findById(id)
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
         formatarImagem(estabelecimento);
+
+        estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(MetodoPagamentoAceito::getIsAtivo).toList());
         return estabelecimento;
     }
 
-    public List<Estabelecimento> listarTodos(){
+    public List<Estabelecimento> listarTodos() {
         return estabelecimentoRepository.findAll();
     }
 
-    public List<Estabelecimento> listarPorSegmento(String segmento){
+    public List<Estabelecimento> listarPorSegmento(String segmento) {
         return estabelecimentoRepository.findBySegmento(segmento);
     }
 
     @Transactional
-    public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO){
+    public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
         Optional<Comerciante> optionalComerciante = Optional.ofNullable(usuario.getComerciante());
 
-        Comerciante comerciante = comercianteRepository
-                .findById(optionalComerciante.orElseThrow(EntityNotFoundException::new).getId())
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
+        Comerciante comerciante = comercianteRepository.findById(optionalComerciante.orElseThrow(EntityNotFoundException::new).getId()).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
 
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
-        Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(),estabelecimentoCadastroDTO.getEndereco().getNumero());
+        Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
 
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
         List<MetodoPagamentoAceito> metodoPagamentoAceitos = metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimentoCadastroDTO.getMetodoPagamento());
-        List<Agenda> agenda =agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
-        List<Secao> secao =  secaoRepository.saveAll(SecaoMapper.of(estabelecimentoCadastroDTO.getSecao(), estabelecimentoCriado));
+        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
+        List<Secao> secao = secaoRepository.saveAll(SecaoMapper.of(estabelecimentoCadastroDTO.getSecao(), estabelecimentoCriado));
         estabelecimentoCriado.setAgenda(agenda);
         estabelecimentoCriado.setSecao(secao);
         estabelecimentoCriado.setMetodoPagamentoAceito(metodoPagamentoAceitos);
         return estabelecimentoCriado;
     }
 
-    public Estabelecimento atualizarEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoDto, Long id){
-        Estabelecimento estabelecimento = listarPorId(id);
+    @Transactional
+    public Estabelecimento atualizarEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoDto, Long id) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Entidade não encontrada"));
         agendaRepository.deleteByEstabelecimentoId(id);
-        metodoPagamentoAceitoRepository.deleteByEstabelecimentoId(id);
-        enderecoRepository.deleteByEstabelecimentoId(id);
+        List<MetodoPagamentoAceito> metodoPagamentosBanco= metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
+        List<MetodoPagamento> metodoPagamentoFront = metodoPagamentoRepository.findByIdIn(estabelecimentoDto.getMetodoPagamento());
+        List<MetodoPagamentoAceito> metodoPagamentoRemover = new ArrayList<>();
 
-        List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream().map(e->EstabelecimentoMapper.toSecao(e,estabelecimento)).toList();
-        List<Secao> secaos = secaoRepository.saveAll(secaoSalvar);
-        List<Agenda> agenda= agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream().map(AgendaMapper::toAgenda).toList());
-        List<MetodoPagamentoAceito> metodoPagamentoAceito =  metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimento,estabelecimentoDto.getMetodoPagamento());
-        Endereco endereco = enderecoService.cadastrar(estabelecimento.getEndereco().getCep(),estabelecimento.getEndereco().getNumero());
-        Estabelecimento estabelecimentoSave = EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto,estabelecimento,agenda,endereco,metodoPagamentoAceito);
-        return estabelecimentoRepository.save(estabelecimentoSave);
+        for (MetodoPagamentoAceito metodoPagamentoBanco  : metodoPagamentosBanco ) {
+            if(metodoPagamentoFront.stream().noneMatch(e->metodoPagamentoBanco.getMetodoPagamento().getId()==e.getId())){
+                metodoPagamentoBanco.setIsAtivo(false);
+                metodoPagamentoRemover.add(metodoPagamentoBanco);
+            }
+        }
 
+        metodoPagamentoAceitoRepository.saveAll(metodoPagamentoRemover);
+
+        List<MetodoPagamentoAceito> metodoPagamentoSalvar = new ArrayList<>();
+        for (MetodoPagamento metodoPagamento: metodoPagamentoFront ) {
+            if(metodoPagamentosBanco.stream().noneMatch(e->e.getId()==metodoPagamento.getId())){
+                MetodoPagamentoAceito metodoPagamentoAceito = new MetodoPagamentoAceito();
+                metodoPagamentoAceito.setEstabelecimento(estabelecimento);
+                metodoPagamentoAceito.setMetodoPagamento(metodoPagamento);
+                metodoPagamentoAceito.setIsAtivo(true);
+            }
+        }
+
+        Set<MetodoPagamentoAceito> metodoPagamentoAceitoHashSet = new HashSet<>(metodoPagamentoSalvar);
+
+        for (MetodoPagamentoAceito metodoPagamentoAceito: metodoPagamentosBanco) {
+            metodoPagamentoAceitoHashSet.add(metodoPagamentoAceito);
+        }
+        List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoHashSet.stream().toList();
+        EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto,estabelecimento);
+        Estabelecimento estabelecimentoSalvo =  estabelecimentoRepository.save(estabelecimento);
+        metodoPagamentoAceitoRepository.saveAll(metodos);
+        Endereco endereco = enderecoRepository.findByEstabelecimentoId(id);
+        endereco.setNumero(estabelecimentoDto.getEndereco().getNumero());
+        endereco.setRua(estabelecimentoDto.getEndereco().getRua());
+        endereco.setBairro(estabelecimentoDto.getEndereco().getBairro());
+        endereco.setCep(estabelecimentoDto.getEndereco().getCep());
+        List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream().map(e -> EstabelecimentoMapper.toSecao(e, estabelecimentoSalvo)).toList();
+        secaoRepository.saveAll(secaoSalvar);
+
+        agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream().map(AgendaMapper::toAgenda).toList());
+        enderecoRepository.save(endereco);
+
+
+        return estabelecimentoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    public void deletar(Long id){
-        if (!estabelecimentoRepository.existsById(id)){
+    public void deletar(Long id) {
+        if (!estabelecimentoRepository.existsById(id)) {
             throw new EntidadeNaoExisteException("O estabelecimento procurado não existe.");
         }
         Estabelecimento estabelecimento = estabelecimentoRepository.getReferenceById(id);
@@ -106,31 +139,38 @@ public class EstabelecimentoService {
         estabelecimentoRepository.save(estabelecimento);
     }
 
-private void  formatarImagem(Estabelecimento estabelecimento){
+    private void formatarImagem(Estabelecimento estabelecimento) {
 
         estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
 
-}
+    }
 
-    private Long retornarIdUsuario () {
+    private Long retornarIdUsuario() {
         Long idUsuario = autenticacaoService.loadUsuarioDetails().getId();
         return idUsuario;
     }
-    public List<Estabelecimento> listarPorComerciante() {
-        Long usuarioId = retornarIdUsuario();
-        List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);
-        for (Estabelecimento estabelecimento:
-             estabelecimentos) {
-            estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-        }
 
+    public List<Estabelecimento> listarPorComerciante() {
+
+
+        Long usuarioId = retornarIdUsuario();
+
+        List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);
+        for (Estabelecimento estabelecimento : estabelecimentos) {
+            if (estabelecimento.getImagens() != null) {
+                estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+            }
+            if (estabelecimento.getMetodoPagamentoAceito() != null) {
+                estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(e -> e.getIsAtivo()).toList());
+            }
+        }
         return estabelecimentos;
     }
 
     public void salvarImagem(MultipartFile imagem, Long id) {
         PilhaObj<ArquivoSaveDTO> arquivos = new PilhaObj<>(1);
-        Estabelecimento estabelecimento =  listarPorId(id);
-        Imagem imagemSalva=  imagemService.cadastrarImagensEstabelecimento(imagem, TipoArquivo.IMAGEM,estabelecimento,arquivos);
+        Estabelecimento estabelecimento = listarPorId(id);
+        Imagem imagemSalva = imagemService.cadastrarImagensEstabelecimento(imagem, TipoArquivo.IMAGEM, estabelecimento, arquivos);
         imagemRepository.save(imagemSalva);
     }
 }

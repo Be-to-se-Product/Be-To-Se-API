@@ -13,4 +13,8 @@ public interface MetodoPagamentoAceitoRepository extends JpaRepository<MetodoPag
 
 
     void deleteByEstabelecimentoId(Long id);
+
+    List<MetodoPagamentoAceito> findByEstabelecimentoIdAndIsAtivoTrue(Long id);
+
+    List<MetodoPagamentoAceito> findByIdIn(List<Long> naoTem);
 }

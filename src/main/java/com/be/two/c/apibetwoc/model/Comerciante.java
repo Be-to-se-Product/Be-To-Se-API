@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,4 +30,7 @@ public class Comerciante {
     @JoinColumn(name = "fk_endereco")
     private Endereco endereco;
     private Boolean isAtivo;
+
+    @OneToMany(mappedBy = "comerciante")
+    private List<Estabelecimento> estabelecimento;
 }

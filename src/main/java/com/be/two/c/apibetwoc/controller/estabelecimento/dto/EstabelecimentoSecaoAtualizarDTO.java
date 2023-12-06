@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class EstabelecimentoSecaoAtualizarDTO {
 
     private Long id;
-    private String descricao;
+    private String nome;
 }

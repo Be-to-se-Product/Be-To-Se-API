@@ -28,20 +28,14 @@ public class EstabelecimentoMapper {
         return estabelecimento;
     }
 
-    public static Estabelecimento toEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoAtualizarDTO, Estabelecimento estabelecimentoAntigo, List<Agenda> agenda, Endereco endereco,List<MetodoPagamentoAceito> metodos){
-        Estabelecimento estabelecimento = new Estabelecimento();
+    public static Estabelecimento toEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoAtualizarDTO,Estabelecimento estabelecimento){
+
         estabelecimento.setNome(estabelecimentoAtualizarDTO.getNome());
         estabelecimento.setSegmento(estabelecimentoAtualizarDTO.getSegmento());
-        estabelecimento.setDataCriacao(estabelecimentoAntigo.getDataCriacao());
         estabelecimento.setTelefoneContato(estabelecimentoAtualizarDTO.getTelefoneContato());
         estabelecimento.setReferenciaInstagram(estabelecimentoAtualizarDTO.getReferenciaInstagram());
         estabelecimento.setReferenciaFacebook(estabelecimentoAtualizarDTO.getReferenciaFacebook());
         estabelecimento.setEmailContato(estabelecimentoAtualizarDTO.getEmailContato());
-        estabelecimento.setIsAtivo(estabelecimentoAntigo.getIsAtivo());
-        estabelecimento.setComerciante(estabelecimentoAntigo.getComerciante());
-        estabelecimento.setAgenda(agenda);
-        estabelecimento.setMetodoPagamentoAceito(metodos);
-        estabelecimento.setEndereco(endereco);
         return estabelecimento;
     }
 
@@ -61,6 +55,7 @@ public class EstabelecimentoMapper {
     public static EstabelecimentoResponseDTO toResponseEstabelecimento(Estabelecimento estabelecimento){
 
         EstabelecimentoResponseDTO estabelecimentoResponseDTO = new EstabelecimentoResponseDTO();
+        System.out.println("-------sdsd-----------");
         if(estabelecimento.getImagens()!=null) {
             estabelecimentoResponseDTO.setImagens(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList());
         }
@@ -70,12 +65,15 @@ public class EstabelecimentoMapper {
         estabelecimentoResponseDTO.setTelefoneContato(estabelecimento.getTelefoneContato());
         estabelecimentoResponseDTO.setReferenciaInstagram(estabelecimento.getReferenciaInstagram());
         estabelecimentoResponseDTO.setReferenciaFacebook(estabelecimento.getReferenciaFacebook());
+        System.out.println("sdjskdjskddssdAAAAAAAAAAAAAAAAAAAAA");
         estabelecimentoResponseDTO.setEmailContato(estabelecimento.getEmailContato());
         estabelecimentoResponseDTO.setIdComerciante(estabelecimento.getComerciante().getId());
         estabelecimentoResponseDTO.setCnpj(estabelecimento.getComerciante().getCnpj());
         estabelecimentoResponseDTO.setEndereco(toEstabelecimentoEnderecoResponse(estabelecimento.getEndereco()));
         estabelecimentoResponseDTO.setAgenda(estabelecimento.getAgenda().stream().map(EstabelecimentoMapper::toEstabelecimentoAgendaResponse).toList());
-        estabelecimentoResponseDTO.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(EstabelecimentoMapper::toEstabeleciementoMetodoPagamentoResponse).toList());
+        if(estabelecimento.getMetodoPagamentoAceito()!=null) {
+            estabelecimentoResponseDTO.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(EstabelecimentoMapper::toEstabeleciementoMetodoPagamentoResponse).toList());
+        }
         estabelecimentoResponseDTO.setSecao(estabelecimento.getSecao().stream().map(EstabelecimentoMapper::toEstabelecimentoSecaoResponse).toList());
         return estabelecimentoResponseDTO;
     }
@@ -119,7 +117,7 @@ public class EstabelecimentoMapper {
             secaoEntity.setId(optIdSecao.get());
         }
         secaoEntity.setEstabelecimento(estabelecimento);
-        secaoEntity.setDescricao(secao.getDescricao());
+        secaoEntity.setDescricao(secao.getNome());
         return secaoEntity;
     }
 

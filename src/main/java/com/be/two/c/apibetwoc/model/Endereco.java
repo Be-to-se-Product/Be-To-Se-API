@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @EqualsAndHashCode(of="id")
@@ -22,7 +24,7 @@ public class Endereco {
     private double geolocalizacaoX;
     private double geolocalizacaoY;
 
-    @OneToOne(mappedBy = "endereco")
-    private Estabelecimento estabelecimento;
+    @OneToMany(mappedBy = "endereco")
+    private List<Estabelecimento> estabelecimento;
 
 }
