@@ -16,7 +16,7 @@ INSERT INTO usuario (email, senha, tipo_usuario) VALUES
 
     -- Dados para a tabela 'endereco'
     INSERT INTO endereco (geolocalizacaox, geolocalizacaoy, numero, bairro, cep, rua) VALUES
-    (-23.550520, -46.633307, 123, 'Centro', '01000-000', 'Rua Principal'),
+    (-23.550520, -46.633307, 123, 'Centro', '09531080', 'Rua Principal'),
     (-23.590629, -46.657353, 456, 'Vila Oliveira', '02000-000', 'Rua Secundária'),
     (-23.560123, -46.610987, 789, 'Jardins', '03000-000', 'Avenida Principal'),
     (-23.578901, -46.625432, 321, 'Mooca', '04000-000', 'Avenida Secundária'),

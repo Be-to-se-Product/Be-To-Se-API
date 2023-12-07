@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.service.consumidor;
 
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorCriacaoDto;
+import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorResponseDto;
 import com.be.two.c.apibetwoc.controller.consumidor.mapper.ConsumidorMapper;
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ResponseConsumidorDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
@@ -40,7 +41,6 @@ public class ConsumidorService {
         return consumidorSalvo;
     }
 
-
     public Consumidor existeConsumidor(Long id){
         return consumidorRepository.findById(id).orElseThrow(
                 ()->new EntidadeNaoExisteException("O consumidor procurado não existe")
@@ -65,6 +65,12 @@ public class ConsumidorService {
         Consumidor consumidor = consumidorRepository.getReferenceById(id);
         consumidor.setIsAtivo(false);
         consumidorRepository.save(consumidor);
+    }
+    public ConsumidorResponseDto buscarPorId(Long id) {
+        return consumidorRepository
+                .findById(id)
+                .map(ConsumidorMapper::of)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum consumidor com esse id"));
     }
 
 }

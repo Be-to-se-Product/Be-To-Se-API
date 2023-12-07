@@ -28,12 +28,12 @@ public class ItemVendaService {
     private final ConsumidorRepository consumidorRepository;
     private final ProdutoRepository produtoRepository;
     private final TransacaoService transacaoService;
+    private final CarrinhoService carrinhoService;
 
     public Pedido cadastrar(PedidoCreateDto pedidoCreate ){
         List<ItemVenda> itensVendas = new ArrayList<>();
         Pedido pedido = pedidoService.cadastrar(pedidoCreate.getMetodo());
         for (ItemVendaCreateDto i : pedidoCreate.getItens()){
-            System.out.println(pedidoCreate.getItens());
             ItemVenda itemVenda = ItemVendaMapper.of(i);
             Consumidor consumidor = consumidorRepository.findById(pedidoCreate.getIdConsumidor())
                     .orElseThrow(() -> new EntidadeNaoExisteException("Consumidor informado não existe"));
@@ -48,6 +48,9 @@ public class ItemVendaService {
         pedido.setItens(itensVendas);
         itemVendaRepository.saveAll(itensVendas);
         transacaoService.adicionar(pedido);
+        if(pedidoCreate.getOrigem().equals("Carrinho")){
+            carrinhoService.esvaziarCarrinho(pedidoCreate.getIdConsumidor());
+        }
         return pedido;
     }
 }
