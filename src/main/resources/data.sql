@@ -122,17 +122,17 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
 
 
     -- Dados para a tabela 'metodo_pagamento_aceito'
-    INSERT INTO metodo_pagamento_aceito (fk_estabelecimento, fk_metodo_pagamento) VALUES
-    (1, 1),
-    (1, 2),
-    (1, 3),
-    (2, 4),
-    (2, 5),
-    (2, 6),
-    (3, 7),
-    (3, 8),
-    (3, 9),
-    (4, 10);
+    INSERT INTO metodo_pagamento_aceito (fk_estabelecimento, fk_metodo_pagamento,is_ativo) VALUES
+    (1, 1,true),
+    (1, 2,true),
+    (1, 3,true),
+    (2, 4,true),
+    (2, 5,true),
+    (2, 6,true),
+    (3, 7,true),
+    (3, 8,true),
+    (3, 9,true),
+    (4, 10,true);
 
     -- Dados para a tabela 'tag'
     INSERT INTO tag (descricao) VALUES
