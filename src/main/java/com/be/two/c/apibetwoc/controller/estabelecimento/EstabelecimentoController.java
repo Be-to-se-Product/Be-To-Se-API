@@ -2,11 +2,10 @@ package com.be.two.c.apibetwoc.controller.estabelecimento;
 
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.*;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
-import com.be.two.c.apibetwoc.controller.metodoPagamento.ResponseMetodoPagamentoDto;
+import com.be.two.c.apibetwoc.controller.metodoPagamento.dto.MetodoPagamentoResponseDTO;
 import com.be.two.c.apibetwoc.controller.metodoPagamento.mapper.MetodoPagamentoAceitoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
-import com.be.two.c.apibetwoc.service.AgendaService;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
@@ -14,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,12 +23,22 @@ import java.util.List;
 public class EstabelecimentoController {
 
     private final EstabelecimentoService estabelecimentoService;
-    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
-    private final AgendaService agendaService;
     private final ImagemService imagemService;
+    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
 
+
+
+
+    @GetMapping("/comerciante")
+    public ResponseEntity<List<EstabelecimentoResponseDTO>> listarPorComerciante(){
+         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante();
+
+         if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
+         List<EstabelecimentoResponseDTO> estabelecimentoResponseDTO = estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList();
+         return ResponseEntity.ok(estabelecimentoResponseDTO);
+    }
     @GetMapping
-    public ResponseEntity<List<ResponseEstabelecimentoDto>> listarTodos() {
+    public ResponseEntity<List<EstabelecimentoResponseDTO>> listarTodos() {
         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarTodos();
 
         return estabelecimentos.isEmpty()
@@ -37,12 +47,12 @@ public class EstabelecimentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseEstabelecimentoDto> listarPorId(@PathVariable Long id){
+    public ResponseEntity<EstabelecimentoResponseDTO> listarPorId(@PathVariable Long id){
         return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoService.listarPorId(id)));
     }
 
     @GetMapping("/segmento")
-    public ResponseEntity<List<ResponseEstabelecimentoDto>> listarPorSegmento(@RequestParam String segmento){
+    public ResponseEntity<List<EstabelecimentoResponseDTO>> listarPorSegmento(@RequestParam String segmento){
         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorSegmento(segmento);
 
         return estabelecimentos.isEmpty()
@@ -51,13 +61,21 @@ public class EstabelecimentoController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseEstabelecimentoDto> cadastrarEstabelecimento(@Valid @RequestBody CadastroEstabelecimentoDto estabelecimento) {
+    public ResponseEntity<EstabelecimentoResponseDTO> cadastrarEstabelecimento(@Valid @RequestBody EstabelecimentoCadastroDTO estabelecimento) {
         Estabelecimento estabelecimentoCriado = estabelecimentoService.cadastroEstabelecimento(estabelecimento);
         return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoCriado));
     }
 
+    @PostMapping("/{id}/imagem")
+    public ResponseEntity<Void> salvarImagem(@RequestParam MultipartFile imagem, @PathVariable Long id){
+
+        estabelecimentoService.salvarImagem(imagem,id);
+        return ResponseEntity.noContent().build();
+
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseEstabelecimentoDto> atualizarEstabelecimento(@Valid @RequestBody AtualizarEstabelecimentoDto estabelecimentoDto, @PathVariable Long id) {
+    public ResponseEntity<EstabelecimentoResponseDTO> atualizarEstabelecimento(@Valid @RequestBody EstabelecimentoAtualizarDTO estabelecimentoDto, @PathVariable Long id) {
         Estabelecimento estabelecimentoAtualizado = estabelecimentoService.atualizarEstabelecimento(estabelecimentoDto, id);
 
         return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoAtualizado));
@@ -70,29 +88,17 @@ public class EstabelecimentoController {
     }
 
 
-    @GetMapping("/rota-pessoa")
-    public Long calcularRotaPessoa(@Valid @RequestBody CoordenadaDto coordenadaDto) {
-        return estabelecimentoService.calcularRotaPessoa(coordenadaDto);
-    }
 
-    @GetMapping("/rota-bicicleta")
-    public Long calcularRotaBicicleta(@Valid @RequestBody CoordenadaDto coordenadaDto) {
-        return estabelecimentoService.calcularRotaBicicleta(coordenadaDto);
-    }
-
-    @GetMapping("/rota-carro")
-    public Long calcularRotaCarro(@Valid @RequestBody CoordenadaDto coordenadaDto) {
-        return estabelecimentoService.calcularRotaCarro(coordenadaDto);
-    }
+   
     @GetMapping("/metodos/{id}")
-    public ResponseEntity<List<ResponseMetodoPagamentoDto>> metodosAceitos(@PathVariable Long id){
+    public ResponseEntity<List<MetodoPagamentoResponseDTO>> metodosAceitos(@PathVariable Long id){
         List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);
         if (metodos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        List<ResponseMetodoPagamentoDto> metodosAceito = MetodoPagamentoAceitoMapper.of(metodos);
+        List<MetodoPagamentoResponseDTO> metodosAceito = MetodoPagamentoAceitoMapper.of(metodos);
 
         return ResponseEntity.ok(metodosAceito);
     }
-
+    
 }

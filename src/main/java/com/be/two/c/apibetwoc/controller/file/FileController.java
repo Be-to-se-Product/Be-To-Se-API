@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileNotFoundException;
+
 @RestController
 @RequestMapping("/imagens")
 @RequiredArgsConstructor
@@ -21,8 +23,10 @@ public class FileController {
     @GetMapping("/{nomeArquivo}")
     public ResponseEntity<Resource> getImagem(@PathVariable String nomeArquivo ) {
         ArquivoReponseDTO imagem = arquivoService.getArquivo(nomeArquivo, TipoArquivo.IMAGEM);
+
         return ResponseEntity.ok().contentType(imagem.getTipoArquivo())
                 .body(imagem.getUrl());
+
     }
 
 }

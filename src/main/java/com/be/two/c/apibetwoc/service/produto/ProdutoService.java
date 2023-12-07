@@ -1,7 +1,6 @@
 package com.be.two.c.apibetwoc.service.produto;
 
 import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
-
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.controller.tag.TagDTO;
@@ -10,20 +9,22 @@ import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.SecaoService;
+import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
+import com.be.two.c.apibetwoc.service.produto.mapper.ProdutoTagMapper;
+import com.be.two.c.apibetwoc.service.tag.mapper.TagMapper;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,25 +41,38 @@ public class ProdutoService {
     private final ImagemService imagemService;
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
     private final ImagemRepository imagemRepository;
-
+    private final ArquivoService arquivoService;
+    private final AvaliacaoRepository avaliacaoRepository;
+    private final CarrinhoRepository carrinhoRepository;
+    private final ItemVendaRepository itemVendaRepository;
 
     public Produto buscarPorId(Long id) {
-        return produtoRepository.findById(id).orElseThrow(
+        Produto produto = produtoRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Produto não encontrado")
         );
+        return produto;
+
     }
-    public ProdutoDetalhamentoDto buscarProdutoPorId(Long id){
+
+    public ProdutoDetalhamentoDto buscarProdutoPorId(Long id) {
         Produto produto = buscarPorId(id);
+        produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         ProdutoDetalhamentoDto pd = ProdutoMapper.toProdutoDetalhamento(produto);
         List<MetodoPagamentoAceito> ma = metodoPagamentoAceitoService.findByEstabelecimentoId(pd.getSecao().getEstabelecimento().getId());
         List<Long> listaIds = ma.stream()
                 .map(MetodoPagamentoAceito::getId).toList();
         pd.getSecao().getEstabelecimento().setIdMetodo(listaIds);
-        return pd ;
+
+        return pd;
     }
 
     public List<Produto> listarProdutos() {
         List<Produto> produtos = produtoRepository.findAll();
+
+        for (Produto produto : produtos) {
+            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        }
+        produtos.stream().forEach(e -> e.getImagens().forEach(p -> System.out.println(p.getNomeReferencia())));
         int n = produtos.size();
 
         for (int i = 0; i < n - 1; i++) {
@@ -76,103 +90,83 @@ public class ProdutoService {
     }
 
 
-    public List<Imagem> cadastrarImagens(List<MultipartFile> imagens,Long id){
-
-        Produto produto =  produtoRepository.findById(id).orElseThrow(()->new EntidadeNaoExisteException("Produto não existe"));
-
+    public List<Imagem> cadastrarImagens(List<MultipartFile> imagens, Long id) {
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Produto não existe"));
         PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
-        List<Imagem> imagensSalvasLocal = imagens.stream().map(element-> imagemService.cadastrarImagensProduto(element,TipoArquivo.IMAGEM,produto,imagensSalvas)).toList();
+        List<Imagem> imagensSalvasLocal = imagens.stream().map(element -> imagemService.cadastrarImagensProduto(element, TipoArquivo.IMAGEM, produto, imagensSalvas)).toList();
         List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
-        imagensCadastradas.stream().forEach(element->element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        imagensCadastradas.stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         return imagensCadastradas;
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto) {
-
-
         Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao())
                 .orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
-        Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao);
+        Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto, secao);
         Produto produtoSalvo = produtoRepository.save(produto);
-
-        if (cadastroProdutoDto.getTag() != null) {
-            for (TagDTO tags : cadastroProdutoDto.getTag()) {
-                Tag tag = tagRepository.findById(tags.getId()).orElse(null);
-
-                if (tag == null) {
-                    tag = new Tag();
-                    tag.setDescricao(tags.getDescricao());
-                    tag = tagRepository.save(tag);
-                }
-
-                produtoTagRepository.save(new ProdutoTag(null, tag, produtoSalvo));
-            }
-        }
-
-
+        List<Tag> tags = cadastroProdutoDto.getTags().stream().map(TagMapper::toTag).toList();
+        List<Long> tagsId = tags.stream().map(Tag::getId).toList();
+        List<Tag> tagBanco = tagRepository.findByIdIn(tagsId);
+        List<ProdutoTag> produtoTags = tagBanco.stream().map(e -> new ProdutoTag(null, e, produtoSalvo)).toList();
+        List<ProdutoTag> tagSalvos = produtoTagRepository.saveAll(produtoTags);
+        produtoSalvo.setTags(tagSalvos);
         return produtoSalvo;
     }
 
 
-
-
+    @Transactional
     public Produto atualizarProduto(Long id, CadastroProdutoDto cadastroProdutoDto) {
+        Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).orElseThrow(() -> new EntidadeNaoExisteException("Seção não encontrada"));
+        List<ProdutoTag> tagsBanco = produtoTagRepository.findByProdutoId(id);
+        List<TagDTO> tagSalvar = cadastroProdutoDto.getTags();
+        List<TagDTO> tagsDuplicadas = tagSalvar.stream()
+                .filter(tagDto -> Collections.frequency(tagSalvar, tagDto) > 0)
+                .distinct()
+                .collect(Collectors.toList());
 
-        Secao secao = secaoRepository.findById(cadastroProdutoDto.getSecao()).get();
 
-        buscarPorId(id);
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe"));
 
-        Produto produto = ProdutoMapper.toProduto(cadastroProdutoDto,secao,id);
+        List<ProdutoTag> produtoTagsSalvar = tagsDuplicadas.stream()
+                .map(tagDto -> ProdutoTagMapper.toProdutoTag(tagDto, produto))
+                .toList();
 
+        produtoTagRepository.deleteAllByProdutoId(id);
+        produtoTagRepository.saveAll(produtoTagsSalvar);
+        return produtoRepository.save(ProdutoMapper.toProduto(cadastroProdutoDto, secao, id));
 
-        Produto produtoSalvo = produtoRepository.save(produto);
-        List<ProdutoTag> tagsProduto = produtoTagRepository.buscarPorProduto(produto.getId());
-        List<TagDTO> tagEdicao = cadastroProdutoDto.getTag();
-
-        for (TagDTO tags : tagEdicao) {
-            boolean tagJaAssociada = false;
-            assert tags.getId() != null;
-            Tag tag = tagRepository.findById(tags.getId()).orElse(null);
-
-            if (tag != null) {
-                for (ProdutoTag produtoTag : tagsProduto) {
-                    if (produtoTag.getTag().getId().equals(tags.getId())) {
-                        tagJaAssociada = true;
-                        break;
-                    }
-                }
-            } else {
-                tag = new Tag();
-                tag.setDescricao(tags.getDescricao());
-                tag = tagRepository.save(tag);
-            }
-
-            if (!tagJaAssociada) {
-                ProdutoTag novaProdutoTag = new ProdutoTag(null, tag, produtoSalvo);
-                produtoTagRepository.save(novaProdutoTag);
-            }
-        }
-
-        for (ProdutoTag produtoTag : tagsProduto) {
-            boolean encontrada = false;
-            for (TagDTO tags : tagEdicao) {
-                if (produtoTag.getTag().getId().equals(tags.getId())) {
-                    encontrada = true;
-                    break;
-                }
-            }
-            if (!encontrada) {
-                produtoTagRepository.delete(produtoTag);
-            }
-        }
-
-        return produtoSalvo;
     }
+
 
     public void inativarProduto(Long id) {
         Produto produto = buscarPorId(id);
         produto.setIsAtivo(false);
         produtoRepository.save(produto);
+    }
+
+    @Transactional
+    public void deletarProduto(Long id) {
+        Produto produto = buscarPorId(id);
+        List<Imagem> imagens = produto.getImagens();
+        List<Avaliacao> avaliacaos = produto.getAvaliacoes();
+        List<Carrinho> carrinhos = produto.getCarrinhos();
+        List<ItemVenda> itemVendas = produto.getItemVendas();
+        List<ProdutoTag> prodTags = produto.getTags();
+        List<Long> idCarrinho = carrinhos.stream().filter(e -> e.getProduto().getId() == id).map(Carrinho::getId).toList();
+        carrinhos.stream().forEach((e) -> System.out.println(e.getProduto().getId()));
+        imagens.stream().forEach(e -> arquivoService.deletarArquivo(e.getNomeReferencia(), TipoArquivo.IMAGEM));
+        List<Integer> idImagens = imagens.stream().map(Imagem::getId).toList();
+        List<Long> idAvaliacao = avaliacaos.stream().map(Avaliacao::getId).toList();
+        List<Long> idItemVenda = itemVendas.stream().filter(e -> e.getProduto().getId() == id).map(ItemVenda::getId).toList();
+        List<Long> idTag = prodTags.stream().filter(e -> e.getProduto().getId() == id).map(ProdutoTag::getId).toList();
+        produtoTagRepository.deleteByIdIn(idTag);
+        carrinhoRepository.deleteByIdIn(idCarrinho);
+        itemVendaRepository.deleteByIdIn(idItemVenda);
+        avaliacaoRepository.deleteByIdIn(idAvaliacao);
+        imagemRepository.deleteByIdIn(idImagens);
+        produtoRepository.deleteById(produto.getId());
+
     }
 
     public void statusProduto(boolean status, Long id) {
@@ -186,12 +180,15 @@ public class ProdutoService {
     }
 
     public List<Produto> produtoPorEstabelecimento(Long id) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoExisteException("Estabelecimento não encontrado")
-        );
+
+        if (!estabelecimentoRepository.existsById(id)) {
+            throw new EntidadeNaoExisteException("Entidade não existe");
+        }
 
         List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
-
+        for (Produto produto : produtos) {
+            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        }
         return produtos;
     }
 
@@ -199,11 +196,8 @@ public class ProdutoService {
         return produtoRepository.findBySecaoEstabelecimentoIdAndNomeContainsIgnoreCase(id, pesquisa);
     }
 
-    public List<Produto> produtoEmPromocao() {
-        return produtoRepository.findByIsPromocaoAtivaTrue();
-    }
-
     public List<Produto> uploadCsv(MultipartFile file, Long secaoId) {
+
         List<Produto> produtos = new ArrayList<>();
         Secao secao = secaoService.listarPorId(secaoId);
 
@@ -262,7 +256,7 @@ public class ProdutoService {
         return produtos;
     }
 
-    public List<Produto> uploadTxt (MultipartFile file, Long secaoId){
+    public List<Produto> uploadTxt(MultipartFile file, Long secaoId) {
         List<Produto> produtos = new ArrayList<>();
         Secao secao = secaoService.listarPorId(secaoId);
 
@@ -272,8 +266,8 @@ public class ProdutoService {
 
             String registro = entrada.readLine();
 
-            while (registro != null){
-                if (registro.substring(0, 2).equals("02")){
+            while (registro != null) {
+                if (registro.substring(0, 2).equals("02")) {
                     Produto produto = new Produto();
 
                     produto.setNome(registro.substring(2, 22));
@@ -295,7 +289,7 @@ public class ProdutoService {
 
             entrada.close();
             return produtos;
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException("Falha ao processar arquivo");
         }
     }
@@ -330,8 +324,12 @@ public class ProdutoService {
             throw new RuntimeException(e);
         }
     }
-    public List<Produto> buscarProdutosParaVenda(List<Long> ids){
+
+    public List<Produto> buscarProdutosParaVenda(List<Long> ids) {
         return produtoRepository.findByIdIn(ids);
     }
 
+    public List<Produto> produtoEmPromocao() {
+        return null;
+    }
 }

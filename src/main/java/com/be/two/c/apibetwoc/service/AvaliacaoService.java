@@ -8,10 +8,13 @@ import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Avaliacao;
 import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.model.Produto;
+import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.AvaliacaoRepository;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
+import com.be.two.c.apibetwoc.repository.UsuarioRepository;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,10 +37,16 @@ public class AvaliacaoService {
 
     private final ImagemService imagemService;
 
+    private final AutenticacaoService autenticacaoService;
+    private final UsuarioRepository usuarioRepository;
+
     public Avaliacao publicar(AvaliacaoRequestDTO avaliacaoRequestDTO){
-        Consumidor consumidor = consumidorRepository.findById(avaliacaoRequestDTO.getConsumidor()).orElseThrow(
-                ()->new EntidadeNaoExisteException("Consumidor não encontrado")
-        );
+        Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
+
+        if(usuario.getConsumidor()==null){
+            throw new EntityNotFoundException();
+        }
+
         Produto produto = buscarProdutoPorId(avaliacaoRequestDTO.getProduto());
         Avaliacao avaliacao = AvaliacaoMapper.toAvaliacaoRequest(avaliacaoRequestDTO);
         LocalDate dataCriacao= LocalDate.now();
@@ -45,7 +54,7 @@ public class AvaliacaoService {
         avaliacao.setProduto(produto);
         avaliacao.setDataCriacao(dataCriacao);
         avaliacao.setDataAtualizacao(dataAtualizacao);
-        avaliacao.setConsumidor(consumidor);
+        avaliacao.setConsumidor(usuario.getConsumidor());
 
         return avaliacaoRepository.save(avaliacao);
     }

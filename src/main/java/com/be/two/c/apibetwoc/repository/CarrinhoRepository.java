@@ -25,4 +25,5 @@ public interface CarrinhoRepository extends JpaRepository<Carrinho, Long> {
     @Query("INSERT INTO Carrinho c(c.quantidade, c.produto, c.consumidor, c.dataHoraAlocacao)VALUES(:quantidade, :produto, :consumidor, :dtH)")
     Carrinho cadastrarCarrinho(Integer quantidade, Produto produto, Consumidor consumidor, LocalDateTime dtH);
 
+    void deleteByIdIn(List<Long> idCarrinho);
 }

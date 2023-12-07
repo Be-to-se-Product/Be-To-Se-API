@@ -20,4 +20,5 @@ public interface EstabelecimentoRepository extends JpaRepository<Estabelecimento
     List<Integer> buscarPorLocalizacao(Double latitude, Double longitude, Double distancia);
 
 
+    List<Estabelecimento> findByComercianteUsuarioId(Long usuarioId);
 }

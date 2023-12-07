@@ -1,5 +1,8 @@
 package com.be.two.c.apibetwoc.controller.pedido.dto;
 
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoEstabelecimentoResponseDTO;
+import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.model.ItemVenda;
 
 public class ItemVendaMapper {
@@ -15,7 +18,7 @@ public class ItemVendaMapper {
         return itemVenda;
     }
     public static ResponseItemVendaDto of(ItemVenda itemVenda){
-        ResponseItemVendaDto responseItemVendaDto = new ResponseItemVendaDto(itemVenda.getProduto().getId(),itemVenda.getQuantidade(),itemVenda.getProduto().getNome(),itemVenda.getProduto().getPreco(),null);
+        ResponseItemVendaDto responseItemVendaDto = new ResponseItemVendaDto(itemVenda.getProduto().getId(),itemVenda.getQuantidade(), ProdutoMapper.toProdutoDetalhamento(itemVenda.getProduto()));
         return responseItemVendaDto;
     }
 }

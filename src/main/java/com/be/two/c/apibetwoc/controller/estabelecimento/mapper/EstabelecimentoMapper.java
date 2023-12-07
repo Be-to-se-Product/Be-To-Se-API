@@ -9,45 +9,38 @@ import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 
 import com.be.two.c.apibetwoc.model.*;
 
-
 import java.util.List;
+import java.util.Optional;
+
 
 public class EstabelecimentoMapper {
-    public static Estabelecimento toEstabelecimento(CadastroEstabelecimentoDto cadastroEstabelecimentoDto, Comerciante comerciante){
+    public static Estabelecimento toEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO, Comerciante comerciante){
         Estabelecimento estabelecimento = new Estabelecimento();
-        estabelecimento.setNome(cadastroEstabelecimentoDto.getNome());
-        estabelecimento.setSegmento(cadastroEstabelecimentoDto.getSegmento());
-        estabelecimento.setDataCriacao(cadastroEstabelecimentoDto.getDataCriacao());
-        estabelecimento.setTelefoneContato(cadastroEstabelecimentoDto.getTelefoneContato());
-        estabelecimento.setEnquadramentoJuridico(cadastroEstabelecimentoDto.getEnquadramentoJuridico());
-        estabelecimento.setReferenciaInstagram(cadastroEstabelecimentoDto.getReferenciaInstagram());
-        estabelecimento.setReferenciaFacebook(cadastroEstabelecimentoDto.getReferenciaFacebook());
-        estabelecimento.setEmailContato(cadastroEstabelecimentoDto.getEmailContato());
+        estabelecimento.setNome(estabelecimentoCadastroDTO.getNome());
+        estabelecimento.setSegmento(estabelecimentoCadastroDTO.getSegmento());
+        estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefoneContato());
+        estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getReferenciaInstagram());
+        estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getReferenciaFacebook());
+        estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmailContato());
         estabelecimento.setIsAtivo(true);
         estabelecimento.setComerciante(comerciante);
 
         return estabelecimento;
     }
 
-    public static Estabelecimento toEstabelecimento(AtualizarEstabelecimentoDto atualizarEstabelecimentoDto, Estabelecimento estabelecimentoAntigo){
-        Estabelecimento estabelecimento = new Estabelecimento();
-        estabelecimento.setNome(atualizarEstabelecimentoDto.getNome());
-        estabelecimento.setSegmento(atualizarEstabelecimentoDto.getSegmento());
-        estabelecimento.setDataCriacao(estabelecimentoAntigo.getDataCriacao());
-        estabelecimento.setTelefoneContato(atualizarEstabelecimentoDto.getTelefoneContato());
-        estabelecimento.setEnquadramentoJuridico(atualizarEstabelecimentoDto.getEnquadramentoJuridico());
-        estabelecimento.setReferenciaInstagram(atualizarEstabelecimentoDto.getReferenciaInstagram());
-        estabelecimento.setReferenciaFacebook(atualizarEstabelecimentoDto.getReferenciaFacebook());
-        estabelecimento.setEmailContato(atualizarEstabelecimentoDto.getEmailContato());
-        estabelecimento.setIsAtivo(estabelecimentoAntigo.getIsAtivo());
-        estabelecimento.setComerciante(estabelecimentoAntigo.getComerciante());
-        estabelecimento.setEndereco(atualizarEstabelecimentoDto.getEndereco());
+    public static Estabelecimento toEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoAtualizarDTO,Estabelecimento estabelecimento){
 
+        estabelecimento.setNome(estabelecimentoAtualizarDTO.getNome());
+        estabelecimento.setSegmento(estabelecimentoAtualizarDTO.getSegmento());
+        estabelecimento.setTelefoneContato(estabelecimentoAtualizarDTO.getTelefoneContato());
+        estabelecimento.setReferenciaInstagram(estabelecimentoAtualizarDTO.getReferenciaInstagram());
+        estabelecimento.setReferenciaFacebook(estabelecimentoAtualizarDTO.getReferenciaFacebook());
+        estabelecimento.setEmailContato(estabelecimentoAtualizarDTO.getEmailContato());
         return estabelecimento;
     }
 
 
-    public static Endereco of(EnderacoCricaoEstabelecimentoDto enderecoEstabelecimento){
+    public static Endereco of(EstabelecimentoEnderecoCadastroDTO enderecoEstabelecimento){
         Endereco endereco = new Endereco();
         endereco.setCep(enderecoEstabelecimento.getCep());
         endereco.setNumero(enderecoEstabelecimento.getNumero());
@@ -59,25 +52,30 @@ public class EstabelecimentoMapper {
         return endereco;
     }
 
-    public static ResponseEstabelecimentoDto toResponseEstabelecimento(Estabelecimento estabelecimento){
+    public static EstabelecimentoResponseDTO toResponseEstabelecimento(Estabelecimento estabelecimento){
 
-        ResponseEstabelecimentoDto responseEstabelecimentoDto = new ResponseEstabelecimentoDto();
-
-        responseEstabelecimentoDto.setId(estabelecimento.getId());
-        responseEstabelecimentoDto.setNome(estabelecimento.getNome());
-        responseEstabelecimentoDto.setSegmento(estabelecimento.getSegmento());
-        responseEstabelecimentoDto.setTelefoneContato(estabelecimento.getTelefoneContato());
-
-        responseEstabelecimentoDto.setReferenciaInstagram(estabelecimento.getReferenciaInstagram());
-        responseEstabelecimentoDto.setReferenciaFacebook(estabelecimento.getReferenciaFacebook());
-        responseEstabelecimentoDto.setEmailContato(estabelecimento.getEmailContato());
-        responseEstabelecimentoDto.setIdComerciante(estabelecimento.getComerciante().getId());
-        responseEstabelecimentoDto.setCnpj(estabelecimento.getComerciante().getCnpj());
-        responseEstabelecimentoDto.setEndereco(toEstabelecimentoEnderecoResponse(estabelecimento.getEndereco()));
-        responseEstabelecimentoDto.setAgenda(estabelecimento.getAgenda().stream().map(EstabelecimentoMapper::toEstabelecimentoAgendaResponse).toList());
-        responseEstabelecimentoDto.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(EstabelecimentoMapper::toEstabeleciementoMetodoPagamentoResponse).toList());
-        responseEstabelecimentoDto.setSecao(estabelecimento.getSecao().stream().map(EstabelecimentoMapper::toEstabelecimentoSecaoResponse).toList());
-        return responseEstabelecimentoDto;
+        EstabelecimentoResponseDTO estabelecimentoResponseDTO = new EstabelecimentoResponseDTO();
+        System.out.println("-------sdsd-----------");
+        if(estabelecimento.getImagens()!=null) {
+            estabelecimentoResponseDTO.setImagens(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList());
+        }
+        estabelecimentoResponseDTO.setId(estabelecimento.getId());
+        estabelecimentoResponseDTO.setNome(estabelecimento.getNome());
+        estabelecimentoResponseDTO.setSegmento(estabelecimento.getSegmento());
+        estabelecimentoResponseDTO.setTelefoneContato(estabelecimento.getTelefoneContato());
+        estabelecimentoResponseDTO.setReferenciaInstagram(estabelecimento.getReferenciaInstagram());
+        estabelecimentoResponseDTO.setReferenciaFacebook(estabelecimento.getReferenciaFacebook());
+        System.out.println("sdjskdjskddssdAAAAAAAAAAAAAAAAAAAAA");
+        estabelecimentoResponseDTO.setEmailContato(estabelecimento.getEmailContato());
+        estabelecimentoResponseDTO.setIdComerciante(estabelecimento.getComerciante().getId());
+        estabelecimentoResponseDTO.setCnpj(estabelecimento.getComerciante().getCnpj());
+        estabelecimentoResponseDTO.setEndereco(toEstabelecimentoEnderecoResponse(estabelecimento.getEndereco()));
+        estabelecimentoResponseDTO.setAgenda(estabelecimento.getAgenda().stream().map(EstabelecimentoMapper::toEstabelecimentoAgendaResponse).toList());
+        if(estabelecimento.getMetodoPagamentoAceito()!=null) {
+            estabelecimentoResponseDTO.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(EstabelecimentoMapper::toEstabeleciementoMetodoPagamentoResponse).toList());
+        }
+        estabelecimentoResponseDTO.setSecao(estabelecimento.getSecao().stream().map(EstabelecimentoMapper::toEstabelecimentoSecaoResponse).toList());
+        return estabelecimentoResponseDTO;
     }
 
     private static EstabelecentoSecaoResponseDTO toEstabelecimentoSecaoResponse(Secao secao) {
@@ -105,8 +103,23 @@ public class EstabelecimentoMapper {
     public static EstabelecimentoEnderecoResponseDTO toEstabelecimentoEnderecoResponse( Endereco endereco){
         EstabelecimentoEnderecoResponseDTO estabelecimentoEnderecoResponse = new EstabelecimentoEnderecoResponseDTO();
         estabelecimentoEnderecoResponse.setNumero(endereco.getNumero());
+        estabelecimentoEnderecoResponse.setCep(endereco.getCep());
         estabelecimentoEnderecoResponse.setBairro(endereco.getBairro());
         estabelecimentoEnderecoResponse.setRua(endereco.getRua());
         return estabelecimentoEnderecoResponse;
     }
+
+    public static Secao toSecao(EstabelecimentoSecaoAtualizarDTO secao, Estabelecimento estabelecimento){
+        Secao secaoEntity = new Secao();
+        Optional<Long> optIdSecao = Optional.ofNullable(secao.getId());
+
+        if(optIdSecao.isPresent()){
+            secaoEntity.setId(optIdSecao.get());
+        }
+        secaoEntity.setEstabelecimento(estabelecimento);
+        secaoEntity.setDescricao(secao.getNome());
+        return secaoEntity;
+    }
+
+
 }

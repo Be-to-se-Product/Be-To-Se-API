@@ -3,11 +3,10 @@ package com.be.two.c.apibetwoc.controller.estabelecimento.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class ResponseEstabelecimentoDto {
+public class EstabelecimentoResponseDTO {
     private Long id;
     private String nome;
     private String segmento;

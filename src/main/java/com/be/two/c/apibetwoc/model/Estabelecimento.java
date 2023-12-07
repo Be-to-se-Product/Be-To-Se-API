@@ -26,6 +26,7 @@ public class Estabelecimento {
     @ManyToOne
     @JoinColumn(name = "fk_comerciante")
     private Comerciante comerciante;
+
     @ManyToOne
     @JoinColumn(name = "fk_endereco")
     private Endereco endereco;

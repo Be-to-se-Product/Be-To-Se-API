@@ -61,6 +61,7 @@ public class PedidoService {
         if(status != null){
             UsuarioDetalhes usuarioDetalhes = autenticacaoService.loadUsuarioDetails();
             Usuario usuario =  repository.findById(usuarioDetalhes.getId()).get();
+
             return pedidoRepository.searchByConsumidorEStatus(usuario.getConsumidor().getId(), status).stream().map(PedidoMapper::ofResponseUsuario).toList();
         }
 

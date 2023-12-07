@@ -4,4 +4,7 @@ import com.be.two.c.apibetwoc.model.Endereco;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
+    void deleteByEstabelecimentoId(Long id);
+
+    Endereco findByEstabelecimentoId(Long id);
 }

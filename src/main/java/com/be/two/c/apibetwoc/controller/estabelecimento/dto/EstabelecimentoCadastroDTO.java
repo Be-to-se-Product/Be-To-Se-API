@@ -8,17 +8,13 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class CadastroEstabelecimentoDto {
+public class EstabelecimentoCadastroDTO {
     @NotBlank
     private String nome;
     @NotBlank
     private String segmento;
-    @PastOrPresent
-    private LocalDate dataCriacao;
     //@Pattern(regexp = "^(?:\\(\\d{2}\\)\\s*|\\d{2}-?)?\\d{4,5}-?\\d{4}$")
     private String telefoneContato;
-    @NotBlank
-    private String enquadramentoJuridico;
     @NotBlank
     private String referenciaInstagram;
     @NotBlank
@@ -27,11 +23,11 @@ public class CadastroEstabelecimentoDto {
     private String emailContato;
 
     @NotNull
-    private EnderacoCricaoEstabelecimentoDto enderecoDto;
+    private EstabelecimentoEnderecoCadastroDTO endereco;
     @NotNull
-    private List<Long> idMetodoPagamento;
+    private List<Long> metodoPagamento;
     @NotNull
-    private List<CadastroAgendaDto> agenda;
+    private List<EstabelecimentoCadastroAgendaDTO> agenda;
     @NotNull
     private List<String> secao;
 }

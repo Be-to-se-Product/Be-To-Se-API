@@ -26,4 +26,6 @@ public class TagsController {
         List<Tag> tags = tagService.listar();
         return ResponseEntity.ok(tags.stream().map(TagMapper::toTagResponse).toList());
     }
+
+
 }
