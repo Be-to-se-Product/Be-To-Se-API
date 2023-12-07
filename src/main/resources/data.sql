@@ -16,7 +16,7 @@ INSERT INTO usuario (email, senha, tipo_usuario) VALUES
 
     -- Dados para a tabela 'endereco'
     INSERT INTO endereco (geolocalizacaox, geolocalizacaoy, numero, bairro, cep, rua) VALUES
-    (-23.550520, -46.633307, 123, 'Centro', '01000-000', 'Rua Principal'),
+    (-23.550520, -46.633307, 123, 'Centro', '09531080', 'Rua Principal'),
     (-23.590629, -46.657353, 456, 'Vila Oliveira', '02000-000', 'Rua Secundária'),
     (-23.560123, -46.610987, 789, 'Jardins', '03000-000', 'Avenida Principal'),
     (-23.578901, -46.625432, 321, 'Mooca', '04000-000', 'Avenida Secundária'),
@@ -33,12 +33,12 @@ INSERT INTO usuario (email, senha, tipo_usuario) VALUES
     ('Dinheiro'),
     ('Pix'),
     ('Boleto'),
-    ('Transferência Bancária'),
+    ('Cartão de Débito'),
     ('PicPay'),
     ('PayPal'),
     ('Vale Alimentação'),
     ('Vale Refeição'),
-    ('Cesta Básica');
+    ('Bitcoin');
 
     -- Dados para a tabela 'comerciante'
     INSERT INTO comerciante (data_criacao, data_ultimo_acesso, is_ativo, fk_endereco, fk_usuario, cnpj, nome, razao_social) VALUES
@@ -180,9 +180,6 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     ('2022-08-15', 3, NULL, 'logo_acougue.jpg', 'Logo Açougue da Esquina'),
     ('2022-09-10', 3, NULL, 'logo_padaria_acougue.jpg', 'Logo Padaria e Açougue da Esquina'),
     ('2022-11-01', 5, NULL, 'logo_conveniencia.jpg', 'Logo Loja de Conveniência'),
-    ('2023-01-15', NULL, 1, 'arroz_integral.jpg', 'Arroz Integral'),
-    ('2023-01-15', NULL, 3, 'feijao_preto.jpg', 'Feijão Preto'),
-    ('2023-01-15', NULL, 2, 'pao_frances.jpg', 'Pão Francês'),
     ('2023-01-15', 5, NULL, 'logo_supermercado.jpg', 'Logo Supermercado Mega');
 
     -- Dados para a tabela 'produto_tag'

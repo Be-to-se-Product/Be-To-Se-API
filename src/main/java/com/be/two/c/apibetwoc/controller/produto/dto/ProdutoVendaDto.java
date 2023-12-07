@@ -6,4 +6,5 @@ import lombok.Data;
 public class ProdutoVendaDto {
     private Long idProduto;
     private Integer quantidade;
+    private String origem;
 }

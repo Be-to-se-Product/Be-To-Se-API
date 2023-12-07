@@ -9,4 +9,5 @@ public class PedidoCreateDto {
     private Long idEstabelecimento;
     private List<ItemVendaCreateDto>itens;
     private MetodoDto metodo;
+    private String origem;
 }
