@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.controller.consumidor;
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorCriacaoDto;
+import com.be.two.c.apibetwoc.controller.consumidor.dto.ConsumidorResponseDto;
 import com.be.two.c.apibetwoc.controller.consumidor.dto.ResponseConsumidorDto;
 import com.be.two.c.apibetwoc.controller.consumidor.mapper.ConsumidorMapper;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioLoginDTO;
@@ -23,7 +24,12 @@ import java.util.List;
 public class ConsumidorController {
 
     private final ConsumidorService consumidorService;
-   private final UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+
+    @GetMapping("{id}")
+    public ResponseEntity<ConsumidorResponseDto> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(consumidorService.buscarPorId(id));
+    }
 
     @PostMapping
     public ResponseEntity<ResponseConsumidorDto> cadastrar(@Valid @RequestBody ConsumidorCriacaoDto consumidorCriacaoDto,

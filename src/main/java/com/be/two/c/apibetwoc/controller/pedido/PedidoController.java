@@ -24,10 +24,9 @@ public class PedidoController {
     private final ItemVendaService itemVendaService;
 
     @PostMapping
-    public ResponseEntity<PedidoResponseDto> cadastrar(@RequestBody @Valid PedidoCreateDto pedidoCreate){
+    public ResponseEntity<ResponsePedidoDTO> cadastrar(@RequestBody @Valid PedidoCreateDto pedidoCreate){
         Pedido pedido = itemVendaService.cadastrar(pedidoCreate);
-
-        return ResponseEntity.ok(PedidoMapper.ofTeste(pedido));
+        return ResponseEntity.ok(PedidoMapper.of(pedido));
     }
 
     @PatchMapping("{idPedido}/status")
