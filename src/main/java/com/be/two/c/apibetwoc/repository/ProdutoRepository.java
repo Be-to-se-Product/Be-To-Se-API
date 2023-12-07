@@ -36,4 +36,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByIdIn(List<Long> ids);
 
+    List<Produto> findAllByIsAtivoTrue();
+
 }

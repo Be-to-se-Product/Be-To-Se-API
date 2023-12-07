@@ -67,7 +67,7 @@ public class ProdutoService {
     }
 
     public List<Produto> listarProdutos() {
-        List<Produto> produtos = produtoRepository.findAll();
+        List<Produto> produtos = produtoRepository.findAllByIsAtivoTrue();
 
         for (Produto produto : produtos) {
             produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
@@ -77,6 +77,7 @@ public class ProdutoService {
 
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
+
                 if (produtos.get(j).getNome().compareTo(produtos.get(j + 1).getNome()) > 0) {
                     Produto temp = produtos.get(j);
                     produtos.set(j, produtos.get(j + 1));
@@ -279,6 +280,7 @@ public class ProdutoService {
                     produto.setCategoria(registro.substring(87, 107));
                     produto.setImagens(new ArrayList<>());
                     produto.setSecao(secao);
+                    produto.setIsAtivo(true);
 
                     Produto produtoCriado = produtoRepository.save(produto);
                     produtos.add(produtoCriado);
