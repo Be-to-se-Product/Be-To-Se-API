@@ -63,4 +63,10 @@ public class UsuarioService {
         existeUsuario.setId(id);
         return repository.save(existeUsuario);
     }
+
+    public Usuario buscarPorId(Long id){
+        return repository.findById(id).orElseThrow(
+                ()->new EntidadeNaoExisteException("Usuário não existe")
+        );
+    }
 }

@@ -25,7 +25,6 @@ public class ConsumidorService {
     private final UsuarioService usuarioService;
     private final InteresseService interesseService;
 
-
     public Consumidor cadastrar(ConsumidorCriacaoDto consumidorCriacaoDto) {
 
         if(consumidorRepository.existsByCelular(consumidorCriacaoDto.getCelular())) throw new ConsumidorConflitoException("Esse telefone esta em uso");
@@ -49,9 +48,9 @@ public class ConsumidorService {
 
 
     public Consumidor atualizar(Consumidor consumidor, Long id){
-        Consumidor c = existeConsumidor(id);
-        consumidor.setId(id);
-        consumidor.setUsuario(c.getUsuario());
+        Usuario usuario = usuarioService.buscarPorId(id);
+        Consumidor c = existeConsumidor(usuario.getConsumidor().getId());
+        consumidor.setUsuario(usuario);
         consumidor.setDataUltimaCompra(c.getDataUltimaCompra());
         consumidor.setImagem(c.getImagem());
         c = consumidorRepository.save(consumidor);

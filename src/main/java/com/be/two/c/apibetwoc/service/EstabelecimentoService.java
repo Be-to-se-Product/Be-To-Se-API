@@ -123,11 +123,14 @@ public class EstabelecimentoService {
         List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream().map(e -> EstabelecimentoMapper.toSecao(e, estabelecimentoSalvo)).toList();
         secaoRepository.saveAll(secaoSalvar);
 
-        agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream().map(AgendaMapper::toAgenda).toList());
+        List<Agenda> agendaNova = agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream().map(AgendaMapper::toAgenda).toList());
+        estabelecimentoSalvo.setAgenda(agendaNova);
+        System.out.println(estabelecimento.getAgenda().size());
         enderecoRepository.save(endereco);
+        estabelecimentoRepository.save(estabelecimentoSalvo);
 
-
-        return estabelecimentoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+//        return estabelecimentoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return estabelecimentoSalvo;
     }
 
     public void deletar(Long id) {
