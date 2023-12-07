@@ -80,10 +80,10 @@ public class ProdutoMapper {
         produtoResponse.setAvaliacao(avaliacao);
 
         produtoResponse.setPrecoAntigo(produto.getPreco());
-        if(!produto.getIsPromocaoAtiva()){
-            produtoResponse.setPrecoAtual(produto.getPreco());
-            produtoResponse.setPrecoAtual(produto.getPrecoOferta());
 
+        produtoResponse.setPrecoAtual(produto.getPreco());
+        if(produto.getPrecoOferta()!=null) {
+            produtoResponse.setPrecoAtual(produto.getPrecoOferta());
         }
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(element->element.getQtdEstrela()).average().orElse(0));
         produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
@@ -97,7 +97,13 @@ public class ProdutoMapper {
         AvaliacaoMapaResponse avaliacaoMapaResponse = new AvaliacaoMapaResponse();
         avaliacaoMapaResponse.setData(avaliacao.getDataCriacao());
         avaliacaoMapaResponse.setDescricao(avaliacao.getComentario());
-        avaliacaoMapaResponse.setQtdEstrela(avaliacao.getQtdEstrela());
+        if(avaliacao.getQtdEstrela()==null){
+            avaliacaoMapaResponse.setQtdEstrela(0);
+        }
+        else{
+            avaliacaoMapaResponse.setQtdEstrela(avaliacao.getQtdEstrela());
+        }
+
         avaliacaoMapaResponse.setUsuario(avaliacao.getConsumidor().getNome());
         return avaliacaoMapaResponse;
     }
@@ -173,6 +179,7 @@ public class ProdutoMapper {
             List<Tag> tags = produto.getTags().stream().map(e -> e.getTag()).toList();
             produtoDto.setTags(tags.stream().map(TagMapper::toTagResponse).toList());
         }
+
         return produtoDto;
     }
 

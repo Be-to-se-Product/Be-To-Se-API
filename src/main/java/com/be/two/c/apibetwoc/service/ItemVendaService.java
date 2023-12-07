@@ -12,6 +12,7 @@ import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
 import com.be.two.c.apibetwoc.repository.ItemVendaRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class ItemVendaService {
     private final ProdutoRepository produtoRepository;
     private final TransacaoService transacaoService;
     private final CarrinhoService carrinhoService;
+    private final ImagemService imagemService;
 
     public Pedido cadastrar(PedidoCreateDto pedidoCreate ){
         List<ItemVenda> itensVendas = new ArrayList<>();
@@ -42,7 +44,12 @@ public class ItemVendaService {
             itemVenda.setConsumidor(consumidor);
             itemVenda.setProduto(produto);
             itemVenda.setPedido(pedido);
-            itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
+            if(produto.getIsPromocaoAtiva()!=null) {
+                itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
+            }
+            if(itemVenda.getProduto().getImagens()!=null) {
+                itemVenda.getProduto().getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+            }
             itensVendas.add(itemVenda);
         }
         pedido.setItens(itensVendas);

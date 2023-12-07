@@ -28,8 +28,8 @@ public class ComercianteController {
         Comerciante comerciante = comercianteService.cadastrar(comercianteCriacaoDto);
         ResponseComercianteDto responseComercianteDto = ComercianteMapper.of(comerciante);
         URI uri = UriComponentsBuilder.fromPath("{id}").buildAndExpand(responseComercianteDto.getId()).toUri();
-        System.out.println("foi");
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.created(uri).body(responseComercianteDto);
     }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseComercianteDto> editar(@RequestBody @Valid ComercianteAtualizarDTO comercianteAtualizarDTO, @PathVariable Long id){

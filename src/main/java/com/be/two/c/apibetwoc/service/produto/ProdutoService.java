@@ -46,9 +46,15 @@ public class ProdutoService {
     private final ItemVendaRepository itemVendaRepository;
 
     public Produto buscarPorId(Long id) {
-        return produtoRepository.findById(id).orElseThrow(
+      Produto produto= produtoRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Produto não encontrado")
         );
+
+
+      produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+
+        return produto ;
+
     }
 
     public ProdutoDetalhamentoDto buscarProdutoPorId(Long id) {
