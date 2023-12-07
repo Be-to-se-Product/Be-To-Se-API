@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.controller.pedido.mapper;
 
 import com.be.two.c.apibetwoc.controller.pedido.dto.*;
 import com.be.two.c.apibetwoc.model.Pedido;
+import com.be.two.c.apibetwoc.model.StatusPedido;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +12,14 @@ public class PedidoMapper {
         pedido.setNf(pedidoCriacaoDto.nf());
         pedido.setDataHoraPedido(LocalDateTime.now());
         pedido.setIsPagamentoOnline(pedidoCriacaoDto.isPagamentoOnline());
+        return pedido;
+    }
+
+    public static Pedido of(MetodoDto metodoDto){
+        Pedido pedido = new Pedido();
+        pedido.setIsPagamentoOnline(metodoDto.getIsPagamentoOnline());
+        pedido.setDataHoraPedido(LocalDateTime.now());
+        pedido.setStatusDescricao(StatusPedido.PENDENTE);
         return pedido;
     }
 

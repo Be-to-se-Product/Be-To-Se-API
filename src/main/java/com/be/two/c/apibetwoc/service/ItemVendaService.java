@@ -1,7 +1,9 @@
 package com.be.two.c.apibetwoc.service;
 
+import com.be.two.c.apibetwoc.controller.pedido.dto.ItemVendaCreateDto;
 import com.be.two.c.apibetwoc.controller.pedido.dto.ItemVendaCriacaoDto;
 import com.be.two.c.apibetwoc.controller.pedido.dto.ItemVendaMapper;
+import com.be.two.c.apibetwoc.controller.pedido.dto.PedidoCreateDto;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Consumidor;
 import com.be.two.c.apibetwoc.model.ItemVenda;
@@ -25,7 +27,7 @@ public class ItemVendaService {
     private final ConsumidorRepository consumidorRepository;
     private final ProdutoRepository produtoRepository;
 
-    public Pedido cadastrarItensVenda(List<ItemVendaCriacaoDto> itensVenda) {
+    /*public Pedido cadastrarItensVenda(List<ItemVendaCriacaoDto> itensVenda) {
         List<ItemVenda> itensSalvos = new ArrayList<>();
         Pedido pedido = pedidoService.cadastrar(itensVenda.get(0).pedido());
         for (ItemVendaCriacaoDto i : itensVenda) {
@@ -41,7 +43,27 @@ public class ItemVendaService {
             itensSalvos.add(itemVenda);
             itemVendaRepository.save(itemVenda);
         }
-//        itemVendaRepository.saveAll(itensSalvos);
+        itemVendaRepository.saveAll(itensSalvos);
+        return pedido;
+    }*/
+
+    public Pedido cadastrar(PedidoCreateDto pedidoCreate ){
+        List<ItemVenda> itensVendas = new ArrayList<>();
+        Pedido pedido = pedidoService.cadastrar(pedidoCreate.getMetodo());
+        for (ItemVendaCreateDto i : pedidoCreate.getItens()){
+            ItemVenda itemVenda = ItemVendaMapper.of(i);
+            Consumidor consumidor = consumidorRepository.findById(pedidoCreate.getIdConsumidor())
+                    .orElseThrow(() -> new EntidadeNaoExisteException("Consumidor informado não existe"));
+            Produto produto = produtoRepository.findById(i.getIdProduto())
+                    .orElseThrow(() -> new EntidadeNaoExisteException("Produto informado não existe"));
+            itemVenda.setConsumidor(consumidor);
+            itemVenda.setProduto(produto);
+            itemVenda.setPedido(pedido);
+            itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
+            itensVendas.add(itemVenda);
+            itemVendaRepository.save(itemVenda);
+        }
+        itemVendaRepository.saveAll(itensVendas);
         return pedido;
     }
 }

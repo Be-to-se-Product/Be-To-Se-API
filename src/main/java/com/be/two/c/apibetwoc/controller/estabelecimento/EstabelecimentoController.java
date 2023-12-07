@@ -2,8 +2,12 @@ package com.be.two.c.apibetwoc.controller.estabelecimento;
 
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.*;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
+import com.be.two.c.apibetwoc.controller.metodoPagamento.dto.MetodoPagamentoResponseDTO;
+import com.be.two.c.apibetwoc.controller.metodoPagamento.mapper.MetodoPagamentoAceitoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
+import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
+import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ public class EstabelecimentoController {
 
     private final EstabelecimentoService estabelecimentoService;
     private final ImagemService imagemService;
+    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
 
 
 
@@ -83,4 +88,17 @@ public class EstabelecimentoController {
     }
 
 
+
+   
+    @GetMapping("/metodos/{id}")
+    public ResponseEntity<List<MetodoPagamentoResponseDTO>> metodosAceitos(@PathVariable Long id){
+        List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);
+        if (metodos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        List<MetodoPagamentoResponseDTO> metodosAceito = MetodoPagamentoAceitoMapper.of(metodos);
+
+        return ResponseEntity.ok(metodosAceito);
+    }
+    
 }

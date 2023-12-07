@@ -34,7 +34,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findAll(Specification<Produto> produtoSpecification);
 
-
-
+    List<Produto> findByIdIn(List<Long> ids);
 
 }
