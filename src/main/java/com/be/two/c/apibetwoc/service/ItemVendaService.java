@@ -48,9 +48,7 @@ public class ItemVendaService {
             if(produto.getIsPromocaoAtiva()!=null) {
                 itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
             }
-            if(itemVenda.getProduto().getImagens()!=null) {
-                itemVenda.getProduto().getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-            }
+            
             itensVendas.add(itemVenda);
         }
         pedido.setItens(itensVendas);
