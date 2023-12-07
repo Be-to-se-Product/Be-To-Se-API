@@ -1,4 +1,5 @@
 package com.be.two.c.apibetwoc.service.produto;
+
 import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
@@ -46,24 +47,22 @@ public class ProdutoService {
     private final ItemVendaRepository itemVendaRepository;
 
     public Produto buscarPorId(Long id) {
-      Produto produto= produtoRepository.findById(id).orElseThrow(
+        Produto produto = produtoRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Produto não encontrado")
         );
-
-
-      produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-
-        return produto ;
+        return produto;
 
     }
 
     public ProdutoDetalhamentoDto buscarProdutoPorId(Long id) {
         Produto produto = buscarPorId(id);
+        produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         ProdutoDetalhamentoDto pd = ProdutoMapper.toProdutoDetalhamento(produto);
         List<MetodoPagamentoAceito> ma = metodoPagamentoAceitoService.findByEstabelecimentoId(pd.getSecao().getEstabelecimento().getId());
         List<Long> listaIds = ma.stream()
                 .map(MetodoPagamentoAceito::getId).toList();
         pd.getSecao().getEstabelecimento().setIdMetodo(listaIds);
+
         return pd;
     }
 
@@ -182,7 +181,7 @@ public class ProdutoService {
 
     public List<Produto> produtoPorEstabelecimento(Long id) {
 
-        if(!estabelecimentoRepository.existsById(id)){
+        if (!estabelecimentoRepository.existsById(id)) {
             throw new EntidadeNaoExisteException("Entidade não existe");
         }
 
@@ -325,7 +324,8 @@ public class ProdutoService {
             throw new RuntimeException(e);
         }
     }
-    public List<Produto> buscarProdutosParaVenda(List<Long> ids){
+
+    public List<Produto> buscarProdutosParaVenda(List<Long> ids) {
         return produtoRepository.findByIdIn(ids);
     }
 

@@ -51,8 +51,8 @@ public class ProdutoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoDetalhamentoDto> listarProdutoPorId(@PathVariable Long id){
-        Produto produto = produtoService.buscarPorId(id);
-        return ResponseEntity.ok(ProdutoMapper.toProdutoDetalhamento(produto));
+        ProdutoDetalhamentoDto produto = produtoService.buscarProdutoPorId(id);
+        return ResponseEntity.ok(produto);
     }
 
     @PostMapping
