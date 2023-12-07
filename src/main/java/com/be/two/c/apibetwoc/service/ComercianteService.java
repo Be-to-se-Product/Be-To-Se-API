@@ -25,10 +25,13 @@ public class ComercianteService {
     public Comerciante cadastrar(ComercianteCriacaoDto comercianteCriacaoDto){
         Usuario usuario = usuarioService.cadastrar(comercianteCriacaoDto.getUsuarioCriacaoDTO());
         usuario.setTipoUsuario(TipoUsuario.COMERCIANTE);
+        System.out.println("dsdsds");
         Endereco endereco = enderecoService.cadastrar(comercianteCriacaoDto.getCep(),null);
+        System.out.println("djfdknvikngv");
         Comerciante comerciante = ComercianteMapper.of(comercianteCriacaoDto);
         comerciante.setUsuario(usuario);
         comerciante.setEndereco(endereco);
+        System.out.println("fofdf");
 
         return comercianteRepository.save(comerciante);
     }
