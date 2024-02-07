@@ -129,7 +129,6 @@ public class EstabelecimentoService {
         enderecoRepository.save(endereco);
         estabelecimentoRepository.save(estabelecimentoSalvo);
 
-//        return estabelecimentoRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return estabelecimentoSalvo;
     }
 

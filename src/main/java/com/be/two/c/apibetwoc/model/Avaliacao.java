@@ -1,14 +1,16 @@
 package com.be.two.c.apibetwoc.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of="id")
 public class    Avaliacao {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
