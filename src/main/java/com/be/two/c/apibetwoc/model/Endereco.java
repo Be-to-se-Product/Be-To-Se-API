@@ -1,18 +1,16 @@
 package com.be.two.c.apibetwoc.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
-@EqualsAndHashCode(of="id")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of="id")
 public class Endereco {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

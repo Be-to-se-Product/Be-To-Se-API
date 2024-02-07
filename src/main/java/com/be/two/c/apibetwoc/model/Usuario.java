@@ -3,11 +3,13 @@ package com.be.two.c.apibetwoc.model;
 
 import com.be.two.c.apibetwoc.service.EnviadorEmailService;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Usuario {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
