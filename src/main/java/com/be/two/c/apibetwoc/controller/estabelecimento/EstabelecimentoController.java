@@ -6,8 +6,7 @@ import com.be.two.c.apibetwoc.controller.metodoPagamento.dto.MetodoPagamentoResp
 import com.be.two.c.apibetwoc.controller.metodoPagamento.mapper.MetodoPagamentoAceitoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
-import com.be.two.c.apibetwoc.model.Pedido;
-import com.be.two.c.apibetwoc.service.EstabelecimentoService;
+import com.be.two.c.apibetwoc.service.estabelecimento.EstabelecimentoService;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import jakarta.validation.Valid;
@@ -27,8 +26,8 @@ public class EstabelecimentoController {
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
 
     @GetMapping("/comerciante")
-    public ResponseEntity<List<EstabelecimentoComercianteResponseDTO>> listarPorComerciante(){
-         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante();
+    public ResponseEntity<List<EstabelecimentoComercianteResponseDTO>> listarPorComerciante(@RequestParam String nome){
+         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante(nome);
          if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
         return ResponseEntity.ok(estabelecimentos.stream().map(e->EstabelecimentoMapper.toResponseEstabelecimentoComerciante(e,10,10)).toList());
     }

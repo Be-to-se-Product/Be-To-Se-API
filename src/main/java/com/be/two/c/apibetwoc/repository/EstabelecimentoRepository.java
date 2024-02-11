@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.repository;
 
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
+import com.be.two.c.apibetwoc.service.estabelecimento.specification.EstabelecimentoSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,5 +21,5 @@ public interface EstabelecimentoRepository extends JpaRepository<Estabelecimento
     List<Integer> buscarPorLocalizacao(Double latitude, Double longitude, Double distancia);
 
 
-    List<Estabelecimento> findByComercianteUsuarioId(Long usuarioId);
+    List<Estabelecimento> findAll(Specification<Estabelecimento> estabelecimentoSpecification );
 }
