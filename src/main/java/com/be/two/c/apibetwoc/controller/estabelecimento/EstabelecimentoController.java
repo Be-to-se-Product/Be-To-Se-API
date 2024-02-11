@@ -6,7 +6,7 @@ import com.be.two.c.apibetwoc.controller.metodoPagamento.dto.MetodoPagamentoResp
 import com.be.two.c.apibetwoc.controller.metodoPagamento.mapper.MetodoPagamentoAceitoMapper;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
-import com.be.two.c.apibetwoc.service.EstabelecimentoService;
+import com.be.two.c.apibetwoc.service.estabelecimento.EstabelecimentoService;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import jakarta.validation.Valid;
@@ -21,21 +21,15 @@ import java.util.List;
 @RequestMapping("/estabelecimentos")
 @RequiredArgsConstructor
 public class EstabelecimentoController {
-
     private final EstabelecimentoService estabelecimentoService;
     private final ImagemService imagemService;
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
 
-
-
-
     @GetMapping("/comerciante")
-    public ResponseEntity<List<EstabelecimentoResponseDTO>> listarPorComerciante(){
-         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante();
-
+    public ResponseEntity<List<EstabelecimentoComercianteResponseDTO>> listarPorComerciante(@RequestParam String nome){
+         List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante(nome);
          if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
-         List<EstabelecimentoResponseDTO> estabelecimentoResponseDTO = estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList();
-         return ResponseEntity.ok(estabelecimentoResponseDTO);
+        return ResponseEntity.ok(estabelecimentos.stream().map(e->EstabelecimentoMapper.toResponseEstabelecimentoComerciante(e,10,10)).toList());
     }
     @GetMapping
     public ResponseEntity<List<EstabelecimentoResponseDTO>> listarTodos() {
@@ -61,23 +55,20 @@ public class EstabelecimentoController {
     }
 
     @PostMapping
-    public ResponseEntity<EstabelecimentoResponseDTO> cadastrarEstabelecimento(@Valid @RequestBody EstabelecimentoCadastroDTO estabelecimento) {
+    public ResponseEntity<EstabelecimentoComercianteResponseDTO> cadastrarEstabelecimento(@Valid @RequestBody EstabelecimentoCadastroDTO estabelecimento) {
         Estabelecimento estabelecimentoCriado = estabelecimentoService.cadastroEstabelecimento(estabelecimento);
-        return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoCriado));
+        return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimentoComerciante(estabelecimentoCriado,10,10));
     }
 
     @PostMapping("/{id}/imagem")
     public ResponseEntity<Void> salvarImagem(@RequestParam MultipartFile imagem, @PathVariable Long id){
-
         estabelecimentoService.salvarImagem(imagem,id);
         return ResponseEntity.noContent().build();
-
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EstabelecimentoResponseDTO> atualizarEstabelecimento(@Valid @RequestBody EstabelecimentoAtualizarDTO estabelecimentoDto, @PathVariable Long id) {
         Estabelecimento estabelecimentoAtualizado = estabelecimentoService.atualizarEstabelecimento(estabelecimentoDto, id);
-
         return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoAtualizado));
     }
 
@@ -88,8 +79,6 @@ public class EstabelecimentoController {
     }
 
 
-
-   
     @GetMapping("/metodos/{id}")
     public ResponseEntity<List<MetodoPagamentoResponseDTO>> metodosAceitos(@PathVariable Long id){
         List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoService.findByEstabelecimentoId(id);

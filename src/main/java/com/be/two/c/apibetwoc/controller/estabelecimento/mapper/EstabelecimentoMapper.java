@@ -17,11 +17,10 @@ public class EstabelecimentoMapper {
     public static Estabelecimento toEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO, Comerciante comerciante){
         Estabelecimento estabelecimento = new Estabelecimento();
         estabelecimento.setNome(estabelecimentoCadastroDTO.getNome());
-        estabelecimento.setSegmento(estabelecimentoCadastroDTO.getSegmento());
-        estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefoneContato());
-        estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getReferenciaInstagram());
-        estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getReferenciaFacebook());
-        estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmailContato());
+        estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefone());
+        estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getInstagram());
+        estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getFacebook());
+        estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmail());
         estabelecimento.setIsAtivo(true);
         estabelecimento.setComerciante(comerciante);
 
@@ -47,7 +46,7 @@ public class EstabelecimentoMapper {
         endereco.setBairro(enderecoEstabelecimento.getBairro());
         endereco.setGeolocalizacaoX(enderecoEstabelecimento.getGeolocalizacaoX());
         endereco.setGeolocalizacaoY(enderecoEstabelecimento.getGeolocalizacaoY());
-        endereco.setRua(enderecoEstabelecimento.getRua());
+        endereco.setRua(enderecoEstabelecimento.getLogradouro());
 
         return endereco;
     }
@@ -55,7 +54,6 @@ public class EstabelecimentoMapper {
     public static EstabelecimentoResponseDTO toResponseEstabelecimento(Estabelecimento estabelecimento){
 
         EstabelecimentoResponseDTO estabelecimentoResponseDTO = new EstabelecimentoResponseDTO();
-        System.out.println("-------sdsd-----------");
         if(estabelecimento.getImagens()!=null) {
             estabelecimentoResponseDTO.setImagens(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList());
         }
@@ -65,7 +63,6 @@ public class EstabelecimentoMapper {
         estabelecimentoResponseDTO.setTelefoneContato(estabelecimento.getTelefoneContato());
         estabelecimentoResponseDTO.setReferenciaInstagram(estabelecimento.getReferenciaInstagram());
         estabelecimentoResponseDTO.setReferenciaFacebook(estabelecimento.getReferenciaFacebook());
-        System.out.println("sdjskdjskddssdAAAAAAAAAAAAAAAAAAAAA");
         estabelecimentoResponseDTO.setEmailContato(estabelecimento.getEmailContato());
         estabelecimentoResponseDTO.setIdComerciante(estabelecimento.getComerciante().getId());
         estabelecimentoResponseDTO.setCnpj(estabelecimento.getComerciante().getCnpj());
@@ -75,6 +72,20 @@ public class EstabelecimentoMapper {
             estabelecimentoResponseDTO.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(EstabelecimentoMapper::toEstabeleciementoMetodoPagamentoResponse).toList());
         }
         estabelecimentoResponseDTO.setSecao(estabelecimento.getSecao().stream().map(EstabelecimentoMapper::toEstabelecimentoSecaoResponse).toList());
+        return estabelecimentoResponseDTO;
+    }
+
+    public static EstabelecimentoComercianteResponseDTO toResponseEstabelecimentoComerciante(Estabelecimento estabelecimento,Integer qtdPedidoPendentes,Integer qtdProdutosAtivos){
+
+        EstabelecimentoComercianteResponseDTO estabelecimentoResponseDTO = new EstabelecimentoComercianteResponseDTO();
+        if(estabelecimento.getImagens()!=null) {
+            estabelecimentoResponseDTO.setImagens(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList());
+        }
+        estabelecimentoResponseDTO.setId(estabelecimento.getId());
+        estabelecimentoResponseDTO.setNome(estabelecimento.getNome());
+        estabelecimentoResponseDTO.setSegmento(estabelecimento.getSegmento());
+        estabelecimentoResponseDTO.setProdutosAtivos(10);
+        estabelecimentoResponseDTO.setPedidosPendentes(10);
         return estabelecimentoResponseDTO;
     }
 

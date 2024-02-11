@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.estabelecimento;
 
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.AgendaMapper;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoAtualizarDTO;
@@ -8,13 +8,18 @@ import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import com.be.two.c.apibetwoc.service.AutenticacaoService;
+import com.be.two.c.apibetwoc.service.EnderecoService;
+import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
+import com.be.two.c.apibetwoc.service.estabelecimento.specification.EstabelecimentoSpecification;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,20 +65,13 @@ public class EstabelecimentoService {
     public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
         Optional<Comerciante> optionalComerciante = Optional.ofNullable(usuario.getComerciante());
-
         Comerciante comerciante = comercianteRepository.findById(optionalComerciante.orElseThrow(EntityNotFoundException::new).getId()).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
-
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
-
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
-        List<MetodoPagamentoAceito> metodoPagamentoAceitos = metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimentoCadastroDTO.getMetodoPagamento());
-        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
-        List<Secao> secao = secaoRepository.saveAll(SecaoMapper.of(estabelecimentoCadastroDTO.getSecao(), estabelecimentoCriado));
+        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getHorarios(), estabelecimentoCriado));
         estabelecimentoCriado.setAgenda(agenda);
-        estabelecimentoCriado.setSecao(secao);
-        estabelecimentoCriado.setMetodoPagamentoAceito(metodoPagamentoAceitos);
         return estabelecimentoCriado;
     }
 
@@ -115,7 +113,7 @@ public class EstabelecimentoService {
         metodoPagamentoAceitoRepository.saveAll(metodos);
         Endereco endereco = enderecoRepository.findByEstabelecimentoId(id);
         endereco.setNumero(estabelecimentoDto.getEndereco().getNumero());
-        endereco.setRua(estabelecimentoDto.getEndereco().getRua());
+        endereco.setRua(estabelecimentoDto.getEndereco().getLogradouro());
         endereco.setBairro(estabelecimentoDto.getEndereco().getBairro());
         endereco.setCep(estabelecimentoDto.getEndereco().getCep());
         List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream().map(e -> EstabelecimentoMapper.toSecao(e, estabelecimentoSalvo)).toList();
@@ -150,12 +148,12 @@ public class EstabelecimentoService {
         return idUsuario;
     }
 
-    public List<Estabelecimento> listarPorComerciante() {
+    public List<Estabelecimento> listarPorComerciante(String nome) {
 
 
         Long usuarioId = retornarIdUsuario();
-
-        List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);
+        Specification<Estabelecimento> spec = Specification.where(EstabelecimentoSpecification.id(usuarioId).and(EstabelecimentoSpecification.name(nome)));
+        List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findAll(spec);
         for (Estabelecimento estabelecimento : estabelecimentos) {
             if (estabelecimento.getImagens() != null) {
                 estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
