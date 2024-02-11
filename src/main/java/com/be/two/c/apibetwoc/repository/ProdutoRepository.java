@@ -27,7 +27,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findBySecaoEstabelecimentoIdAndNomeContainsIgnoreCase(Long idEstabelecimento, String nome);
 
-    List<Produto> findByIsPromocaoAtivaTrue();
+    List<Produto> findByIsPromocaoAtivaTrueAndIsAtivoTrueAndIsDeletedFalse();
 
     @Query("SELECT e FROM Estabelecimento e  WHERE (6371 * acos(cos(radians(?1)) * cos(radians(e.endereco.geolocalizacaoY)) * cos(radians(e.endereco.geolocalizacaoX) - radians(?2)) + sin(radians(?1)) * sin(radians(e.endereco.geolocalizacaoX)))) < ?3 ")
     List<Estabelecimento> buscarPorLocalizacao(Double latitude, Double longitude, Double distancia);

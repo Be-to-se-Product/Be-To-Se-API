@@ -332,6 +332,10 @@ public class ProdutoService {
     }
 
     public List<Produto> produtoEmPromocao() {
-        return null;
+        return produtoRepository.findByIsPromocaoAtivaTrueAndIsAtivoTrueAndIsDeletedFalse();
+    }
+
+    public List<Produto> showCatalogo(Long id){
+        return produtoRepository.findBySecaoEstabelecimentoId(id);
     }
 }
