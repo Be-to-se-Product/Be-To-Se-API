@@ -62,20 +62,13 @@ public class EstabelecimentoService {
     public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
         Optional<Comerciante> optionalComerciante = Optional.ofNullable(usuario.getComerciante());
-
         Comerciante comerciante = comercianteRepository.findById(optionalComerciante.orElseThrow(EntityNotFoundException::new).getId()).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
-
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
-
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
-        List<MetodoPagamentoAceito> metodoPagamentoAceitos = metodoPagamentoAceitoService.cadastrarMetodosPagamentos(estabelecimentoCriado, estabelecimentoCadastroDTO.getMetodoPagamento());
-        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
-        List<Secao> secao = secaoRepository.saveAll(SecaoMapper.of(estabelecimentoCadastroDTO.getSecao(), estabelecimentoCriado));
+        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getHorarios(), estabelecimentoCriado));
         estabelecimentoCriado.setAgenda(agenda);
-        estabelecimentoCriado.setSecao(secao);
-        estabelecimentoCriado.setMetodoPagamentoAceito(metodoPagamentoAceitos);
         return estabelecimentoCriado;
     }
 
@@ -117,7 +110,7 @@ public class EstabelecimentoService {
         metodoPagamentoAceitoRepository.saveAll(metodos);
         Endereco endereco = enderecoRepository.findByEstabelecimentoId(id);
         endereco.setNumero(estabelecimentoDto.getEndereco().getNumero());
-        endereco.setRua(estabelecimentoDto.getEndereco().getRua());
+        endereco.setRua(estabelecimentoDto.getEndereco().getLogradouro());
         endereco.setBairro(estabelecimentoDto.getEndereco().getBairro());
         endereco.setCep(estabelecimentoDto.getEndereco().getCep());
         List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream().map(e -> EstabelecimentoMapper.toSecao(e, estabelecimentoSalvo)).toList();
