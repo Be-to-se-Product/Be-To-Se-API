@@ -57,11 +57,7 @@ public class ComercianteService {
                 .toList();
     }
     public Comerciante buscarPorId(Long id){
-        Comerciante comerciante = comercianteRepository.findById(id).orElseThrow(
-                ()->new EntidadeNaoExisteException("Comerciante não encontrado")
-        );
-
-       return comerciante;
+        return usuarioService.buscarPorId(id).getComerciante();
     }
     public void excluir(Long id){
         if(!comercianteRepository.existsById(id)){
