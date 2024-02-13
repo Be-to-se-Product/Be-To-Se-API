@@ -6,6 +6,7 @@ import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Secao;
 import com.be.two.c.apibetwoc.repository.SecaoRepository;
+import com.be.two.c.apibetwoc.service.estabelecimento.EstabelecimentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

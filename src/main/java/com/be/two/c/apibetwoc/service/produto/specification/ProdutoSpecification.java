@@ -16,6 +16,10 @@ public class ProdutoSpecification {
     public static Specification<Produto> filtrarIds(List<Integer> ids){
         return (root, criterialQuery, criteriaBuilder) -> root.get("id").in(ids);
     }
+
+    public static Specification<Produto> isAtivo(){
+        return ((root, query, criteriaBuilder) -> root.get("isAtivo").in(true));
+    }
     public static Specification<Produto> name(String name){
 
         return (root, criteriaQuery, criteriaBuilder) -> {
@@ -23,6 +27,19 @@ public class ProdutoSpecification {
                 return criteriaBuilder.conjunction();
             }
             return criteriaBuilder.like(root.get("nome"), "%" + name + "%");
+        };
+    }
+
+
+    public static Specification<Produto> isEstabelecimento(Long idEstabelecimento){
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if (idEstabelecimento == null) {
+                return criteriaBuilder.conjunction();
+            }
+            Join<Produto,Secao> joinSecao = root.join("secao");
+
+            Join<Secao,Estabelecimento> joinEstabelecimento = joinSecao.join("estabelecimento");
+            return  joinEstabelecimento.get("id").in(idEstabelecimento);
         };
     }
     public static Specification<Produto> metodoPagamento(String metodoPagamento){

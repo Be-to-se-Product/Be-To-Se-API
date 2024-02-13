@@ -22,10 +22,12 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
     private final ItemVendaService itemVendaService;
-
+    private final FilaRequisicao filaRequisicao;
     @PostMapping
     public ResponseEntity<ResponsePedidoDTO> cadastrar(@RequestBody @Valid PedidoCreateDto pedidoCreate){
+        filaRequisicao.entrarFila();
         Pedido pedido = itemVendaService.cadastrar(pedidoCreate);
+        filaRequisicao.sairFila();
         return ResponseEntity.ok(PedidoMapper.of(pedido));
     }
 

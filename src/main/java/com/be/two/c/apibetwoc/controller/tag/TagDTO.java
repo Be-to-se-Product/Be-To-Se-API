@@ -18,6 +18,4 @@ import lombok.NoArgsConstructor;
 public class TagDTO {
     @NotNull
     private Long id;
-    @NotBlank
-    private String nome;
 }

@@ -17,7 +17,6 @@ public class TagMapper {
     public static Tag toTag(TagDTO tagDto){
         Tag tag = new Tag();
         tag.setId(tagDto.getId());
-        tag.setDescricao(tagDto.getNome());
         return tag;
     }
 }
