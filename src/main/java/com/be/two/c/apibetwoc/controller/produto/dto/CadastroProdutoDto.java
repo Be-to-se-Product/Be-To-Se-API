@@ -18,20 +18,32 @@ public class CadastroProdutoDto {
     @NotBlank
     private String nome;
     @NotBlank
-    private String codigoSku;
+    private String descricao;
+    //Preço base
     @Positive
     private Double preco;
-    @NotBlank
-    private String descricao;
+
     @NotNull
     private Double precoOferta;
     @NotBlank
+    private String codigoSku;
+    @NotBlank
     private String codigoBarras;
+
     @NotBlank
     private String categoria;
+
     @NotNull
     private Long secao;
+
+
+    @NotNull
+    private Boolean isAtivo;
+
     private List<@Valid TagDTO> tags;
+
+
+
 
 
 

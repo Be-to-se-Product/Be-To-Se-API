@@ -26,7 +26,7 @@ public class EstabelecimentoController {
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
 
     @GetMapping("/comerciante")
-    public ResponseEntity<List<EstabelecimentoComercianteResponseDTO>> listarPorComerciante(@RequestParam String nome){
+    public ResponseEntity<List<EstabelecimentoComercianteResponseDTO>> listarPorComerciante(@RequestParam(required = false) String nome){
          List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante(nome);
          if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
         return ResponseEntity.ok(estabelecimentos.stream().map(e->EstabelecimentoMapper.toResponseEstabelecimentoComerciante(e,10,10)).toList());
@@ -40,6 +40,27 @@ public class EstabelecimentoController {
                 : ResponseEntity.status(200).body(estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimento).toList());
     }
 
+
+    @GetMapping("/categorias")
+    public ResponseEntity<List<String>> listarCategoriasProdutos(){
+
+        List<String> categorias = List.of(
+                "Bebidas",
+                "Carnes",
+                "Doces",
+                "Frutas",
+                "Higiene",
+                "Laticínios",
+                "Limpeza",
+                "Massas",
+                "Padaria",
+                "Peixes",
+                "Petiscos",
+                "Salgados",
+                "Verduras"
+        );
+        return ResponseEntity.ok(categorias);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<EstabelecimentoResponseDTO> listarPorId(@PathVariable Long id){
         return ResponseEntity.status(200).body(EstabelecimentoMapper.toResponseEstabelecimento(estabelecimentoService.listarPorId(id)));

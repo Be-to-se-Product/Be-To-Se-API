@@ -36,8 +36,8 @@ public class ProdutoMapper {
         produto.setPrecoOferta(cadastroProdutoDto.getPrecoOferta());
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
-        produto.setIsAtivo(true);
-        produto.setTags(List.of());
+        produto.setIsAtivo(cadastroProdutoDto.getIsAtivo());
+        produto.setTags(produto.getTags());
         produto.setSecao(secao);
         return produto;
     }
@@ -170,6 +170,7 @@ public class ProdutoMapper {
         produtoDto.setNome(produto.getNome());
         produtoDto.setCodigoSku(produto.getCodigoSku());
         produtoDto.setPreco(produto.getPreco());
+        produtoDto.setPrecoOferta(produto.getPrecoOferta());
         produtoDto.setDescricao(produto.getDescricao());
         produtoDto.setPrecoOferta(produto.getPrecoOferta());
         produtoDto.setCodigoBarras(produto.getCodigoBarras());

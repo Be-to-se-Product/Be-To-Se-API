@@ -31,7 +31,6 @@ public class EstabelecimentoService {
 
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final ComercianteRepository comercianteRepository;
-    private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
     private final AgendaRepository agendaRepository;
     private final SecaoRepository secaoRepository;
     private final EnderecoRepository enderecoRepository;

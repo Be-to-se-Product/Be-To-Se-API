@@ -18,6 +18,11 @@ import com.be.two.c.apibetwoc.util.FilaRequisicao;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,18 +95,24 @@ public class ProdutoController {
         produtoService.statusPromocaoProduto(id, status);
         return ResponseEntity.noContent().build();
     }
+
+    private Pageable createPageRequestUsing(int page, int size) {
+        return PageRequest.of(page, size);
+    }
     @GetMapping("/estabelecimento/{id}")
-    public ResponseEntity<List<ProdutoDetalhamentoDto>> produtoPorEstabelecimento(@PathVariable Long id){
-        List<Produto> produtos = produtoService.produtoPorEstabelecimento(id);
+    public ResponseEntity<Page<ProdutoDetalhamentoDto>> produtoPorEstabelecimento(@PathVariable Long id, @PageableDefault Pageable pagina,@RequestParam(required = false) String nome){
+        Page<Produto> produtos = produtoService.produtoPorEstabelecimento(id,nome,pagina);
         if (produtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-         List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
-
+        List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
+        Page<ProdutoDetalhamentoDto> paginaDtos = new PageImpl<>(dtos, pagina, produtos.getTotalElements());
         return dtos.isEmpty()
                 ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(dtos);
+                : ResponseEntity.ok(paginaDtos);
     }
+
+
 
     @GetMapping("/pesquisa/{id}")
     public ResponseEntity<List<ProdutoDetalhamentoDto>> pesquisa(@PathVariable Long id, @RequestParam String pesquisa){

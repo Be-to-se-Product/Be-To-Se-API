@@ -13,6 +13,7 @@ import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.service.produto.mapper.ProdutoTagMapper;
+import com.be.two.c.apibetwoc.service.produto.specification.ProdutoSpecification;
 import com.be.two.c.apibetwoc.service.tag.mapper.TagMapper;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
@@ -20,6 +21,9 @@ import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -180,15 +184,18 @@ public class ProdutoService {
         produtoRepository.statusPromocao(status, id);
     }
 
-    public List<Produto> produtoPorEstabelecimento(Long id) {
+    public Page<Produto> produtoPorEstabelecimento(Long id, String nome, Pageable pagina) {
 
         if (!estabelecimentoRepository.existsById(id)) {
             throw new EntidadeNaoExisteException("Entidade não existe");
         }
+        Specification<Produto> specification = ProdutoSpecification.isAtivo().and(ProdutoSpecification.isEstabelecimento(id).and(ProdutoSpecification.name(nome)));
+        Page<Produto> produtos = produtoRepository.findAll(specification,pagina);
 
-        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
         for (Produto produto : produtos) {
-            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+            if (produto.getImagens() != null) {
+                produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+            }
         }
         return produtos;
     }
