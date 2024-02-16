@@ -41,4 +41,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findAllByIsAtivoTrue();
 
+    List<Produto> findByIsAtivoTrueAndIsDeletedFalseAndSecaoEstabelecimentoId(Long id);
+
 }

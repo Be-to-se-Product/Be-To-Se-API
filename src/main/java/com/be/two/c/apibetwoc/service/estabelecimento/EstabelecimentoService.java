@@ -170,4 +170,13 @@ public class EstabelecimentoService {
         Imagem imagemSalva = imagemService.cadastrarImagensEstabelecimento(imagem, TipoArquivo.IMAGEM, estabelecimento, arquivos);
         imagemRepository.save(imagemSalva);
     }
+
+    public Estabelecimento showCatalogo(Long id){
+        Estabelecimento estabelecimento = estabelecimentoRepository.
+                findById(id)
+                .orElseThrow(
+                        () -> new EntidadeNaoExisteException("Estabelecimento não encontrado"));
+        formatarImagem(estabelecimento);
+        return estabelecimento;
+    }
 }

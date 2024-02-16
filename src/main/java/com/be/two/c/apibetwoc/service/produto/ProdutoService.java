@@ -342,7 +342,7 @@ public class ProdutoService {
         return produtoRepository.findByIsPromocaoAtivaTrueAndIsAtivoTrueAndIsDeletedFalse();
     }
 
-    public List<Produto> showCatalogo(Long id){
-        return produtoRepository.findBySecaoEstabelecimentoId(id);
+    public List<Produto> exibirPorLoja(Long id){
+        return produtoRepository.findByIsAtivoTrueAndIsDeletedFalseAndSecaoEstabelecimentoId(id);
     }
 }

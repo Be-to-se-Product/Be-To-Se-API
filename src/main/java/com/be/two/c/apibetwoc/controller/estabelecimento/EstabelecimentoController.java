@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.controller.estabelecimento;
 
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.*;
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.catalogo.EstabelecimentoCatalogoResponseDto;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
 import com.be.two.c.apibetwoc.controller.metodoPagamento.dto.MetodoPagamentoResponseDTO;
 import com.be.two.c.apibetwoc.controller.metodoPagamento.mapper.MetodoPagamentoAceitoMapper;
@@ -109,6 +110,12 @@ public class EstabelecimentoController {
         List<MetodoPagamentoResponseDTO> metodosAceito = MetodoPagamentoAceitoMapper.of(metodos);
 
         return ResponseEntity.ok(metodosAceito);
+    }
+
+    @GetMapping("/catalogo")
+    public ResponseEntity<EstabelecimentoCatalogoResponseDto> listarCatalogo(@PathVariable Long id){
+        Estabelecimento estabelecimento = estabelecimentoService.showCatalogo(id);
+        return ResponseEntity.ok(EstabelecimentoMapper.toCatalogoDto(estabelecimento));
     }
     
 }
