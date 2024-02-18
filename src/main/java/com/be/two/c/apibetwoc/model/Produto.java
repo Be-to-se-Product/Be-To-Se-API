@@ -6,7 +6,10 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +22,10 @@ public class Produto {
     private String codigoBarras;
     private String categoria;
     private Boolean isAtivo;
+    private Boolean isDeleted;
     private Boolean isPromocaoAtiva;
     private Integer qtdVendido;
+    private Double taxaCompra;
     @ManyToOne
     @JoinColumn(name = "fk_secao")
     private Secao secao;
