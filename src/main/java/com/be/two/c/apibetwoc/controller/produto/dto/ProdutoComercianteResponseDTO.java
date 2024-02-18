@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProdutoDetalhamentoDto {
+public class ProdutoComercianteResponseDTO {
+
     private Long id;
     private String nome;
     private String codigoSku;
@@ -18,11 +20,11 @@ public class ProdutoDetalhamentoDto {
     private String descricao;
     private Double precoOferta;
     private String codigoBarras;
-    private Integer quantidade;
-    private String categoria;
-    private Boolean isPromocaoAtiva;
-    private List<String> imagens;
-    private ProdutoSecaoResponseDTO secao;
-    private List<TagResponseDTO> tags;
 
+    private String categoria;
+    private Boolean isAtivo;
+    private Boolean isPromocaoAtiva;
+    private List<ProdutoImagemResponseDTO> imagens;
+    private ProdutoComercianteSecaoResponseDTO secao;
+    private List<TagResponseDTO> tags;
 }

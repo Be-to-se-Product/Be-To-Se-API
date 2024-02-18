@@ -2,8 +2,7 @@ package com.be.two.c.apibetwoc.controller.estabelecimento.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
 
 @Data
 public class EstabelecimentoEnderecoCadastroDTO {

@@ -1,12 +1,7 @@
 package com.be.two.c.apibetwoc.service.produto.specification;
-
 import com.be.two.c.apibetwoc.model.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-
 import java.util.List;
 
 
