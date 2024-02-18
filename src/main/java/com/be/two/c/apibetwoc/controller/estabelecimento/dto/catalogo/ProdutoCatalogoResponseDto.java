@@ -18,5 +18,5 @@ public class ProdutoCatalogoResponseDto {
     private Boolean isPromocaoAtiva;
     private Integer qtdVendido;
     private Double taxaCompra;
-    List<String> imagens;
+    private List<String> imagens;
 }

@@ -25,7 +25,7 @@ public class CadastroProdutoDto {
 
     @NotNull
     private Double precoOferta;
-    @NotBlank
+
     private String codigoSku;
     @NotBlank
     private String codigoBarras;
@@ -35,7 +35,6 @@ public class CadastroProdutoDto {
 
     @NotNull
     private Long secao;
-
 
     @NotNull
     private Boolean isAtivo;

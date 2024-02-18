@@ -10,12 +10,17 @@ import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 
 import com.be.two.c.apibetwoc.model.*;
+import com.be.two.c.apibetwoc.service.imagem.ImagemService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@RequiredArgsConstructor
 public class EstabelecimentoMapper {
+
+    private static ImagemService imagemService;
+
     public static Estabelecimento toEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO, Comerciante comerciante) {
         Estabelecimento estabelecimento = new Estabelecimento();
         estabelecimento.setNome(estabelecimentoCadastroDTO.getNome());
@@ -145,6 +150,7 @@ public class EstabelecimentoMapper {
         dto.setReferenciaFacebook(estabelecimento.getReferenciaFacebook());
         dto.setEmailContato(estabelecimento.getEmailContato());
         if (estabelecimento.getImagens() != null) {
+            estabelecimento.getImagens().forEach(imagem -> imagemService.formatterImagensURI(imagem));
             dto.setImagens(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList());
         }
 
@@ -171,12 +177,14 @@ public class EstabelecimentoMapper {
         produtoCatalogoResponseDto.setCategoria(produto.getCategoria());
         produtoCatalogoResponseDto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
         if (produto.getImagens() != null) {
+            produto.getImagens().forEach(imagem -> imagemService.formatterImagensURI(imagem));
             produtoCatalogoResponseDto.setImagens(produto.
                     getImagens().
                     stream().
                     map(Imagem::getNomeReferencia).
                     toList());
         }
+
 
         return produtoCatalogoResponseDto;
     }

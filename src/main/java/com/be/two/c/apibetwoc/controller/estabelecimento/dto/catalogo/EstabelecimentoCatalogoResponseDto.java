@@ -18,6 +18,6 @@ public class EstabelecimentoCatalogoResponseDto {
     private String referenciaFacebook;
     private String emailContato;
     private List<ProdutoCatalogoResponseDto> produtos;
-    List<String> imagens;
+    private List<String> imagens;
 
 }
