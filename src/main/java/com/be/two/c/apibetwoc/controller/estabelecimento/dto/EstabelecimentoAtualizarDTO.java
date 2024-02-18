@@ -1,6 +1,4 @@
 package com.be.two.c.apibetwoc.controller.estabelecimento.dto;
-
-import com.be.two.c.apibetwoc.model.Endereco;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

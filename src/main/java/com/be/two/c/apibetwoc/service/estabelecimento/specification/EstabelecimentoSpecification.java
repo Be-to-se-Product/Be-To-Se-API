@@ -2,12 +2,9 @@ package com.be.two.c.apibetwoc.service.estabelecimento.specification;
 
 import com.be.two.c.apibetwoc.model.Comerciante;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
-import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.model.Usuario;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.List;
 
 public class EstabelecimentoSpecification {
 

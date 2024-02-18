@@ -34,7 +34,7 @@ public class ImagemService {
 
     public Imagem formatterImagensURI(Imagem imagem){
         String dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/imagens/");
-        imagem.setNomeReferencia(dominio +" "+ imagem.getNomeReferencia());
+        imagem.setNomeReferencia(dominio+imagem.getNomeReferencia());
         return imagem;
     }
 }

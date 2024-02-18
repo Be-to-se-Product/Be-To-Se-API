@@ -4,13 +4,11 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.AgendaMapper;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoCadastroDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
-import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
 import com.be.two.c.apibetwoc.service.AutenticacaoService;
 import com.be.two.c.apibetwoc.service.EnderecoService;
-import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.estabelecimento.specification.EstabelecimentoSpecification;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
@@ -69,7 +67,7 @@ public class EstabelecimentoService {
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
-        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getHorarios(), estabelecimentoCriado));
+        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
         estabelecimentoCriado.setAgenda(agenda);
         return estabelecimentoCriado;
     }
@@ -93,7 +91,7 @@ public class EstabelecimentoService {
 
         List<MetodoPagamentoAceito> metodoPagamentoSalvar = new ArrayList<>();
         for (MetodoPagamento metodoPagamento: metodoPagamentoFront ) {
-            if(metodoPagamentosBanco.stream().noneMatch(e->e.getId()==metodoPagamento.getId())){
+            if(metodoPagamentosBanco.stream().noneMatch(e-> e.getId().equals(metodoPagamento.getId()))){
                 MetodoPagamentoAceito metodoPagamentoAceito = new MetodoPagamentoAceito();
                 metodoPagamentoAceito.setEstabelecimento(estabelecimento);
                 metodoPagamentoAceito.setMetodoPagamento(metodoPagamento);
@@ -148,7 +146,6 @@ public class EstabelecimentoService {
     }
 
     public List<Estabelecimento> listarPorComerciante(String nome) {
-
 
         Long usuarioId = retornarIdUsuario();
         Specification<Estabelecimento> spec = Specification.where(EstabelecimentoSpecification.id(usuarioId).and(EstabelecimentoSpecification.name(nome)));

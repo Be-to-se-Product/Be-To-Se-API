@@ -18,7 +18,7 @@ public class EstabelecimentoCadastroDTO {
     private String instagram;
     private String facebook;
     private EstabelecimentoEnderecoCadastroDTO endereco;
-    private List<EstabelecimentoCadastroAgendaDTO> horarios;
+    private List<EstabelecimentoCadastroAgendaDTO> agenda;
 }
 
 

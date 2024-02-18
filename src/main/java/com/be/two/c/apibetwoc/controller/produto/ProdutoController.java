@@ -1,14 +1,13 @@
 package com.be.two.c.apibetwoc.controller.produto;
 
-import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
-import com.be.two.c.apibetwoc.controller.produto.dto.CadastroProdutoDto;
-import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoVendaDto;
+import com.be.two.c.apibetwoc.controller.produto.dto.*;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
-import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoVendaResponseDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
+import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
 import com.be.two.c.apibetwoc.service.produto.ProdutoService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import com.be.two.c.apibetwoc.util.FilaRequisicao;
@@ -25,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +65,10 @@ public class ProdutoController {
 
     @PostMapping("/{id}/imagens")
     public ResponseEntity<Void> cadastrarImagens(@RequestParam List<MultipartFile> imagens, @PathVariable Long id){
-            produtoService.cadastrarImagens(imagens,id);
-            return ResponseEntity.created(null).build();
+
+        produtoService.cadastrarImagens(imagens, id);
+        return ResponseEntity.status(201).build();
+
     }
 
 
@@ -74,6 +76,28 @@ public class ProdutoController {
     public ResponseEntity<ProdutoDetalhamentoDto> atualizarProduto(@PathVariable Long id, @Valid @RequestBody CadastroProdutoDto produto){
         Produto produtoAtualizado = produtoService.atualizarProduto(id, produto);
         return ResponseEntity.ok(ProdutoMapper.toProdutoDetalhamento(produtoAtualizado));
+    }
+
+    @PutMapping("/{idProduto}/imagens")
+    public ResponseEntity<Void> atualizarImagens(@RequestParam(required = false) List<MultipartFile> imagens, @RequestParam(name = "details") String details ,@PathVariable Long idProduto){
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<ImagemCadastroDTO> imagensConvert;
+
+        try {
+            imagensConvert = mapper.readValue(details, mapper.getTypeFactory().constructCollectionType(List.class, ImagemCadastroDTO.class));
+        } catch (IOException e) {
+            throw new EntidadeNaoExisteException("Erro ao converter imagens");
+        }
+
+        imagensConvert.forEach(imagem->{
+            System.out.println(imagem.getNome());
+            imagem.setImagem(imagens.stream().filter(img->img.getOriginalFilename().equals(imagem.getNome())).findFirst().orElse(null));
+        });
+
+        produtoService.atualizarImagens(imagensConvert, idProduto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
@@ -163,9 +187,7 @@ public class ProdutoController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(produtos.stream().map(element->{
-            return ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude);
-        }).toList());
+        return ResponseEntity.ok(produtos.stream().map(element-> ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude)).toList());
     }
     @PostMapping("/venda")
     public ResponseEntity<List<ProdutoVendaResponseDto>> listaProdutoVenda(@RequestBody List<ProdutoVendaDto> produtos){
@@ -200,6 +222,17 @@ public class ProdutoController {
             List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
             return ResponseEntity.status(201).body(dtos);
     }
+
+
+    @GetMapping("/{idProduto}/estabelecimento")
+    public ResponseEntity<ProdutoComercianteResponseDTO> produtoPorEstabelecimento(@PathVariable Long idProduto){
+        Produto produto = produtoService.produtoPorIdEstabelecimento(idProduto);
+        ProdutoComercianteResponseDTO dto = ProdutoMapper.produtoComercianteResponseDTO(produto);
+
+        return ResponseEntity.ok(dto);
+    }
+
+
 
     @GetMapping("/ativos-por-estabelecimento/{id}")
     public ResponseEntity<List<ProdutoDetalhamentoDto>> showCatalogo(@PathVariable Long id){
