@@ -49,10 +49,13 @@ public class ConsumidorService {
 
     public Consumidor atualizar(Consumidor consumidor, Long id){
         Usuario usuario = usuarioService.buscarPorId(id);
+        usuario.setEmail(consumidor.getUsuario().getEmail());
         Consumidor c = existeConsumidor(usuario.getConsumidor().getId());
-        consumidor.setUsuario(usuario);
-        consumidor.setDataUltimaCompra(c.getDataUltimaCompra());
-        consumidor.setImagem(c.getImagem());
+        c.setNome(consumidor.getNome());
+        c.setCelular(consumidor.getCelular());
+        c.setCpf(consumidor.getCpf());
+        c.setGenero(consumidor.getGenero());
+        c.setDataNascimento(consumidor.getDataNascimento());
         c = consumidorRepository.save(consumidor);
         return c;
     }

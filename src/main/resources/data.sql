@@ -174,13 +174,13 @@ insert into agenda (horario_fim, horario_inicio, fk_estabelecimento, dia) values
     (true, true, 11.99, 9.99, 25, 10, 'Gourmet', '9876543210123', 'PROD010', 'Azeite Extra Virgem 500ml', 'Azeite Extra Virgem');
 
     -- Dados para a tabela 'imagem'
-    INSERT INTO imagem (data_criacao, fk_estabelecimento, fk_produto, nome_imagem, nome_referencia) VALUES
-    ('2022-05-01', 1, NULL, 'logo_mercado.jpg', 'Logo Mercado Bom Preço'),
-    ('2022-07-01', 1, NULL, 'logo_padaria.jpg', 'Logo Padaria Sabor Artesanal'),
-    ('2022-08-15', 3, NULL, 'logo_acougue.jpg', 'Logo Açougue da Esquina'),
-    ('2022-09-10', 3, NULL, 'logo_padaria_acougue.jpg', 'Logo Padaria e Açougue da Esquina'),
-    ('2022-11-01', 5, NULL, 'logo_conveniencia.jpg', 'Logo Loja de Conveniência'),
-    ('2023-01-15', 5, NULL, 'logo_supermercado.jpg', 'Logo Supermercado Mega');
+--    INSERT INTO imagem (data_criacao, fk_estabelecimento, fk_produto, nome_imagem, nome_referencia) VALUES
+--    ('2022-05-01', 1, NULL, 'logo_mercado.jpg', 'Logo Mercado Bom Preço'),
+--    ('2022-07-01', 1, NULL, 'logo_padaria.jpg', 'Logo Padaria Sabor Artesanal'),
+--    ('2022-08-15', 3, NULL, 'logo_acougue.jpg', 'Logo Açougue da Esquina'),
+--    ('2022-09-10', 3, NULL, 'logo_padaria_acougue.jpg', 'Logo Padaria e Açougue da Esquina'),
+--    ('2022-11-01', 5, NULL, 'logo_conveniencia.jpg', 'Logo Loja de Conveniência'),
+--    ('2023-01-15', 5, NULL, 'logo_supermercado.jpg', 'Logo Supermercado Mega');
 
     -- Dados para a tabela 'produto_tag'
     INSERT INTO produto_tag (fk_produto, fk_tag) VALUES
