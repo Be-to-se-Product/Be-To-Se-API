@@ -10,6 +10,7 @@ import com.be.two.c.apibetwoc.service.estabelecimento.EstabelecimentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,29 +19,28 @@ public class SecaoService {
     private final SecaoRepository secaoRepository;
     private final EstabelecimentoService estabelecimentoService;
 
-    public List<Secao> listarSecoes(){
+    public List<Secao> listarSecoes() {
         return secaoRepository.findAll();
     }
 
-    public List<Secao> listarPorEstabelecimento(Long id){
+    public List<Secao> listarPorEstabelecimento(Long id) {
         estabelecimentoService.listarPorId(id);
         return secaoRepository.findByEstabelecimentoId(id);
     }
 
-    public Secao cadastrarSecao(CadastroSecaoDto secao){
+    public Secao cadastrarSecao(CadastroSecaoDto secao) {
         Estabelecimento estabelecimento = estabelecimentoService.listarPorId(secao.getIdEstabelecimento());
 
         return secaoRepository.save(SecaoMapper.of(secao, estabelecimento));
     }
 
-    public Secao listarPorId(Long id){
+    public Secao listarPorId(Long id) {
         return secaoRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoExisteException("Seção inexistente!")
         );
     }
 
-    public Secao listarSecaoPorDescricao(String descricao){
+    public Secao listarSecaoPorDescricao(String descricao) {
         return secaoRepository.findByDescricao(descricao);
     }
-
 }

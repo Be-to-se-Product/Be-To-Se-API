@@ -40,7 +40,6 @@ public class EstabelecimentoService {
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final MetodoPagamentoRepository metodoPagamentoRepository;
 
-
     public Estabelecimento listarPorId(Long id) {
 
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
@@ -69,6 +68,8 @@ public class EstabelecimentoService {
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
         List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
         estabelecimentoCriado.setAgenda(agenda);
+        List<Secao> secoes = secaoRepository.saveAll(toSecoes(estabelecimentoCadastroDTO.getSecao(), estabelecimentoCriado));
+        estabelecimentoCriado.setSecao(secoes);
         return estabelecimentoCriado;
     }
 
@@ -175,5 +176,16 @@ public class EstabelecimentoService {
                         () -> new EntidadeNaoExisteException("Estabelecimento não encontrado"));
         formatarImagem(estabelecimento);
         return estabelecimento;
+    }
+
+    public List<Secao> toSecoes(List<String> secoes, Estabelecimento estabelecimento) {
+       List<Secao> salvas = new ArrayList<>();
+        for (String secao : secoes) {
+            Secao s = new Secao();
+            s.setDescricao(secao);
+            s.setEstabelecimento(estabelecimento);
+            salvas.add(s);
+        }
+        return salvas;
     }
 }

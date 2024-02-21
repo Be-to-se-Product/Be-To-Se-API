@@ -24,13 +24,13 @@ public class EstabelecimentoMapper {
     public static Estabelecimento toEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO, Comerciante comerciante) {
         Estabelecimento estabelecimento = new Estabelecimento();
         estabelecimento.setNome(estabelecimentoCadastroDTO.getNome());
-        estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefone());
-        estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getInstagram());
-        estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getFacebook());
-        estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmail());
+        estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefoneContato());
+        estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getReferenciaInstagram());
+        estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getReferenciaFacebook());
+        estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmailContato());
         estabelecimento.setIsAtivo(true);
+        estabelecimento.setSegmento(estabelecimentoCadastroDTO.getSegmento());
         estabelecimento.setComerciante(comerciante);
-
         return estabelecimento;
     }
 
@@ -42,6 +42,7 @@ public class EstabelecimentoMapper {
         estabelecimento.setReferenciaInstagram(estabelecimentoAtualizarDTO.getReferenciaInstagram());
         estabelecimento.setReferenciaFacebook(estabelecimentoAtualizarDTO.getReferenciaFacebook());
         estabelecimento.setEmailContato(estabelecimentoAtualizarDTO.getEmailContato());
+
         return estabelecimento;
     }
 

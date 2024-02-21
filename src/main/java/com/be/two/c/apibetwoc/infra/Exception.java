@@ -4,6 +4,7 @@ import com.be.two.c.apibetwoc.infra.security.ErrosValidacao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,6 +37,11 @@ public class Exception {
     @ExceptionHandler(EntidadeNaoExisteException.class)
     public ResponseEntity<Void> entidadeNotFound(){
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> usuarioNaoEncontrado(UsernameNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
 }

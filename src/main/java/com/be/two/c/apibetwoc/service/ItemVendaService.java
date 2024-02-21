@@ -31,12 +31,13 @@ public class ItemVendaService {
     private final CarrinhoService carrinhoService;
     private final ImagemService imagemService;
     private final UsuarioRepository usuarioRepository;
-    public Pedido cadastrar(PedidoCreateDto pedidoCreate ){
+
+    public Pedido cadastrar(PedidoCreateDto pedidoCreate) {
         List<ItemVenda> itensVendas = new ArrayList<>();
 
         Usuario usuario = usuarioRepository.findById(pedidoCreate.getIdConsumidor()).orElseThrow(EntidadeNaoExisteException::new);
         Pedido pedido = pedidoService.cadastrar(pedidoCreate.getMetodo());
-        for (ItemVendaCreateDto i : pedidoCreate.getItens()){
+        for (ItemVendaCreateDto i : pedidoCreate.getItens()) {
             ItemVenda itemVenda = ItemVendaMapper.of(i);
             Consumidor consumidor = consumidorRepository.findById(usuario.getConsumidor().getId())
                     .orElseThrow(() -> new EntidadeNaoExisteException("Consumidor informado não existe"));
@@ -45,16 +46,16 @@ public class ItemVendaService {
             itemVenda.setConsumidor(consumidor);
             itemVenda.setProduto(produto);
             itemVenda.setPedido(pedido);
-            if(produto.getIsPromocaoAtiva()!=null) {
+            if (produto.getIsPromocaoAtiva() != null) {
                 itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
             }
-            
+
             itensVendas.add(itemVenda);
         }
         pedido.setItens(itensVendas);
         itemVendaRepository.saveAll(itensVendas);
         transacaoService.adicionar(pedido);
-        if(pedidoCreate.getOrigem().equals("Carrinho")){
+        if (pedidoCreate.getOrigem().equals("Carrinho")) {
             carrinhoService.esvaziarCarrinho(pedidoCreate.getIdConsumidor());
         }
         return pedido;
