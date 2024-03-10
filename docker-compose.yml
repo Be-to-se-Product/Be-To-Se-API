@@ -1,12 +1,9 @@
 version: '3'
 services:
-  myapp:
-    image: openjdk
-    command: java -jar ./target/apibetwoc-0.0.1-SNAPSHOT.jar
+  api:
+    build:
+        context: .
+        dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    volumes:
-      - type: bind
-        source: ./target/apibetwoc-0.0.1-SNAPSHOT.jar
-        target: /target/apibetwoc-0.0.1-SNAPSHOT.jar
-
+    restart: always
