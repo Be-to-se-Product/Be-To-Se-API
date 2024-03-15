@@ -41,29 +41,29 @@ public class SecurityConfiguracao {
     private AutenticacaoEntryPoint autenticacaoJwtEntryPoint;
 
     private static final AntPathRequestMatcher[] URLS_PERMITIDAS = {
-            new AntPathRequestMatcher("/swagger-ui/**"),
-            new AntPathRequestMatcher("/swagger-ui.html"),
-            new AntPathRequestMatcher("/swagger-resources"),
-            new AntPathRequestMatcher("/swagger-resources/**"),
-            new AntPathRequestMatcher("/configuration/ui"),
-            new AntPathRequestMatcher("/configuration/security"),
+            new AntPathRequestMatcher("api/swagger-ui/**"),
+            new AntPathRequestMatcher("api/swagger-ui.html"),
+            new AntPathRequestMatcher("api/swagger-resources"),
+            new AntPathRequestMatcher("api/swagger-resources/**"),
+            new AntPathRequestMatcher("api/configuration/ui"),
+            new AntPathRequestMatcher("api/configuration/security"),
             new AntPathRequestMatcher("/api/public/**"),
             new AntPathRequestMatcher("/api/public/authenticate"),
             new AntPathRequestMatcher("/webjars/**"),
             new AntPathRequestMatcher("/v3/api-docs/**"),
             new AntPathRequestMatcher("/actuator/*"),
-            new AntPathRequestMatcher("/usuarios/login"),
-            new AntPathRequestMatcher("/usuarios", "POST"),
-            new AntPathRequestMatcher("/consumidores", "POST"),
-            new AntPathRequestMatcher("/comerciantes", "POST"),
+            new AntPathRequestMatcher("api/usuarios/login"),
+            new AntPathRequestMatcher("api/usuarios", "POST"),
+            new AntPathRequestMatcher("api/consumidores", "POST"),
+            new AntPathRequestMatcher("api/comerciantes", "POST"),
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
-            new AntPathRequestMatcher("/historico/**"),
-            new AntPathRequestMatcher("/estabelecimentos/**", "GET"),
-            new AntPathRequestMatcher("/produtos/**","GET"),
-            new AntPathRequestMatcher("/produtos/**","POST"),
+            new AntPathRequestMatcher("api/historico/**"),
+            new AntPathRequestMatcher("api/estabelecimentos/**", "GET"),
+            new AntPathRequestMatcher("api/produtos/**","GET"),
+            new AntPathRequestMatcher("api/produtos/**","POST"),
             new AntPathRequestMatcher("/**","GET"),
-            new AntPathRequestMatcher("/teste/**")
+            new AntPathRequestMatcher("api/teste/**")
     };
 
     @Bean
