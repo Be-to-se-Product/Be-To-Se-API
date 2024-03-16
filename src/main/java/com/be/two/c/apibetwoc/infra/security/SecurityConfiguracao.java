@@ -52,18 +52,18 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/webjars/**"),
             new AntPathRequestMatcher("/v3/api-docs/**"),
             new AntPathRequestMatcher("/actuator/*"),
-            new AntPathRequestMatcher("api/usuarios/login"),
-            new AntPathRequestMatcher("api/usuarios", "POST"),
-            new AntPathRequestMatcher("api/consumidores", "POST"),
-            new AntPathRequestMatcher("api/comerciantes", "POST"),
+            new AntPathRequestMatcher("/api/usuarios/login"),
+            new AntPathRequestMatcher("/api/usuarios", "POST"),
+            new AntPathRequestMatcher("/api/consumidores", "POST"),
+            new AntPathRequestMatcher("/api/comerciantes", "POST"),
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
-            new AntPathRequestMatcher("api/historico/**"),
-            new AntPathRequestMatcher("api/estabelecimentos/**", "GET"),
-            new AntPathRequestMatcher("api/produtos/**","GET"),
-            new AntPathRequestMatcher("api/produtos/**","POST"),
+            new AntPathRequestMatcher("/api/historico/**"),
+            new AntPathRequestMatcher("/api/estabelecimentos/**", "GET"),
+            new AntPathRequestMatcher("/api/produtos/**","GET"),
+            new AntPathRequestMatcher("/api/produtos/**","POST"),
             new AntPathRequestMatcher("/**","GET"),
-            new AntPathRequestMatcher("api/teste/**")
+            new AntPathRequestMatcher("/api/teste/**")
     };
 
     @Bean
