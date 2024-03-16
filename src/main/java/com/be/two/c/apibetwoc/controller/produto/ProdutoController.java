@@ -150,7 +150,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/mapa")
-    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam Double distancia,  @RequestParam(required = false)  String nome, @RequestParam(required = false) String metodoPagamento){
+    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam(required = false) Double latitude, @RequestParam(required = false) Double longitude, @RequestParam(required = false) Double distancia,  @RequestParam(required = false)  String nome, @RequestParam(required = false) String metodoPagamento){
         List<Produto> produtos = produtoMapaService.retornarProdutos(latitude, longitude, distancia, nome,metodoPagamento);
         if(produtos.isEmpty()) {
             return ResponseEntity.noContent().build();
