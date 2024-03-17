@@ -22,12 +22,13 @@ public class ProdutoMapaService{
     private final ProdutoRepository produtoRepository;
 
     public List<Produto> retornarProdutos(Double latitude,Double longitude,Double distancia,String produto,String metodoPagamento){
-        List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
-        Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
         List<Produto> produtos;
         if(latitude == null || longitude == null || distancia == null){
             produtos = produtoRepository.findAll(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento)));
         } else {
+            System.out.println("jdkjdkdjskds");
+            List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
+            Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
             produtos = produtoRepository.findAll(estabelecimentoSpecification);
         }
 

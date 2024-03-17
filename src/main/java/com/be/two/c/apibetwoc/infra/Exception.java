@@ -34,8 +34,7 @@ public class Exception {
     }
 
     @ExceptionHandler(EntidadeNaoExisteException.class)
-    public ResponseEntity<Void> entidadeNotFound(){
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<String> entidadeNotFound(EntidadeNaoExisteException exception){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
-
 }

@@ -38,8 +38,8 @@ public class HistoricoVendaService {
                 StatusPedido.AGUARDANDO_RETIRADA);
     }
 
-    public Page<Transacao> getHistoricoPorFiltro(LocalDateTime de,
-                                                 LocalDateTime ate,
+    public Page<Transacao> getHistoricoPorFiltro(LocalDate de,
+                                                 LocalDate ate,
                                                  String status,
                                                  String nomeMetodoPagamento,
                                                  Integer page,

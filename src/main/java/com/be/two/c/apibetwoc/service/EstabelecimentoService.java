@@ -61,8 +61,14 @@ public class EstabelecimentoService {
     @Transactional
     public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
-        Optional<Comerciante> optionalComerciante = Optional.ofNullable(usuario.getComerciante());
-        Comerciante comerciante = comercianteRepository.findById(optionalComerciante.orElseThrow(EntityNotFoundException::new).getId()).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
+        Comerciante comercianteFind = Optional.ofNullable(usuario.getComerciante()).orElseThrow(EntityNotFoundException::new);
+
+
+
+
+        System.out.println("Pedro");
+        Comerciante comerciante = comercianteRepository.findById(comercianteFind.getId()).orElseThrow(EntityNotFoundException::new);
+        System.out.println("Cesar");
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);

@@ -18,7 +18,6 @@ public class EnderecoService {
     private final ApiCepAberto apiCepAberto;
 
     public Endereco cadastrar(String cep,String numero) {
-        System.out.println(cep);
         Optional<ApiCepAberto.Cep> cepOpt = apiCepAberto.searchByCep(cep);
         if (cepOpt.isEmpty()) throw new EntidadeNaoExisteException("O Cep pesquisado não pôde ser encontrado");
         Endereco endereco = new Endereco();
@@ -30,7 +29,6 @@ public class EnderecoService {
         endereco.setGeolocalizacaoY(info.getLongitude());
         endereco.setNumero(numero);
 
-        System.out.println("djskdjskdjskdjsk");
 
         return enderecoRepository.save(endereco);
     }

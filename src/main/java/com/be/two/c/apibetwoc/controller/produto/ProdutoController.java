@@ -156,9 +156,7 @@ public class ProdutoController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(produtos.stream().map(element->{
-            return ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude);
-        }).toList());
+        return ResponseEntity.ok(produtos.stream().map(element->ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude)).toList());
     }
     @PostMapping("/venda")
     public ResponseEntity<List<ProdutoVendaResponseDto>> listaProdutoVenda(@RequestBody List<ProdutoVendaDto> produtos){

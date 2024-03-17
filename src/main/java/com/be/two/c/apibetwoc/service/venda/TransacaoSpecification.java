@@ -21,14 +21,12 @@ public class TransacaoSpecification {
         };
     }
 
-    public static Specification<Transacao> entreDatas(LocalDateTime dataUm, LocalDateTime dataDois) {
+    public static Specification<Transacao> entreDatas(LocalDate dataUm, LocalDate dataDois) {
 
         return (root, criteriaQuery, criteriaBuilder) -> {
             if (dataUm == null || dataDois == null) {
                 return criteriaBuilder.conjunction();
             }
-            System.out.println(dataUm);
-            System.out.println(dataDois);
             return criteriaBuilder
                     .between(root
                             .join("pedido")
@@ -59,7 +57,6 @@ public class TransacaoSpecification {
                     .join("metodoPagamentoAceito")
                     .join("metodoPagamento")
                     .get("descricao"), nomeMetodoPagamento);
-
         };
     }
 
@@ -71,7 +68,6 @@ public class TransacaoSpecification {
             return criteriaBuilder.notEqual(root
                     .join("pedido")
                     .get("statusDescricao"), statusPedido);
-
         };
     }
 }

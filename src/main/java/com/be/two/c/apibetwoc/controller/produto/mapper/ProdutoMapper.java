@@ -126,6 +126,9 @@ public class ProdutoMapper {
         estabelecimentoMapaResponse.setSite(estabelecimento.getReferenciaInstagram());
         estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element -> toMetodoPagamentoResponse(element.getMetodoPagamento())).toList());
 
+        if(x==null || y==null){
+            return estabelecimentoMapaResponse;
+        }
         estabelecimentoMapaResponse.setTempoCarro(tempoPercursos.get(0).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY(), x, y));
         estabelecimentoMapaResponse.setTempoPessoa(tempoPercursos.get(1).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY(), x, y));
         estabelecimentoMapaResponse.setTempoBike(tempoPercursos.get(2).calcularTempoDeslocamento(estabelecimento.getEndereco().getGeolocalizacaoX(), estabelecimento.getEndereco().getGeolocalizacaoY(), x, y));
