@@ -6,7 +6,6 @@ COPY . /app
 
 RUN mvn clean package
 
-# multi-stage build
 FROM openjdk:17.0.1-slim
 
 WORKDIR /app
