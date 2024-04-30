@@ -18,6 +18,7 @@ import com.be.two.c.apibetwoc.util.FilaRequisicao;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -190,6 +191,15 @@ public class ProdutoController {
             List<Produto> produtos = produtoService.uploadTxt(file, secao);
             List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
             return ResponseEntity.status(201).body(dtos);
+    }
+
+
+    @GetMapping("/mobile/{id}")
+    public ResponseEntity<ProdutoMapaResponseDTO> retornarProdutosTelaMapa(@PathVariable Long id, @RequestParam Double latitude,@RequestParam Double longitude){
+
+        Produto produto = produtoService.buscarPorId(id);
+        return ResponseEntity.ok(ProdutoMapper.toProdutoMobile(produto,latitude,longitude));
+
     }
 
 }
