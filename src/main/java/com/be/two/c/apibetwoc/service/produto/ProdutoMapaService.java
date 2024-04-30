@@ -26,7 +26,6 @@ public class ProdutoMapaService{
         if(latitude == null || longitude == null || distancia == null){
             produtos = produtoRepository.findAll(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento)));
         } else {
-            System.out.println("jdkjdkdjskds");
             List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
             Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
             produtos = produtoRepository.findAll(estabelecimentoSpecification);
