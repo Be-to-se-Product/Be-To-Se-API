@@ -21,7 +21,6 @@ public class Usuario {
 
     @OneToOne(mappedBy = "usuario")
     private Consumidor consumidor;
-
     @OneToOne(mappedBy = "usuario")
     private Comerciante comerciante;
 

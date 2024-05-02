@@ -47,16 +47,16 @@ public class ProdutoService {
     private final ItemVendaRepository itemVendaRepository;
 
     public Produto buscarPorId(Long id) {
-        Produto produto = produtoRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("Produto não encontrado")
-        );
-        return produto;
+        Produto produto =  produtoRepository.findById(id).orElseThrow(EntidadeNaoExisteException::new);
 
+       List<Imagem>  imagems =  produto.getImagens().stream().map(imagemService::formatterImagensURI).toList();
+        produto.setImagens(imagems);
+       return produto;
     }
 
     public ProdutoDetalhamentoDto buscarProdutoPorId(Long id) {
         Produto produto = buscarPorId(id);
-        produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        produto.getImagens().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         ProdutoDetalhamentoDto pd = ProdutoMapper.toProdutoDetalhamento(produto);
         List<MetodoPagamentoAceito> ma = metodoPagamentoAceitoService.findByEstabelecimentoId(pd.getSecao().getEstabelecimento().getId());
         List<Long> listaIds = ma.stream()

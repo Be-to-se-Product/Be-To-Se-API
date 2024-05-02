@@ -1,0 +1,33 @@
+version: "3"
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfiledb
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "easyfind"
+    networks:
+      - default
+    ports:
+      - "3306:3306"
+    restart: always
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db/easyfind
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - default
+    entrypoint: ["java", "-jar", "/app/app.jar"]
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+networks:
+  default:
+    driver: bridge

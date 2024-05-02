@@ -14,7 +14,5 @@ public class AvaliacaoRequestDTO {
     @NotBlank
     private String comentario;
     @NotNull
-    private Long consumidor;
-    @NotNull
     private Long produto;
 }

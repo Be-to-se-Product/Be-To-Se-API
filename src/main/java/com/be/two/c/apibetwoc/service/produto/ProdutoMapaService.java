@@ -1,6 +1,5 @@
 package com.be.two.c.apibetwoc.service.produto;
 
-import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
 import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
 import com.be.two.c.apibetwoc.repository.ProdutoRepository;
@@ -23,10 +22,16 @@ public class ProdutoMapaService{
     private final ProdutoRepository produtoRepository;
 
     public List<Produto> retornarProdutos(Double latitude,Double longitude,Double distancia,String produto,String metodoPagamento){
-        List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
-        Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
-        List<Produto> produtos = produtoRepository.findAll(estabelecimentoSpecification);
-        produtos.stream().forEach(produto1 -> produto1.setImagens(produto1.getImagens().stream().map(imagemService::formatterImagensURI).toList()));
+        List<Produto> produtos;
+        if(latitude == null || longitude == null || distancia == null){
+            produtos = produtoRepository.findAll(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento)));
+        } else {
+            List<Integer> estabelecimentos = estabelecimentoRepository.buscarPorLocalizacao(latitude,longitude,distancia);
+            Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
+            produtos = produtoRepository.findAll(estabelecimentoSpecification);
+        }
+
+        produtos.forEach(produto1 -> produto1.setImagens(produto1.getImagens().stream().map(imagemService::formatterImagensURI).toList()));
         return produtos;
     }
 

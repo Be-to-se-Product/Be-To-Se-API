@@ -18,6 +18,7 @@ import com.be.two.c.apibetwoc.util.FilaRequisicao;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -150,15 +151,13 @@ public class ProdutoController {
     }
 
     @GetMapping("/mapa")
-    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam Double distancia,  @RequestParam(required = false)  String nome, @RequestParam(required = false) String metodoPagamento){
+    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam(required = false) Double latitude, @RequestParam(required = false) Double longitude, @RequestParam(required = false) Double distancia,  @RequestParam(required = false)  String nome, @RequestParam(required = false) String metodoPagamento){
         List<Produto> produtos = produtoMapaService.retornarProdutos(latitude, longitude, distancia, nome,metodoPagamento);
         if(produtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(produtos.stream().map(element->{
-            return ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude);
-        }).toList());
+        return ResponseEntity.ok(produtos.stream().map(element->ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude)).toList());
     }
     @PostMapping("/venda")
     public ResponseEntity<List<ProdutoVendaResponseDto>> listaProdutoVenda(@RequestBody List<ProdutoVendaDto> produtos){
@@ -192,6 +191,15 @@ public class ProdutoController {
             List<Produto> produtos = produtoService.uploadTxt(file, secao);
             List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
             return ResponseEntity.status(201).body(dtos);
+    }
+
+
+    @GetMapping("/mobile/{id}")
+    public ResponseEntity<ProdutoMapaResponseDTO> retornarProdutosTelaMapa(@PathVariable Long id, @RequestParam Double latitude,@RequestParam Double longitude){
+
+        Produto produto = produtoService.buscarPorId(id);
+        return ResponseEntity.ok(ProdutoMapper.toProdutoMobile(produto,latitude,longitude));
+
     }
 
 }

@@ -6,6 +6,7 @@ import com.be.two.c.apibetwoc.controller.usuario.mapper.UsuarioMapper;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioTokenDTO;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.infra.security.jwt.GerenciadorTokenJwt;
+import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.UsuarioRepository;
 import com.be.two.c.apibetwoc.service.usuario.exception.UsuarioConflictException;
@@ -32,11 +33,12 @@ public class UsuarioService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public Usuario cadastrar(UsuarioCriacaoDTO usuarioCriacaoDTO){
+    public Usuario cadastrar(UsuarioCriacaoDTO usuarioCriacaoDTO, TipoUsuario tipoUsuario){
         if(repository.existsByEmail(usuarioCriacaoDTO.email())) throw new UsuarioConflictException("Email já cadastrado no sistema");
         final Usuario novoUsuario = UsuarioMapper.of(usuarioCriacaoDTO);
         String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
         novoUsuario.setSenha(senhaCriptografada);
+        novoUsuario.setTipoUsuario(tipoUsuario);
         return repository.save(novoUsuario);
     }
     public UsuarioTokenDTO autenticar(UsuarioLoginDTO usuarioLoginDTO){

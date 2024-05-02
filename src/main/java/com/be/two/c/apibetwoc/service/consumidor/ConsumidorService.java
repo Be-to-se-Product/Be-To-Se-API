@@ -32,8 +32,7 @@ public class ConsumidorService {
         if(consumidorRepository.existsByCpf(consumidorCriacaoDto.getCpf())) throw new ConsumidorConflitoException("Esse CPF já esta em uso");
 
 
-        Usuario usuario = usuarioService.cadastrar(consumidorCriacaoDto.getUsuario());
-        usuario.setTipoUsuario(TipoUsuario.CONSUMIDOR);
+        Usuario usuario = usuarioService.cadastrar(consumidorCriacaoDto.getUsuario(),TipoUsuario.CONSUMIDOR);
         Consumidor consumidor = ConsumidorMapper.of(consumidorCriacaoDto);
         consumidor.setUsuario(usuario);
         Consumidor consumidorSalvo = consumidorRepository.save(consumidor);

@@ -12,6 +12,7 @@ import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class ImagemService {
-
+    @Value("${server.servlet.context-path}")
+    private  String api;
     private final ArquivoService arquivoService;
     private final HttpServletRequest request;
+
     public Imagem cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo, Produto produto, PilhaObj<ArquivoSaveDTO> arquivos){
         ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo,arquivos);
         return ImagemMapper.of(arquivo,produto);
@@ -34,7 +37,13 @@ public class ImagemService {
     }
 
     public Imagem formatterImagensURI(Imagem imagem){
-        String dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/imagens/");
+
+        String dominio = "";
+        if(api==null){
+            dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/imagens/");
+        }else{
+            dominio = "http://localhost:80"+api+"/imagens/";
+        }
         imagem.setNomeReferencia(dominio +""+ imagem.getNomeReferencia());
         return imagem;
     }
