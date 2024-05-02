@@ -27,7 +27,7 @@ public class AvaliacaoController {
         return ResponseEntity.ok(avaliacoes.stream().map(AvaliacaoMapper::toAvaliacaoResponseDTO).toList());
     }
     @PostMapping
-    public ResponseEntity<AvaliacaoResponseDTO>publicarAvaliacao(@Valid @RequestBody AvaliacaoRequestDTO avaliacaoRequestDTO){
+    public ResponseEntity<AvaliacaoResponseDTO> publicarAvaliacao(@Valid @RequestBody AvaliacaoRequestDTO avaliacaoRequestDTO){
 
         return ResponseEntity.ok(AvaliacaoMapper.toAvaliacaoResponseDTO(avaliacaoService.publicar(avaliacaoRequestDTO)));
     }

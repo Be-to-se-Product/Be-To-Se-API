@@ -13,7 +13,6 @@ public class AvaliacaoRequestDTO {
     private Integer qtdEstrela;
     @NotBlank
     private String comentario;
-    private Long consumidor;
     @NotNull
     private Long produto;
 }
