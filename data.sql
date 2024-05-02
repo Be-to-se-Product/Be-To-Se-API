@@ -6,6 +6,7 @@ SET character_set_results = utf8;
 SET collation_connection = utf8_general_ci;
 
 use easyfind;
+
     create table if not exists agenda  (
             horario_fim time(6),
             horario_inicio time(6),
@@ -388,13 +389,8 @@ use easyfind;
         foreign key (fk_pedido) 
         references pedido (id);
 
-
-
-
-
-
-
     -- Dados para a tabela 'usuario'
+ -- Dados para a tabela 'usuario'
     INSERT INTO usuario (email, senha, tipo_usuario) VALUES
     ('comerciante1@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'COMERCIANTE'),
     ('consumidor1@email.com', '$2a$12$I/JR6Xqs1cPFyy./BHPIJe0I7mBNpCHbhXoGueCkIMZN1jYihQFxq', 'CONSUMIDOR'),
@@ -667,7 +663,7 @@ use easyfind;
         (true, 1, 5, 9, 8),
         (false, 4, 5, 10, 10);
 
-        INSERT INTO pedido (is_pagamento_online, data_hora_pedido, data_hora_retirada, fk_metodo_aceito, nf, status_descricao) VALUES
+INSERT INTO pedido (is_pagamento_online, data_hora_pedido, data_hora_retirada, fk_metodo_aceito, nf, status_descricao) VALUES
             (true, '2023-03-09 12:30:00', '2023-03-09 17:00:00', 1, '99999', 'CANCELADO'),
             (false, '2023-03-13 09:45:00', '2023-03-13 14:30:00', 2, '101010', 'PENDENTE'),
             (true, '2023-03-17 14:00:00', '2023-03-17 18:30:00', 3, '111111', 'CANCELADO'),
@@ -679,7 +675,7 @@ use easyfind;
             (true, '2023-04-10 13:45:00', '2023-04-10 18:00:00', 2, '171717', 'CANCELADO'),
             (false, '2023-04-14 08:30:00', '2023-04-14 12:45:00', 1, '181818', 'PENDENTE');
 
-        INSERT INTO transacao (is_estornado, taxa, valor, fk_pedido, data_transacao) VALUES
+INSERT INTO transacao (is_estornado, taxa, valor, fk_pedido, data_transacao) VALUES
             (false, 0.05, 30.00, 11, '2023-03-09'),
                 (false, 0.03, 15.00, 12, '2023-03-13'),
                 (false, 0.08, 40.00, 13, '2023-03-17'),
@@ -691,14 +687,15 @@ use easyfind;
                 (false, 0.09, 45.00, 19, '2023-04-10'),
                 (false, 0.03, 15.00, 20, '2023-04-14');
 
-        INSERT INTO item_venda (is_promocao_ativa, quantidade, fk_consumidor, fk_pedido, fk_produto) VALUES
-                (true, 2, 1, 11, 1),
-                (false, 1, 1, 12, 3),
-                (true, 3, 2, 13, 2),
-                (false, 2, 2, 14, 3),
-                (true, 1, 3, 15, 2),
-                (false, 4, 3, 16, 3),
-                (true, 3, 4, 17, 1),
-                (false, 2, 4, 18, 2),
-                (true, 1, 5, 19, 3),
-                (false, 4, 5, 20, 3);
+
+INSERT INTO item_venda (is_promocao_ativa, quantidade, fk_consumidor, fk_pedido, fk_produto) VALUES
+                (true, 2, 1, 10, 1),
+                (false, 1, 1, 9, 3),
+                (true, 3, 2, 8, 2),
+                (false, 2, 2, 7, 3),
+                (true, 1, 3, 10, 2),
+                (false, 4, 3, 5, 3),
+                (true, 3, 4, 9, 1),
+                (false, 2, 4, 10, 2),
+                (true, 1, 5, 6, 3),
+                (false, 4, 5, 5, 3);
