@@ -31,6 +31,9 @@ public class ProdutoMapaService{
             produtos = produtoRepository.findAll(estabelecimentoSpecification);
         }
 
+
+
+
         produtos.forEach(produto1 -> produto1.setImagens(produto1.getImagens().stream().map(imagemService::formatterImagensURI).toList()));
         return produtos;
     }

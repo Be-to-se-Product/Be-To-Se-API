@@ -27,12 +27,12 @@ public class ImagemService {
     private final HttpServletRequest request;
 
     public Imagem cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo, Produto produto, PilhaObj<ArquivoSaveDTO> arquivos){
-        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo,arquivos);
+        ArquivoSaveDTO arquivo= arquivoService.salvarArquivoPilha(file,tipoArquivo,arquivos);
         return ImagemMapper.of(arquivo,produto);
     }
 
     public Imagem cadastrarImagensEstabelecimento(MultipartFile file, TipoArquivo tipoArquivo, Estabelecimento estabelecimento, PilhaObj<ArquivoSaveDTO> arquivos){
-        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo,arquivos);
+        ArquivoSaveDTO arquivo= arquivoService.salvarArquivoPilha(file,tipoArquivo,arquivos);
         return ImagemMapper.of(arquivo,estabelecimento);
     }
 
