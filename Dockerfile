@@ -1,8 +1,7 @@
-FROM maven:3-amazoncorretto-17 AS build
+FROM openjdk
 
 WORKDIR /app
 
-COPY . /app
+COPY ./target/apibetwoc-0.0.1-SNAPSHOT.jar /app
 
-RUN mvn clean package -DskipTests
-
+CMD ["/bin/bash"]
