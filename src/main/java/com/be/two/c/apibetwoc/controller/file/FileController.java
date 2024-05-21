@@ -1,7 +1,6 @@
 package com.be.two.c.apibetwoc.controller.file;
 
 
-import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
 import com.be.two.c.apibetwoc.service.arquivo.IStorage;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoReponseDTO;
 import com.be.two.c.apibetwoc.util.TipoArquivo;

@@ -2,13 +2,17 @@ package com.be.two.c.apibetwoc.service.arquivo;
 
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
+import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.service.AutenticacaoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoReponseDTO;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.arquivo.exception.ArquivoNaoPermitidoException;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
@@ -22,11 +26,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-
-@Service
+@Profile("local")
 @RequiredArgsConstructor
+@Service
+
 public class ArquivoService implements IStorage {
   private final AutenticacaoService autenticacaoService;
+    @Value("${server.servlet.context-path}")
+    private  String api;
+    private final HttpServletRequest request;
+
   Map<String, MediaType> tiposArquivosPermitidos = new HashMap<>() {{
     put("png", MediaType.IMAGE_PNG);
     put("jpg", MediaType.IMAGE_JPEG);
@@ -43,7 +52,7 @@ public class ArquivoService implements IStorage {
     put(TipoArquivo.DOCUMENTO, "documentos/");
   }};
   private final String DIRETORIO_PRINCIPAL = "./";
-  
+
   @Override
   public void deletarArquivo(String nomeReferencia, TipoArquivo tipoArquivo){
     Path caminhoArquivo = Paths.get(diretorios.get(tipoArquivo)+nomeReferencia).toAbsolutePath().normalize();
@@ -70,6 +79,7 @@ public class ArquivoService implements IStorage {
     return new ArquivoReponseDTO(resource, tiposArquivosPermitidos.get(tipoImagem));
   }
 
+
   @Override
   public ArquivoSaveDTO salvarArquivo(MultipartFile file, TipoArquivo tipoArquivo) {
     UsuarioDetalhes usuarioDetalhes = autenticacaoService.loadUsuarioDetails();
@@ -77,9 +87,9 @@ public class ArquivoService implements IStorage {
     if(!tiposArquivosPermitidos.containsKey(Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf(".") + 1))){
       throw new ArquivoNaoPermitidoException();
     }
-    
+
     String diretorio = DIRETORIO_PRINCIPAL + diretorios.get(tipoArquivo);
-    
+
     try {
       Path caminhoArquivo = Paths.get(diretorio).normalize();
       if (!Files.exists(caminhoArquivo)) {
@@ -88,18 +98,27 @@ public class ArquivoService implements IStorage {
       String nomeArquivo = usuarioDetalhes.getId() + "" + UUID.randomUUID()+file.getOriginalFilename().replaceAll(" ", "");
       Path caminhoCompleto = caminhoArquivo.resolve(nomeArquivo).normalize();
       Files.copy(file.getInputStream(), caminhoCompleto);
-      return new ArquivoSaveDTO(file.getOriginalFilename(), tipoArquivo,nomeArquivo, LocalDateTime.now());
+      return new ArquivoSaveDTO(file.getOriginalFilename(), tipoArquivo,formatterImagensURI(nomeArquivo), LocalDateTime.now());
     } catch (IOException e) {
       throw new RuntimeException("Erro ao salvar o arquivo");
     }
 
   }
 
+    private String formatterImagensURI(String nome){
+        String dominio = "";
+        if(Objects.isNull(api)){
+            dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/imagens/");
+        }else{
+            dominio = "http://localhost:80"+api+"/imagens/";
+        }
+        return dominio+nome;
+    }
 
-
-  public ArquivoSaveDTO salvarArquivoPilha(MultipartFile file, TipoArquivo tipoArquivo, PilhaObj<ArquivoSaveDTO> pilhaArquivos) {
+  @Override
+  public ArquivoSaveDTO salvarArquivo(MultipartFile file, TipoArquivo tipoArquivo, PilhaObj<ArquivoSaveDTO> pilhaArquivos) {
     verificarTipoArquivo(file,pilhaArquivos);
-    ArquivoSaveDTO arquivo =salvarArquivo(file,tipoArquivo);
+    ArquivoSaveDTO arquivo = salvarArquivo(file,tipoArquivo);
     pilhaArquivos.push(arquivo);
     return arquivo;
   }

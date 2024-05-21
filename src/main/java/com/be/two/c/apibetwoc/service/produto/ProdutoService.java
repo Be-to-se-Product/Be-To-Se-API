@@ -9,7 +9,7 @@ import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
 import com.be.two.c.apibetwoc.service.SecaoService;
-import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
+import com.be.two.c.apibetwoc.service.arquivo.IStorage;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.service.produto.mapper.ProdutoTagMapper;
@@ -41,7 +41,7 @@ public class ProdutoService {
     private final ImagemService imagemService;
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
     private final ImagemRepository imagemRepository;
-    private final ArquivoService arquivoService;
+    private final IStorage arquivoService;
     private final AvaliacaoRepository avaliacaoRepository;
     private final CarrinhoRepository carrinhoRepository;
     private final ItemVendaRepository itemVendaRepository;
@@ -49,14 +49,13 @@ public class ProdutoService {
     public Produto buscarPorId(Long id) {
         Produto produto =  produtoRepository.findById(id).orElseThrow(EntidadeNaoExisteException::new);
 
-       List<Imagem>  imagems =  produto.getImagens().stream().map(imagemService::formatterImagensURI).toList();
+       List<Imagem>  imagems =  produto.getImagens();
         produto.setImagens(imagems);
        return produto;
     }
 
     public ProdutoDetalhamentoDto buscarProdutoPorId(Long id) {
         Produto produto = buscarPorId(id);
-        produto.getImagens().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         ProdutoDetalhamentoDto pd = ProdutoMapper.toProdutoDetalhamento(produto);
         List<MetodoPagamentoAceito> ma = metodoPagamentoAceitoService.findByEstabelecimentoId(pd.getSecao().getEstabelecimento().getId());
         List<Long> listaIds = ma.stream()
@@ -68,10 +67,6 @@ public class ProdutoService {
 
     public List<Produto> listarProdutos() {
         List<Produto> produtos = produtoRepository.findAllByIsAtivoTrue();
-
-        for (Produto produto : produtos) {
-            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-        }
         produtos.stream().forEach(e -> e.getImagens().forEach(p -> System.out.println(p.getNomeReferencia())));
         int n = produtos.size();
 
@@ -96,7 +91,6 @@ public class ProdutoService {
         PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
         List<Imagem> imagensSalvasLocal = imagens.stream().map(element -> imagemService.cadastrarImagensProduto(element, TipoArquivo.IMAGEM, produto, imagensSalvas)).toList();
         List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
-        imagensCadastradas.stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         return imagensCadastradas;
     }
 
@@ -187,9 +181,6 @@ public class ProdutoService {
         }
 
         List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
-        for (Produto produto : produtos) {
-            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-        }
         return produtos;
     }
 

@@ -4,15 +4,12 @@ package com.be.two.c.apibetwoc.service.imagem;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.repository.ImagemRepository;
-import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
+import com.be.two.c.apibetwoc.service.arquivo.IStorage;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.imagem.mapper.ImagemMapper;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,30 +18,17 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class ImagemService {
-    @Value("${server.servlet.context-path}")
-    private  String api;
-    private final ArquivoService arquivoService;
-    private final HttpServletRequest request;
+
+    private final IStorage arquivoService;
+
 
     public Imagem cadastrarImagensProduto(MultipartFile file, TipoArquivo tipoArquivo, Produto produto, PilhaObj<ArquivoSaveDTO> arquivos){
-        ArquivoSaveDTO arquivo= arquivoService.salvarArquivoPilha(file,tipoArquivo,arquivos);
+        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo);
         return ImagemMapper.of(arquivo,produto);
     }
 
     public Imagem cadastrarImagensEstabelecimento(MultipartFile file, TipoArquivo tipoArquivo, Estabelecimento estabelecimento, PilhaObj<ArquivoSaveDTO> arquivos){
-        ArquivoSaveDTO arquivo= arquivoService.salvarArquivoPilha(file,tipoArquivo,arquivos);
+        ArquivoSaveDTO arquivo= arquivoService.salvarArquivo(file,tipoArquivo);
         return ImagemMapper.of(arquivo,estabelecimento);
-    }
-
-    public Imagem formatterImagensURI(Imagem imagem){
-
-        String dominio = "";
-        if(api==null){
-            dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/imagens/");
-        }else{
-            dominio = "http://localhost:80"+api+"/imagens/";
-        }
-        imagem.setNomeReferencia(dominio +""+ imagem.getNomeReferencia());
-        return imagem;
     }
 }

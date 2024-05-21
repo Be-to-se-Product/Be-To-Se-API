@@ -13,4 +13,6 @@ import org.springframework.http.MediaType;
 public class ArquivoReponseDTO {
     private Resource url;
     private MediaType tipoArquivo;
+
+
 }
