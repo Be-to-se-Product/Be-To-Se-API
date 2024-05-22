@@ -22,7 +22,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
     networks:
       - default
-    entrypoint: ["java", "-jar", "/app/app.jar"]
+    entrypoint: ["java", "-jar","-Dspring.profiles.active=local","/app/app.jar"]
     depends_on:
       - db
     ports:

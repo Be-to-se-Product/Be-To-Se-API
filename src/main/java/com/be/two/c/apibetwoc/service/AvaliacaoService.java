@@ -3,7 +3,6 @@ package com.be.two.c.apibetwoc.service;
 
 import com.be.two.c.apibetwoc.controller.avaliacao.dto.AvaliacaoRequestDTO;
 import com.be.two.c.apibetwoc.controller.avaliacao.mapper.AvaliacaoMapper;
-import com.be.two.c.apibetwoc.controller.avaliacao.dto.AvaliacaoResponseDTO;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Avaliacao;
 import com.be.two.c.apibetwoc.model.Consumidor;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +28,7 @@ import java.util.stream.Collectors;
 public class AvaliacaoService {
 
     private final AvaliacaoRepository avaliacaoRepository;
-
-    private final ConsumidorRepository consumidorRepository;
-
     private final ProdutoRepository produtoRepository;
-
-    private final ImagemService imagemService;
-
     private final AutenticacaoService autenticacaoService;
     private final UsuarioRepository usuarioRepository;
 
@@ -55,7 +47,6 @@ public class AvaliacaoService {
         avaliacao.setDataCriacao(dataCriacao);
         avaliacao.setDataAtualizacao(dataAtualizacao);
         avaliacao.setConsumidor(usuario.getConsumidor());
-
         return avaliacaoRepository.save(avaliacao);
     }
     public List<Avaliacao> buscarAvaliacaoPorProduto(Long id){
@@ -68,10 +59,6 @@ public class AvaliacaoService {
                 ()->new EntidadeNaoExisteException("Avaliação não encontrada")
         );
         Consumidor consumidor = avaliacao.getConsumidor();
-
-        if(consumidor.getImagem()!=null) {
-            consumidor.setImagem(imagemService.formatterImagensURI(consumidor.getImagem()));
-        }
         avaliacao.setConsumidor(consumidor);
         return avaliacao;
     }

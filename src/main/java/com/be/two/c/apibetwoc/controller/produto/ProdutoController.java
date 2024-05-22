@@ -6,19 +6,12 @@ import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoVendaDto;
 import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoMapaResponseDTO;
 import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoVendaResponseDto;
 import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
-import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.service.arquivo.ArquivoService;
-import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.produto.ProdutoMapaService;
 import com.be.two.c.apibetwoc.service.produto.ProdutoService;
-
-
 import com.be.two.c.apibetwoc.util.FilaRequisicao;
-import com.be.two.c.apibetwoc.util.PilhaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -156,7 +149,6 @@ public class ProdutoController {
         if(produtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
         return ResponseEntity.ok(produtos.stream().map(element->ProdutoMapper.toProdutoMapaReponse(element,latitude,longitude)).toList());
     }
     @PostMapping("/venda")
