@@ -4,9 +4,6 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.AgendaMapper;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoCadastroDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
-import com.be.two.c.apibetwoc.controller.produto.dto.mapa.AgendaResponseDTO;
-import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
-import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
@@ -44,8 +41,6 @@ public class EstabelecimentoService {
     public Estabelecimento listarPorId(Long id) {
 
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
-        formatarImagem(estabelecimento);
-
         estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(MetodoPagamentoAceito::getIsAtivo).toList());
         return estabelecimento;
     }
@@ -62,13 +57,7 @@ public class EstabelecimentoService {
     public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
         Comerciante comercianteFind = Optional.ofNullable(usuario.getComerciante()).orElseThrow(EntityNotFoundException::new);
-
-
-
-
-        System.out.println("Pedro");
         Comerciante comerciante = comercianteRepository.findById(comercianteFind.getId()).orElseThrow(EntityNotFoundException::new);
-        System.out.println("Cesar");
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
@@ -94,7 +83,6 @@ public class EstabelecimentoService {
         }
 
         metodoPagamentoAceitoRepository.saveAll(metodoPagamentoRemover);
-
         List<MetodoPagamentoAceito> metodoPagamentoSalvar = new ArrayList<>();
         for (MetodoPagamento metodoPagamento: metodoPagamentoFront ) {
             if(metodoPagamentosBanco.stream().noneMatch(e->e.getId()==metodoPagamento.getId())){
@@ -107,9 +95,7 @@ public class EstabelecimentoService {
 
         Set<MetodoPagamentoAceito> metodoPagamentoAceitoHashSet = new HashSet<>(metodoPagamentoSalvar);
 
-        for (MetodoPagamentoAceito metodoPagamentoAceito: metodoPagamentosBanco) {
-            metodoPagamentoAceitoHashSet.add(metodoPagamentoAceito);
-        }
+        metodoPagamentoAceitoHashSet.addAll(metodoPagamentosBanco);
         List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoHashSet.stream().toList();
         EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto,estabelecimento);
         Estabelecimento estabelecimentoSalvo =  estabelecimentoRepository.save(estabelecimento);
@@ -140,11 +126,6 @@ public class EstabelecimentoService {
         estabelecimentoRepository.save(estabelecimento);
     }
 
-    private void formatarImagem(Estabelecimento estabelecimento) {
-
-        estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-
-    }
 
     private Long retornarIdUsuario() {
         Long idUsuario = autenticacaoService.loadUsuarioDetails().getId();
@@ -158,9 +139,7 @@ public class EstabelecimentoService {
 
         List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);
         for (Estabelecimento estabelecimento : estabelecimentos) {
-            if (estabelecimento.getImagens() != null) {
-                estabelecimento.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
-            }
+
             if (estabelecimento.getMetodoPagamentoAceito() != null) {
                 estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(e -> e.getIsAtivo()).toList());
             }

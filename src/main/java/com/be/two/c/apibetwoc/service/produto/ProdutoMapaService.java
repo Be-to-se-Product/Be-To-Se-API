@@ -13,8 +13,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
-
 public class ProdutoMapaService{
 
     private final ImagemService imagemService;
@@ -30,8 +28,6 @@ public class ProdutoMapaService{
             Specification<Produto> estabelecimentoSpecification = Specification.where(ProdutoSpecification.filtrarIds(estabelecimentos).and(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento))));
             produtos = produtoRepository.findAll(estabelecimentoSpecification);
         }
-
-        produtos.forEach(produto1 -> produto1.setImagens(produto1.getImagens().stream().map(imagemService::formatterImagensURI).toList()));
         return produtos;
     }
 
