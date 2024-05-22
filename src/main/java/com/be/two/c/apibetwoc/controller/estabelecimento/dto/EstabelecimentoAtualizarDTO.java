@@ -20,10 +20,8 @@ public class EstabelecimentoAtualizarDTO {
     private String referenciaInstagram;
     @NotBlank
     private String referenciaFacebook;
-    
     @Email
     private String emailContato;
-
     @NotNull
     private EstabelecimentoEnderecoCadastroDTO endereco;
     @NotNull

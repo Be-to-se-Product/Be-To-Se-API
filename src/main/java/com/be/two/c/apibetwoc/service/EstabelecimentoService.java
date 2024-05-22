@@ -42,7 +42,6 @@ public class EstabelecimentoService {
 
 
     public Estabelecimento listarPorId(Long id) {
-
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
         formatarImagem(estabelecimento);
 
@@ -61,20 +60,16 @@ public class EstabelecimentoService {
     @Transactional
     public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
-        Comerciante comercianteFind = Optional.ofNullable(usuario.getComerciante()).orElseThrow(EntityNotFoundException::new);
-
-
-
-
-        System.out.println("Pedro");
-        Comerciante comerciante = comercianteRepository.findById(comercianteFind.getId()).orElseThrow(EntityNotFoundException::new);
-        System.out.println("Cesar");
+        Optional<Comerciante> optionalComerciante = Optional.ofNullable(usuario.getComerciante());
+        Comerciante comerciante = comercianteRepository.findById(optionalComerciante.orElseThrow(EntityNotFoundException::new).getId()).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum comerciante com esse id"));
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
-        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getHorarios(), estabelecimentoCriado));
+        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado));
         estabelecimentoCriado.setAgenda(agenda);
+        List<Secao> secoes = secaoRepository.saveAll(toSecoes(estabelecimentoCadastroDTO.getSecao(), estabelecimentoCriado));
+        estabelecimentoCriado.setSecao(secoes);
         return estabelecimentoCriado;
     }
 
@@ -82,12 +77,12 @@ public class EstabelecimentoService {
     public Estabelecimento atualizarEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoDto, Long id) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Entidade não encontrada"));
         agendaRepository.deleteByEstabelecimentoId(id);
-        List<MetodoPagamentoAceito> metodoPagamentosBanco= metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
+        List<MetodoPagamentoAceito> metodoPagamentosBanco = metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
         List<MetodoPagamento> metodoPagamentoFront = metodoPagamentoRepository.findByIdIn(estabelecimentoDto.getMetodoPagamento());
         List<MetodoPagamentoAceito> metodoPagamentoRemover = new ArrayList<>();
 
-        for (MetodoPagamentoAceito metodoPagamentoBanco  : metodoPagamentosBanco ) {
-            if(metodoPagamentoFront.stream().noneMatch(e->metodoPagamentoBanco.getMetodoPagamento().getId()==e.getId())){
+        for (MetodoPagamentoAceito metodoPagamentoBanco : metodoPagamentosBanco) {
+            if (metodoPagamentoFront.stream().noneMatch(e -> metodoPagamentoBanco.getMetodoPagamento().getId() == e.getId())) {
                 metodoPagamentoBanco.setIsAtivo(false);
                 metodoPagamentoRemover.add(metodoPagamentoBanco);
             }
@@ -96,8 +91,8 @@ public class EstabelecimentoService {
         metodoPagamentoAceitoRepository.saveAll(metodoPagamentoRemover);
 
         List<MetodoPagamentoAceito> metodoPagamentoSalvar = new ArrayList<>();
-        for (MetodoPagamento metodoPagamento: metodoPagamentoFront ) {
-            if(metodoPagamentosBanco.stream().noneMatch(e->e.getId()==metodoPagamento.getId())){
+        for (MetodoPagamento metodoPagamento : metodoPagamentoFront) {
+            if (metodoPagamentosBanco.stream().noneMatch(e -> e.getId() == metodoPagamento.getId())) {
                 MetodoPagamentoAceito metodoPagamentoAceito = new MetodoPagamentoAceito();
                 metodoPagamentoAceito.setEstabelecimento(estabelecimento);
                 metodoPagamentoAceito.setMetodoPagamento(metodoPagamento);
@@ -107,12 +102,12 @@ public class EstabelecimentoService {
 
         Set<MetodoPagamentoAceito> metodoPagamentoAceitoHashSet = new HashSet<>(metodoPagamentoSalvar);
 
-        for (MetodoPagamentoAceito metodoPagamentoAceito: metodoPagamentosBanco) {
+        for (MetodoPagamentoAceito metodoPagamentoAceito : metodoPagamentosBanco) {
             metodoPagamentoAceitoHashSet.add(metodoPagamentoAceito);
         }
         List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoHashSet.stream().toList();
-        EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto,estabelecimento);
-        Estabelecimento estabelecimentoSalvo =  estabelecimentoRepository.save(estabelecimento);
+        EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto, estabelecimento);
+        Estabelecimento estabelecimentoSalvo = estabelecimentoRepository.save(estabelecimento);
         metodoPagamentoAceitoRepository.saveAll(metodos);
         Endereco endereco = enderecoRepository.findByEstabelecimentoId(id);
         endereco.setNumero(estabelecimentoDto.getEndereco().getNumero());
@@ -173,5 +168,16 @@ public class EstabelecimentoService {
         Estabelecimento estabelecimento = listarPorId(id);
         Imagem imagemSalva = imagemService.cadastrarImagensEstabelecimento(imagem, TipoArquivo.IMAGEM, estabelecimento, arquivos);
         imagemRepository.save(imagemSalva);
+    }
+
+    public List<Secao> toSecoes(List<String> secoes, Estabelecimento estabelecimento) {
+        List<Secao> salvas = new ArrayList<>();
+        for (String secao : secoes) {
+            Secao s = new Secao();
+            s.setDescricao(secao);
+            s.setEstabelecimento(estabelecimento);
+            salvas.add(s);
+        }
+        return salvas;
     }
 }

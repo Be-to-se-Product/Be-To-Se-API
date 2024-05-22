@@ -67,24 +67,12 @@ public class ProdutoService {
     }
 
     public List<Produto> listarProdutos() {
-        List<Produto> produtos = produtoRepository.findAllByIsAtivoTrue();
+        List<Produto> produtos = produtoRepository.findAllByIsDeletedFalse();
 
         for (Produto produto : produtos) {
-            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+            produto.getImagens().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         }
-        produtos.stream().forEach(e -> e.getImagens().forEach(p -> System.out.println(p.getNomeReferencia())));
-        int n = produtos.size();
-
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-
-                if (produtos.get(j).getNome().compareTo(produtos.get(j + 1).getNome()) > 0) {
-                    Produto temp = produtos.get(j);
-                    produtos.set(j, produtos.get(j + 1));
-                    produtos.set(j + 1, temp);
-                }
-            }
-        }
+        produtos.forEach(e -> e.getImagens().forEach(p -> System.out.println(p.getNomeReferencia())));
 
         return produtos;
 
@@ -96,7 +84,7 @@ public class ProdutoService {
         PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
         List<Imagem> imagensSalvasLocal = imagens.stream().map(element -> imagemService.cadastrarImagensProduto(element, TipoArquivo.IMAGEM, produto, imagensSalvas)).toList();
         List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
-        imagensCadastradas.stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+        imagensCadastradas.forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         return imagensCadastradas;
     }
 
@@ -123,7 +111,7 @@ public class ProdutoService {
         List<TagDTO> tagsDuplicadas = tagSalvar.stream()
                 .filter(tagDto -> Collections.frequency(tagSalvar, tagDto) > 0)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
 
         Produto produto = produtoRepository.findById(id)
@@ -155,8 +143,8 @@ public class ProdutoService {
         List<ItemVenda> itemVendas = produto.getItemVendas();
         List<ProdutoTag> prodTags = produto.getTags();
         List<Long> idCarrinho = carrinhos.stream().filter(e -> e.getProduto().getId() == id).map(Carrinho::getId).toList();
-        carrinhos.stream().forEach((e) -> System.out.println(e.getProduto().getId()));
-        imagens.stream().forEach(e -> arquivoService.deletarArquivo(e.getNomeReferencia(), TipoArquivo.IMAGEM));
+        carrinhos.forEach((e) -> System.out.println(e.getProduto().getId()));
+        imagens.forEach(e -> arquivoService.deletarArquivo(e.getNomeReferencia(), TipoArquivo.IMAGEM));
         List<Integer> idImagens = imagens.stream().map(Imagem::getId).toList();
         List<Long> idAvaliacao = avaliacaos.stream().map(Avaliacao::getId).toList();
         List<Long> idItemVenda = itemVendas.stream().filter(e -> e.getProduto().getId() == id).map(ItemVenda::getId).toList();
@@ -188,7 +176,7 @@ public class ProdutoService {
 
         List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
         for (Produto produto : produtos) {
-            produto.getImagens().stream().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
+            produto.getImagens().forEach(element -> element.setNomeReferencia(imagemService.formatterImagensURI(element).getNomeReferencia()));
         }
         return produtos;
     }

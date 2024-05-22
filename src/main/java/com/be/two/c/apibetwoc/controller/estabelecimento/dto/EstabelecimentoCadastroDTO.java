@@ -10,15 +10,21 @@ import java.util.List;
 public class EstabelecimentoCadastroDTO {
     @NotBlank
     private String nome;
-    @CNPJ
-    private String cnpj;
-    private String telefone;
+    //    @NotBlank
+//    @CNPJ
+//    private String cnpj;
+    @NotBlank
+    private String telefoneContato;
     @Email
-    private String email;
-    private String instagram;
-    private String facebook;
+    private String emailContato;
+    @NotNull
+    private List<String> secao;
+    @NotNull
     private EstabelecimentoEnderecoCadastroDTO endereco;
-    private List<EstabelecimentoCadastroAgendaDTO> horarios;
+    private List<EstabelecimentoCadastroAgendaDTO> agenda;
+    private String referenciaInstagram;
+    private String referenciaFacebook;
+    private String segmento;
 }
 
 
