@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.pedido;
 
 import com.be.two.c.apibetwoc.controller.pedido.dto.*;
 
@@ -12,9 +12,12 @@ import com.be.two.c.apibetwoc.repository.EstabelecimentoRepository;
 import com.be.two.c.apibetwoc.repository.MetodoPagamentoAceitoRepository;
 import com.be.two.c.apibetwoc.repository.PedidoRepository;
 import com.be.two.c.apibetwoc.repository.UsuarioRepository;
+import com.be.two.c.apibetwoc.service.AutenticacaoService;
+import com.be.two.c.apibetwoc.service.TransacaoService;
 import com.be.two.c.apibetwoc.util.ListaObj;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,19 +57,18 @@ public class PedidoService {
         pedido.setMetodoPagamentoAceito(metodoPagamentoAceito);
         return pedidoRepository.save(pedido);
     }
+
     public List<ResponsePedidoConsumidorDto> listarPorConsumidor(StatusPedido status) {
-        if(autenticacaoService.loadUsuarioDetails()==null){
-                throw new NaoAutorizadoException();
+        if(autenticacaoService.loadUsuarioDetails() == null){
+            throw new NaoAutorizadoException();
         }
 
-        if(status != null){
-            UsuarioDetalhes usuarioDetalhes = autenticacaoService.loadUsuarioDetails();
-            Usuario usuario =  repository.findById(usuarioDetalhes.getId()).get();
+        UsuarioDetalhes usuarioDetalhes = autenticacaoService.loadUsuarioDetails();
+        Usuario usuario =  repository.findById(usuarioDetalhes.getId()).get();
 
-            return pedidoRepository.searchByConsumidorEStatus(usuario.getConsumidor().getId(), status).stream().map(PedidoMapper::ofResponseUsuario).toList();
-        }
+        Specification<Pedido> spec = Specification.where(PedidoSpecification.byConsumidor(usuario.getConsumidor().getId()).and(PedidoSpecification.byStatus(status)));
+        List<Pedido> pedidos = pedidoRepository.findAll(spec);
 
-        List <Pedido> pedidos = pedidoRepository.searchByConsumidor(autenticacaoService.loadUsuarioDetails().getId());
         return pedidos.stream().map(PedidoMapper::ofResponseUsuario).toList();
     }
     public ListaObj<ResponsePedidoDTO> listarPorEstabelecimento(Long idEstabelecimento) {
