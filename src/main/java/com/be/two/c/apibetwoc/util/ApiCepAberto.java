@@ -17,9 +17,9 @@ public class ApiCepAberto {
     private final Gson gson = new Gson();
 
     public Optional<Cep> searchByCep(@NonNull String cep) {
-        System.out.println("http://www.cepaberto.com/api/v3/cep?cep="+cep);
+        System.out.println("https://www.cepaberto.com/api/v3/cep?cep="+cep);
         return cepFromRequest(new Request.Builder()
-                .url(String.format("http://www.cepaberto.com/api/v3/cep?cep=%s", cep))
+                .url(String.format("https://www.cepaberto.com/api/v3/cep?cep=%s", cep))
                 .addHeader("Authorization", "Token token=292ce57ef419baa933cd17abac7d0d48")
                 .build()
         );

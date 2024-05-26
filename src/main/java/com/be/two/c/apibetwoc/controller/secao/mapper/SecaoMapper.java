@@ -37,5 +37,14 @@ public class SecaoMapper {
         return responseSecaoDto;
     }
 
-
+    public static List<Secao> toSecaoEstabelecimento(List<String> secoes, Estabelecimento estabelecimento){
+        List<Secao> secaoList = new ArrayList<>();
+        for(String s : secoes){
+            Secao secao = new Secao();
+            secao.setDescricao(s);
+            secao.setEstabelecimento(estabelecimento);
+            secaoList.add(secao);
+        }
+        return secaoList;
+    }
 }

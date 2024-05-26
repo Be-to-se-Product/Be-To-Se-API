@@ -27,6 +27,7 @@ public class EstabelecimentoService {
     private final ComercianteRepository comercianteRepository;
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
     private final AgendaRepository agendaRepository;
+    private final AgendaService agendaService;
     private final SecaoRepository secaoRepository;
     private final EnderecoRepository enderecoRepository;
     private final AutenticacaoService autenticacaoService;
@@ -61,9 +62,14 @@ public class EstabelecimentoService {
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
+        metodoPagamentoAceitoService
+                .cadastrarMetodosPagamentos(estabelecimento,
+                        estabelecimentoCadastroDTO.getMetodoPagamento());
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
-        List<Agenda> agenda = agendaRepository.saveAll(AgendaMapper.of(estabelecimentoCadastroDTO.getHorarios(), estabelecimentoCriado));
-        estabelecimentoCriado.setAgenda(agenda);
+        if (!estabelecimentoCadastroDTO.getAgenda().isEmpty()) {
+            List<Agenda> agenda = agendaService.cadastrarAgenda(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado);
+            estabelecimentoCriado.setAgenda(agenda);
+        }
         return estabelecimentoCriado;
     }
 
@@ -71,12 +77,12 @@ public class EstabelecimentoService {
     public Estabelecimento atualizarEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoDto, Long id) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Entidade não encontrada"));
         agendaRepository.deleteByEstabelecimentoId(id);
-        List<MetodoPagamentoAceito> metodoPagamentosBanco= metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
+        List<MetodoPagamentoAceito> metodoPagamentosBanco = metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
         List<MetodoPagamento> metodoPagamentoFront = metodoPagamentoRepository.findByIdIn(estabelecimentoDto.getMetodoPagamento());
         List<MetodoPagamentoAceito> metodoPagamentoRemover = new ArrayList<>();
 
-        for (MetodoPagamentoAceito metodoPagamentoBanco  : metodoPagamentosBanco ) {
-            if(metodoPagamentoFront.stream().noneMatch(e->metodoPagamentoBanco.getMetodoPagamento().getId()==e.getId())){
+        for (MetodoPagamentoAceito metodoPagamentoBanco : metodoPagamentosBanco) {
+            if (metodoPagamentoFront.stream().noneMatch(e -> metodoPagamentoBanco.getMetodoPagamento().getId() == e.getId())) {
                 metodoPagamentoBanco.setIsAtivo(false);
                 metodoPagamentoRemover.add(metodoPagamentoBanco);
             }
@@ -84,8 +90,8 @@ public class EstabelecimentoService {
 
         metodoPagamentoAceitoRepository.saveAll(metodoPagamentoRemover);
         List<MetodoPagamentoAceito> metodoPagamentoSalvar = new ArrayList<>();
-        for (MetodoPagamento metodoPagamento: metodoPagamentoFront ) {
-            if(metodoPagamentosBanco.stream().noneMatch(e->e.getId()==metodoPagamento.getId())){
+        for (MetodoPagamento metodoPagamento : metodoPagamentoFront) {
+            if (metodoPagamentosBanco.stream().noneMatch(e -> e.getId() == metodoPagamento.getId())) {
                 MetodoPagamentoAceito metodoPagamentoAceito = new MetodoPagamentoAceito();
                 metodoPagamentoAceito.setEstabelecimento(estabelecimento);
                 metodoPagamentoAceito.setMetodoPagamento(metodoPagamento);
@@ -97,8 +103,8 @@ public class EstabelecimentoService {
 
         metodoPagamentoAceitoHashSet.addAll(metodoPagamentosBanco);
         List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoHashSet.stream().toList();
-        EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto,estabelecimento);
-        Estabelecimento estabelecimentoSalvo =  estabelecimentoRepository.save(estabelecimento);
+        EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto, estabelecimento);
+        Estabelecimento estabelecimentoSalvo = estabelecimentoRepository.save(estabelecimento);
         metodoPagamentoAceitoRepository.saveAll(metodos);
         Endereco endereco = enderecoRepository.findByEstabelecimentoId(id);
         endereco.setNumero(estabelecimentoDto.getEndereco().getNumero());

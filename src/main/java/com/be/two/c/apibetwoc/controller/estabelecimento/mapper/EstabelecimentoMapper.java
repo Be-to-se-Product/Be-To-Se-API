@@ -9,7 +9,6 @@ import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 
 import com.be.two.c.apibetwoc.model.*;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -17,10 +16,10 @@ public class EstabelecimentoMapper {
     public static Estabelecimento toEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO, Comerciante comerciante){
         Estabelecimento estabelecimento = new Estabelecimento();
         estabelecimento.setNome(estabelecimentoCadastroDTO.getNome());
-        estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefone());
-        estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getInstagram());
-        estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getFacebook());
-        estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmail());
+        if(estabelecimentoCadastroDTO.getTelefoneContato() != null) estabelecimento.setTelefoneContato(estabelecimentoCadastroDTO.getTelefoneContato());
+        if(estabelecimentoCadastroDTO.getReferenciaInstagram() != null) estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getReferenciaInstagram());
+        if(estabelecimentoCadastroDTO.getReferenciaFacebook() != null) estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getReferenciaFacebook());
+        estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmailContato());
         estabelecimento.setIsAtivo(true);
         estabelecimento.setComerciante(comerciante);
 

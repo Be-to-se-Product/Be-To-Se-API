@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -36,7 +37,7 @@ public class PedidoService {
             throw new EntidadeNaoExisteException("Estabelecimento não encontrado");
         }
         Estabelecimento estabelecimento = estabelecimentoOpt.get();
-        if(estabelecimento.getComerciante().getUsuario().getId() != autenticacaoService.loadUsuarioDetails().getId()){
+        if(!Objects.equals(estabelecimento.getComerciante().getUsuario().getId(), autenticacaoService.loadUsuarioDetails().getId())){
             throw new ForbidenPedidoException("Estabelecimento não encontrado");
         }
     }

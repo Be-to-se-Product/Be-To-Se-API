@@ -19,7 +19,7 @@ public class MetodoPagamentoAceitoService {
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final MetodoPagamentoRepository metodoPagamentoRepository;
 
-    public List<MetodoPagamentoAceito>  cadastrarMetodosPagamentos(Estabelecimento estabelecimento, List<Long> metodos){
+    public void cadastrarMetodosPagamentos(Estabelecimento estabelecimento, List<Long> metodos){
         List<MetodoPagamentoAceito> metodosPagamentos = new ArrayList<>();
         for (Long l : metodos){
             MetodoPagamento metodo = metodoPagamentoRepository.findById(l)
@@ -28,7 +28,7 @@ public class MetodoPagamentoAceitoService {
             metodosPagamentos.add(metodoPagamentoAceitoRepository.save(new MetodoPagamentoAceito(null, estabelecimento, metodo, true,null)));
         }
 
-        return metodosPagamentos;
+        metodoPagamentoAceitoRepository.saveAll(metodosPagamentos);
     }
 
     public List<MetodoPagamentoAceito> findByEstabelecimentoId(Long id){

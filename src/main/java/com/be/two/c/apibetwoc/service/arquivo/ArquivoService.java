@@ -106,13 +106,7 @@ public class ArquivoService implements IStorage {
   }
 
     private String formatterImagensURI(String nome){
-        String dominio = "";
-        if(Objects.isNull(api)){
-            dominio = request.getRequestURL().toString().replace(request.getRequestURI(), "/imagens/");
-        }else{
-            dominio = "http://localhost:80"+api+"/imagens/";
-        }
-        return dominio+nome;
+        return request.getRequestURL().toString().replace(request.getRequestURI(), String.format("%s/imagens/", api))+nome;
     }
 
   @Override
