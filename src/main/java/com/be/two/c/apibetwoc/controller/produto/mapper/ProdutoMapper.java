@@ -109,7 +109,7 @@ public class ProdutoMapper {
             produtoResponse.setPrecoAtual(produto.getPrecoOferta());
         }
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(AvaliacaoMapaResponse::getQtdEstrela).average().orElse(0));
-        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
+        if(produto.getSecao() != null) produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
         produtoResponse.setImagens(produto.getImagens().stream().map(Imagem::getNomeReferencia).toList());
 
         return produtoResponse;
