@@ -1,44 +1,26 @@
+// Preciso de uma pipe onde deveria validar testes unitários java meaven buildar e fazer push para o dockerhub
 
-name: Publish Docker image
+name: Push Docker image to Docker Hub And Deploy
 on:
   push:
-    branches: 
-    - main
-
-jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub And Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
-      - name: Add environments 
-        run: | 
-          echo VITE_API_URL=${{secrets.API_URL}} > .env
-          echo VITE_MAPBOX_TOKEN=${{secrets.MAPBOX_KEY}} >> .env
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Verify Build React
-        run: |
-          npm install
-          npm run build
-          
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: pedrorocs/be-to-se-front_nginx-react
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-        
+    branches:
+      - main
+  jobs:
+    - name: Buildando a aplicação
+      run: mvn clean package
+    - name: Iniciando os Testes Unitários
+      run: mvn test
+    - name: Logando no Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Buildando a imagem Docker
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ github.sha }}
+        labels: ${{ github.repository }}
+    
