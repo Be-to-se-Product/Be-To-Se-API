@@ -49,11 +49,11 @@ public class ConsumidorService {
     public Consumidor atualizar(Consumidor consumidor, Long id){
         Usuario usuario = usuarioService.buscarPorId(id);
         Consumidor c = existeConsumidor(usuario.getConsumidor().getId());
+        consumidor.setId(c.getId());
         consumidor.setUsuario(usuario);
         consumidor.setDataUltimaCompra(c.getDataUltimaCompra());
         consumidor.setImagem(c.getImagem());
-        c = consumidorRepository.save(consumidor);
-        return c;
+        return consumidorRepository.save(consumidor);
     }
 
     public void excluir(Long id) {
