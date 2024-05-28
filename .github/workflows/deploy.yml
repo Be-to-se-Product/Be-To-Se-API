@@ -1,10 +1,9 @@
-name: Publish Docker image
 
+name: Publish Docker image
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: 
+    - main
 
 jobs:
   push_to_registry:
@@ -13,16 +12,26 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
+      - name: Add environments 
+        run: | 
+          echo VITE_API_URL=${{secrets.API_URL}} > .env
+          echo VITE_MAPBOX_TOKEN=${{secrets.MAPBOX_KEY}} >> .env
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Verify Build React
+        run: |
+          npm install
+          npm run build
+          
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: pedrorocs/be-to-se-api
+          images: pedrorocs/be-to-se-front_nginx-react
 
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -32,12 +41,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      # - name: Update the service on the server
-      #   uses: appleboy/ssh-action@v1.0.3
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ${{ secrets.USERNAME }}
-      #     key: ${{ secrets.KEY }}
-      #     port: ${{ secrets.PORT }}
-      #     script: docker-compose pull && docker-compose up -d
+        
