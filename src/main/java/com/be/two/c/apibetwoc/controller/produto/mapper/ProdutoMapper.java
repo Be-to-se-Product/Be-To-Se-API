@@ -109,7 +109,7 @@ public class ProdutoMapper {
             produtoResponse.setPrecoAtual(produto.getPrecoOferta());
         }
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(AvaliacaoMapaResponse::getQtdEstrela).average().orElse(0));
-        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
+        if(produto.getSecao() != null) produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
         produtoResponse.setImagens(produto.getImagens().stream().map(Imagem::getNomeReferencia).toList());
 
         return produtoResponse;
@@ -192,7 +192,9 @@ public class ProdutoMapper {
             produtoDto.setImagens(produto.getImagens().stream().map(element -> element.getNomeReferencia()).toList());
         }
         produtoDto.setCategoria(produto.getCategoria());
-        produtoDto.setSecao(toProdutoSecaoResponse(produto.getSecao()));
+        if (produto.getSecao() != null) {
+            produtoDto.setSecao(toProdutoSecaoResponse(produto.getSecao()));
+        }
         produtoDto.setNome(produto.getNome());
         produtoDto.setCodigoSku(produto.getCodigoSku());
         produtoDto.setPreco(produto.getPreco());
@@ -226,9 +228,11 @@ public class ProdutoMapper {
 
     public static ProdutoSecaoResponseDTO toProdutoSecaoResponse(Secao secao) {
         ProdutoSecaoResponseDTO secaoDetalhamentoDto = new ProdutoSecaoResponseDTO();
-        secaoDetalhamentoDto.setId(secao.getId());
-        secaoDetalhamentoDto.setDescricao(secao.getDescricao());
-        secaoDetalhamentoDto.setEstabelecimento(toProdutoEstabeleciementoResponse(secao.getEstabelecimento()));
+        if(secao !=null) {
+            secaoDetalhamentoDto.setId(secao.getId());
+            secaoDetalhamentoDto.setDescricao(secao.getDescricao());
+            secaoDetalhamentoDto.setEstabelecimento(toProdutoEstabeleciementoResponse(secao.getEstabelecimento()));
+        }
         return secaoDetalhamentoDto;
     }
 

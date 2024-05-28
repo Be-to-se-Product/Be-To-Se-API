@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    List<Produto> findBySecaoEstabelecimentoId(Long idEstabelemento);
+    List<Produto> findBySecaoEstabelecimentoIdAndIsAtivoTrue(Long idEstabelemento);
     @Query("SELECT p FROM Produto p WHERE p.secao.estabelecimento.id = :estabelecimentoId")
     List<Produto> buscaProdutosPorLoja(Long estabelecimentoId);
     @Modifying

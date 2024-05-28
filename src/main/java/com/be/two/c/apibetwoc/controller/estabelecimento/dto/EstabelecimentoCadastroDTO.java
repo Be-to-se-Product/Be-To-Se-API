@@ -12,13 +12,17 @@ public class EstabelecimentoCadastroDTO {
     private String nome;
     @CNPJ
     private String cnpj;
-    private String telefone;
+    private String telefoneContato;
     @Email
-    private String email;
-    private String instagram;
-    private String facebook;
+    private String emailContato;
+    private String referenciaInstagram;
+    private String referenciaFacebook;
     private EstabelecimentoEnderecoCadastroDTO endereco;
-    private List<EstabelecimentoCadastroAgendaDTO> horarios;
+    private List<EstabelecimentoCadastroAgendaDTO> agenda;
+    private String segmento;
+    private List<Long> metodoPagamento;
+    @NotNull
+    private List<String> secao;
 }
 
 

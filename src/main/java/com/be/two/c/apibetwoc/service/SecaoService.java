@@ -26,6 +26,10 @@ public class SecaoService {
         return secaoRepository.findByEstabelecimentoId(id);
     }
 
+    public void cadastrarSecoes(List<String> secoes, Estabelecimento estabelecimento){
+        secaoRepository.saveAll(SecaoMapper.toSecaoEstabelecimento(secoes, estabelecimento));
+    }
+
     public Secao cadastrarSecao(CadastroSecaoDto secao){
         Estabelecimento estabelecimento = estabelecimentoService.listarPorId(secao.getIdEstabelecimento());
 

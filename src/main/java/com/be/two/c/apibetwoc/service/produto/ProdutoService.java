@@ -148,20 +148,20 @@ public class ProdutoService {
         List<Carrinho> carrinhos = produto.getCarrinhos();
         List<ItemVenda> itemVendas = produto.getItemVendas();
         List<ProdutoTag> prodTags = produto.getTags();
-        List<Long> idCarrinho = carrinhos.stream().filter(e -> e.getProduto().getId() == id).map(Carrinho::getId).toList();
-        carrinhos.stream().forEach((e) -> System.out.println(e.getProduto().getId()));
-        imagens.stream().forEach(e -> arquivoService.deletarArquivo(e.getNomeReferencia(), TipoArquivo.IMAGEM));
+        List<Long> idCarrinho = carrinhos.stream().filter(e -> Objects.equals(e.getProduto().getId(), id)).map(Carrinho::getId).toList();
+        carrinhos.forEach((e) -> System.out.println(e.getProduto().getId()));
+        imagens.forEach(e -> arquivoService.deletarArquivo(e.getNomeReferencia(), TipoArquivo.IMAGEM));
         List<Integer> idImagens = imagens.stream().map(Imagem::getId).toList();
         List<Long> idAvaliacao = avaliacaos.stream().map(Avaliacao::getId).toList();
-        List<Long> idItemVenda = itemVendas.stream().filter(e -> e.getProduto().getId() == id).map(ItemVenda::getId).toList();
-        List<Long> idTag = prodTags.stream().filter(e -> e.getProduto().getId() == id).map(ProdutoTag::getId).toList();
+        List<Long> idItemVenda = itemVendas.stream().filter(e -> Objects.equals(e.getProduto().getId(), id)).map(ItemVenda::getId).toList();
+        List<Long> idTag = prodTags.stream().filter(e -> Objects.equals(e.getProduto().getId(), id)).map(ProdutoTag::getId).toList();
         produtoTagRepository.deleteByIdIn(idTag);
         carrinhoRepository.deleteByIdIn(idCarrinho);
         itemVendaRepository.deleteByIdIn(idItemVenda);
         avaliacaoRepository.deleteByIdIn(idAvaliacao);
         imagemRepository.deleteByIdIn(idImagens);
-        produtoRepository.deleteById(produto.getId());
-
+        produto.setIsAtivo(false);
+        produtoRepository.save(produto);
     }
 
     public void statusProduto(boolean status, Long id) {
@@ -180,7 +180,7 @@ public class ProdutoService {
             throw new EntidadeNaoExisteException("Entidade não existe");
         }
 
-        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(id);
+        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoIdAndIsAtivoTrue(id);
         return produtos;
     }
 
@@ -288,7 +288,7 @@ public class ProdutoService {
     }
 
     public byte[] downloadCsv(Long idEstabelecimento) {
-        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoId(idEstabelecimento);
+        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoIdAndIsAtivoTrue(idEstabelecimento);
 
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

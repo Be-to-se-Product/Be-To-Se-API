@@ -32,7 +32,4 @@ public class CadastroProdutoDto {
     @NotNull
     private Long secao;
     private List<@Valid TagDTO> tags;
-
-
-
 }

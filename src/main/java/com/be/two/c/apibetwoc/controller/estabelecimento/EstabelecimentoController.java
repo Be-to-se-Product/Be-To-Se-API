@@ -9,6 +9,7 @@ import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.service.EstabelecimentoService;
 import com.be.two.c.apibetwoc.service.MetodoPagamentoAceitoService;
+import com.be.two.c.apibetwoc.service.SecaoService;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class EstabelecimentoController {
     private final EstabelecimentoService estabelecimentoService;
     private final ImagemService imagemService;
     private final MetodoPagamentoAceitoService metodoPagamentoAceitoService;
+    private final SecaoService secaoService;
 
     @GetMapping("/comerciante")
     public ResponseEntity<List<EstabelecimentoComercianteResponseDTO>> listarPorComerciante(){
@@ -58,6 +60,7 @@ public class EstabelecimentoController {
     @PostMapping
     public ResponseEntity<EstabelecimentoComercianteResponseDTO> cadastrarEstabelecimento(@Valid @RequestBody EstabelecimentoCadastroDTO estabelecimento) {
         Estabelecimento estabelecimentoCriado = estabelecimentoService.cadastroEstabelecimento(estabelecimento);
+        secaoService.cadastrarSecoes(estabelecimento.getSecao(),estabelecimentoCriado);
         return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimentoComerciante(estabelecimentoCriado,10,10));
     }
 

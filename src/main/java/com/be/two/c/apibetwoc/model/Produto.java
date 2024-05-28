@@ -22,7 +22,6 @@ public class Produto {
     private String codigoBarras;
     private String categoria;
     private Boolean isAtivo;
-    private Boolean isDeleted;
     private Boolean isPromocaoAtiva;
     private Integer qtdVendido;
     private Double taxaCompra;
@@ -42,7 +41,6 @@ public class Produto {
 
     @OneToMany(mappedBy = "produto")
     private List<Avaliacao> avaliacoes;
-
 
     @OneToMany(mappedBy = "produto")
     private List<Carrinho> carrinhos;
