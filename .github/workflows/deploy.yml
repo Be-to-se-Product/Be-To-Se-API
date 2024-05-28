@@ -1,4 +1,3 @@
-// Preciso de uma pipe onde deveria validar testes unitários java meaven buildar e fazer push para o dockerhub
 
 name: Push Docker image to Docker Hub And Deploy
 on:
