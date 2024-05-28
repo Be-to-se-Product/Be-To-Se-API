@@ -139,8 +139,6 @@ public class EstabelecimentoService {
     }
 
     public List<Estabelecimento> listarPorComerciante() {
-
-
         Long usuarioId = retornarIdUsuario();
 
         List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);

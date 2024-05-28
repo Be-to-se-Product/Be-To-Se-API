@@ -19,6 +19,7 @@ public class EstabelecimentoCadastroDTO {
     private String referenciaFacebook;
     private EstabelecimentoEnderecoCadastroDTO endereco;
     private List<EstabelecimentoCadastroAgendaDTO> agenda;
+    private String segmento;
     private List<Long> metodoPagamento;
     @NotNull
     private List<String> secao;

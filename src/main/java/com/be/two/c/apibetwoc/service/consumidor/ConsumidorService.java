@@ -65,10 +65,7 @@ public class ConsumidorService {
         consumidorRepository.save(consumidor);
     }
     public ConsumidorResponseDto buscarPorId(Long id) {
-        return consumidorRepository
-                .findById(id)
-                .map(ConsumidorMapper::of)
-                .orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum consumidor com esse id"));
+        return ConsumidorMapper.of(usuarioService.buscarPorId(id).getConsumidor());
     }
 
 }

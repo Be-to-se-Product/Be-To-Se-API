@@ -20,6 +20,7 @@ public class EstabelecimentoMapper {
         if(estabelecimentoCadastroDTO.getReferenciaInstagram() != null) estabelecimento.setReferenciaInstagram(estabelecimentoCadastroDTO.getReferenciaInstagram());
         if(estabelecimentoCadastroDTO.getReferenciaFacebook() != null) estabelecimento.setReferenciaFacebook(estabelecimentoCadastroDTO.getReferenciaFacebook());
         estabelecimento.setEmailContato(estabelecimentoCadastroDTO.getEmailContato());
+        estabelecimento.setSegmento(estabelecimentoCadastroDTO.getSegmento());
         estabelecimento.setIsAtivo(true);
         estabelecimento.setComerciante(comerciante);
 
