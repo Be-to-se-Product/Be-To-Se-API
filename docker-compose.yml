@@ -19,7 +19,8 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db/easyfind
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_PASSWORD=root 
+      - CLOUDINARY_URL=cloudinary://286466729378585:BiDoj5xRS_IqzMs4dKjKNaROU-I@dhxtkrrpp
     networks:
       - default
     entrypoint: ["java", "-jar","-Dspring.profiles.active=local","/app/app.jar"]

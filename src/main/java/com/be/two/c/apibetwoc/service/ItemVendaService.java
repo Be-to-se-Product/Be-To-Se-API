@@ -26,13 +26,16 @@ public class ItemVendaService {
     private final ConsumidorRepository consumidorRepository;
     private final ProdutoRepository produtoRepository;
     private final TransacaoService transacaoService;
+    private final AutenticacaoService autenticacaoService;
     private final CarrinhoService carrinhoService;
-    private final ImagemService imagemService;
     private final UsuarioRepository usuarioRepository;
     public Pedido cadastrar(PedidoCreateDto pedidoCreate ){
         List<ItemVenda> itensVendas = new ArrayList<>();
 
-        Usuario usuario = usuarioRepository.findById(pedidoCreate.getIdConsumidor()).orElseThrow(EntidadeNaoExisteException::new);
+        Long idUsuario = autenticacaoService.loadUsuarioDetails().getId();
+
+
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(EntidadeNaoExisteException::new);
         Pedido pedido = pedidoService.cadastrar(pedidoCreate.getMetodo());
         for (ItemVendaCreateDto i : pedidoCreate.getItens()){
             ItemVenda itemVenda = ItemVendaMapper.of(i);
@@ -53,7 +56,7 @@ public class ItemVendaService {
         itemVendaRepository.saveAll(itensVendas);
         transacaoService.adicionar(pedido);
         if(pedidoCreate.getOrigem().equals("Carrinho")){
-            carrinhoService.esvaziarCarrinho(pedidoCreate.getIdConsumidor());
+            carrinhoService.esvaziarCarrinho(usuario.getConsumidor().getId());
         }
         return pedido;
     }
