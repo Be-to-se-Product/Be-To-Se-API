@@ -26,7 +26,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-@Profile("local")
+@Profile({"local","test"})
+
 @RequiredArgsConstructor
 @Service
 
