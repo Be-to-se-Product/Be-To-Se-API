@@ -24,5 +24,6 @@ public class ProdutoDetalhamentoDto {
     private List<String> imagens;
     private ProdutoSecaoResponseDTO secao;
     private List<TagResponseDTO> tags;
+    private ProdutoEstabelecimentoResponseDTO estabelecimento;
 
 }

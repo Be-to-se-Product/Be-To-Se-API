@@ -79,16 +79,14 @@ public class ProdutoMapper {
         produtoResponse.setCategoria(produto.getCategoria());
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
-
         produtoResponse.setPrecoAntigo(produto.getPreco());
-
         produtoResponse.setPrecoAtual(produto.getPreco());
         if(produto.getPrecoOferta()!=null) {
             produtoResponse.setPrecoAtual(produto.getPrecoOferta());
         }
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(AvaliacaoMapaResponse::getQtdEstrela).average().orElse(0));
         Estabelecimento estabelecimento = produto.getSecao().getEstabelecimento();
-        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),latitude,longitude));
+        produtoResponse.setEstabelecimento(toEstabelecimentoResponse(estabelecimento,latitude,longitude));
         produtoResponse.setImagens(produto.getImagens().stream().map(Imagem::getNomeReferencia).toList());
         return produtoResponse;
     }
@@ -148,6 +146,10 @@ public class ProdutoMapper {
         estabelecimentoMapaResponse.setTelefone(estabelecimento.getTelefoneContato());
         estabelecimentoMapaResponse.setSite(estabelecimento.getReferenciaInstagram());
         estabelecimentoMapaResponse.setMetodoPagamento(estabelecimento.getMetodoPagamentoAceito().stream().map(element -> toMetodoPagamentoResponse(element.getMetodoPagamento())).toList());
+        List<Imagem> imagens = estabelecimento.getImagens();
+        if(!imagens.isEmpty()){
+            estabelecimentoMapaResponse.setImagem(imagens.get(0).getNomeReferencia());
+        }
 
         if(x==null || y==null){
             return estabelecimentoMapaResponse;
@@ -189,7 +191,7 @@ public class ProdutoMapper {
         ProdutoDetalhamentoDto produtoDto = new ProdutoDetalhamentoDto();
         produtoDto.setId(produto.getId());
         if (produto.getImagens() != null) {
-            produtoDto.setImagens(produto.getImagens().stream().map(element -> element.getNomeReferencia()).toList());
+            produtoDto.setImagens(produto.getImagens().stream().map(Imagem::getNomeReferencia).toList());
         }
         produtoDto.setCategoria(produto.getCategoria());
         if (produto.getSecao() != null) {
@@ -204,9 +206,10 @@ public class ProdutoMapper {
         produtoDto.setIsAtivo(produto.getIsAtivo());
         produtoDto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
         if (produto.getTags() != null) {
-            List<Tag> tags = produto.getTags().stream().map(e -> e.getTag()).toList();
+            List<Tag> tags = produto.getTags().stream().map(ProdutoTag::getTag).toList();
             produtoDto.setTags(tags.stream().map(TagMapper::toTagResponse).toList());
         }
+        produtoDto.setEstabelecimento(toProdutoEstabeleciementoResponse(produto.getSecao().getEstabelecimento()));
 
         return produtoDto;
     }
@@ -245,7 +248,6 @@ public class ProdutoMapper {
         if(estabelecimento.getImagens().stream().findFirst().isPresent()){
             estabelecimentoResponse.setImagem(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList().stream().findFirst().get());
         }
-
         return estabelecimentoResponse;
     }
     public static ProdutoVendaResponseDto toprodutoVendaResponse(ProdutoVendaDto dto){
