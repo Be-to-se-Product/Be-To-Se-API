@@ -22,4 +22,5 @@ public class EstabelecimentoMapaResponse {
     private Long tempoCarro;
     private Long tempoPessoa;
     private Long tempoBike;
+    private String imagem;
 }

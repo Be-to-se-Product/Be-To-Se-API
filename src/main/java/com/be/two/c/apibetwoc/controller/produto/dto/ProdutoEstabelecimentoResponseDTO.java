@@ -15,4 +15,5 @@ public class ProdutoEstabelecimentoResponseDTO {
     private Long id;
     private String nome;
     private List<Long> idMetodo;
+    private String imagem;
 }
