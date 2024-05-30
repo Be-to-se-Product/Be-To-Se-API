@@ -41,6 +41,7 @@ public class ArquivoService implements IStorage {
     put("png", MediaType.IMAGE_PNG);
     put("jpg", MediaType.IMAGE_JPEG);
     put("jpeg", MediaType.IMAGE_JPEG);
+    put("webp", MediaType.IMAGE_PNG);
     put("pdf", MediaType.APPLICATION_PDF);
     put("doc", MediaType.APPLICATION_OCTET_STREAM);
     put("docx", MediaType.APPLICATION_OCTET_STREAM);

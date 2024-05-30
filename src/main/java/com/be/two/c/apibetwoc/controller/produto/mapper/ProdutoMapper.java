@@ -241,7 +241,11 @@ public class ProdutoMapper {
         ProdutoEstabelecimentoResponseDTO estabelecimentoResponse = new ProdutoEstabelecimentoResponseDTO();
         estabelecimentoResponse.setId(estabelecimento.getId());
         estabelecimentoResponse.setNome(estabelecimento.getNome());
-        estabelecimentoResponse.setIdMetodo(estabelecimento.getMetodoPagamentoAceito().stream().map(element -> element.getId()).toList());
+        estabelecimentoResponse.setIdMetodo(estabelecimento.getMetodoPagamentoAceito().stream().map(MetodoPagamentoAceito::getId).toList());
+        if(estabelecimento.getImagens().stream().findFirst().isPresent()){
+            estabelecimentoResponse.setImagem(estabelecimento.getImagens().stream().map(Imagem::getNomeReferencia).toList().stream().findFirst().get());
+        }
+
         return estabelecimentoResponse;
     }
     public static ProdutoVendaResponseDto toprodutoVendaResponse(ProdutoVendaDto dto){
