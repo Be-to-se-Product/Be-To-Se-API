@@ -8,12 +8,10 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoEnde
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoSecaoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
-import com.be.two.c.apibetwoc.model.Comerciante;
-import com.be.two.c.apibetwoc.model.Endereco;
-import com.be.two.c.apibetwoc.model.Estabelecimento;
-import com.be.two.c.apibetwoc.model.Usuario;
+import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -168,7 +166,6 @@ public class EstabelecimentoServiceTest {
 
     @Test
     void testDeletarEstabelecimentoExistente() {
-        // Arrange
         Long estabelecimentoId = 1L;
         Estabelecimento estabelecimentoMock = new Estabelecimento();
         estabelecimentoMock.setId(estabelecimentoId);
@@ -176,10 +173,8 @@ public class EstabelecimentoServiceTest {
         when(estabelecimentoRepository.existsById(estabelecimentoId)).thenReturn(true);
         when(estabelecimentoRepository.getReferenceById(estabelecimentoId)).thenReturn(estabelecimentoMock);
 
-        // Act
         estabelecimentoService.deletar(estabelecimentoId);
 
-        // Assert
         verify(estabelecimentoRepository).existsById(estabelecimentoId);
         verify(estabelecimentoRepository).getReferenceById(estabelecimentoId);
         verify(estabelecimentoRepository).save(estabelecimentoMock);
@@ -188,17 +183,45 @@ public class EstabelecimentoServiceTest {
 
     @Test
     void testDeletarEstabelecimentoNaoExistente() {
-        // Arrange
         Long estabelecimentoId = 1L;
 
         when(estabelecimentoRepository.existsById(estabelecimentoId)).thenReturn(false);
 
-        // Act & Assert
         Assertions.assertThrows(EntidadeNaoExisteException.class, () -> estabelecimentoService.deletar(estabelecimentoId));
 
         verify(estabelecimentoRepository).existsById(estabelecimentoId);
         verify(estabelecimentoRepository, never()).getReferenceById(estabelecimentoId);
         verify(estabelecimentoRepository, never()).save(any(Estabelecimento.class));
+    }
+
+    @Test
+    void testListarPorComerciante() {
+        // Arrange
+        Long usuarioId = 1L;
+
+        UsuarioDetalhes usuarioDetalhesMock = Mockito.mock(UsuarioDetalhes.class);
+        when(usuarioDetalhesMock.getId()).thenReturn(usuarioId);
+        when(autenticacaoService.loadUsuarioDetails()).thenReturn(usuarioDetalhesMock);
+
+        Estabelecimento estabelecimento1 = new Estabelecimento();
+        estabelecimento1.setMetodoPagamentoAceito(List.of(new MetodoPagamentoAceito(true), new MetodoPagamentoAceito(false)));
+
+        Estabelecimento estabelecimento2 = new Estabelecimento();
+        estabelecimento2.setMetodoPagamentoAceito(List.of(new com.be.two.c.apibetwoc.model.MetodoPagamentoAceito(true), new MetodoPagamentoAceito(true)));
+
+        List<Estabelecimento> estabelecimentos = List.of(estabelecimento1, estabelecimento2);
+
+        when(estabelecimentoRepository.findByComercianteUsuarioId(usuarioId)).thenReturn(estabelecimentos);
+
+        // Act
+        List<Estabelecimento> result = estabelecimentoService.listarPorComerciante();
+
+        // Assert
+        verify(estabelecimentoRepository).findByComercianteUsuarioId(usuarioId);
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(1, result.get(0).getMetodoPagamentoAceito().size());
+        Assertions.assertTrue(result.get(0).getMetodoPagamentoAceito().get(0).getIsAtivo());
+        Assertions.assertEquals(2, result.get(1).getMetodoPagamentoAceito().size());
     }
 }
 

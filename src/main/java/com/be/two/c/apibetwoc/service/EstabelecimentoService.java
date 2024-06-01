@@ -153,7 +153,7 @@ public class EstabelecimentoService {
         for (Estabelecimento estabelecimento : estabelecimentos) {
 
             if (estabelecimento.getMetodoPagamentoAceito() != null) {
-                estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(e -> e.getIsAtivo()).toList());
+                estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(MetodoPagamentoAceito::getIsAtivo).toList());
             }
         }
         return estabelecimentos;
