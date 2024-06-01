@@ -31,8 +31,8 @@ public class ComercianteService {
         return comercianteRepository.save(comerciante);
     }
     public Comerciante editar(ComercianteAtualizarDTO dto, Long id){
-        Comerciante c = buscarPorId(id);
         Usuario usuario = usuarioService.editar(dto.getEmail(), id);
+        Comerciante c = buscarPorId(usuario.getComerciante().getId());
         usuario.setTipoUsuario(TipoUsuario.COMERCIANTE);
         Endereco endereco = enderecoService.editar(dto.getCep(), id, dto.getNumero());
         Comerciante comerciante = ComercianteMapper.of(dto);
