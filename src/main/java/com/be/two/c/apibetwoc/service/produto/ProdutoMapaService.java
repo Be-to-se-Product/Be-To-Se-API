@@ -19,7 +19,7 @@ public class ProdutoMapaService{
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final ProdutoRepository produtoRepository;
 
-    public List<Produto> retornarProdutos(Double latitude,Double longitude,Double distancia,String produto,String metodoPagamento){
+    public List<Produto> retornarProdutos(Double latitude,Double longitude,Double distancia,String produto,Long metodoPagamento){
         List<Produto> produtos;
         if(latitude == null || longitude == null || distancia == null){
             produtos = produtoRepository.findAll(ProdutoSpecification.name(produto).and(ProdutoSpecification.metodoPagamento(metodoPagamento)));

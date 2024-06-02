@@ -37,8 +37,20 @@ public class PedidoMapper {
     }
 
     public static ResponsePedidoConsumidorDto ofResponseUsuario(Pedido pedido) {
-        return new ResponsePedidoConsumidorDto(pedido.getId(), pedido.getDataHoraPedido(), pedido.getStatusDescricao(), pedido.getIsPagamentoOnline(), pedido.getMetodoPagamentoAceito().getMetodoPagamento().getDescricao(), pedido.getItens().stream().map(ItemVendaMapper::of).toList(), new EstabelecimentoResponsePedido(pedido.getMetodoPagamentoAceito().getEstabelecimento().getNome(), new EnderecoResponsePedido(pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getRua(), pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getNumero(), pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getBairro())));
+        return new ResponsePedidoConsumidorDto(
+                pedido.getId(),
+                pedido.getDataHoraPedido(),
+                pedido.getStatusDescricao(),
+                pedido.getIsPagamentoOnline(),
+                pedido.getMetodoPagamentoAceito().getMetodoPagamento().getDescricao(),
+                pedido.getItens().stream().map(ItemVendaMapper::of).toList(),
+                new EstabelecimentoResponsePedido(pedido.getMetodoPagamentoAceito().getEstabelecimento().getNome(),
+                        new EnderecoResponsePedido(
+                                pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getRua(),
+                                pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getNumero(),
+                                pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getBairro()
+                        )
+                )
+        );
     }
-
-
 }

@@ -12,12 +12,16 @@ import com.be.two.c.apibetwoc.service.produto.ProdutoService;
 import com.be.two.c.apibetwoc.util.FilaRequisicao;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,13 +88,27 @@ public class ProdutoController {
         produtoService.statusPromocaoProduto(id, status);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/estabelecimento/paginacao/{id}")
+    public ResponseEntity<Page<ProdutoDetalhamentoDto>> produtoPorEstabelecimento(@PathVariable Long id, @ParameterObject Pageable pageable){
+        Page<Produto> produtos = produtoService.produtoPorEstabelecimento(id,pageable);
+        if (produtos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+         Page<ProdutoDetalhamentoDto> dtos = produtos.map(ProdutoMapper::toProdutoDetalhamento);
+
+        return dtos.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(dtos);
+    }
+
+
     @GetMapping("/estabelecimento/{id}")
     public ResponseEntity<List<ProdutoDetalhamentoDto>> produtoPorEstabelecimento(@PathVariable Long id){
         List<Produto> produtos = produtoService.produtoPorEstabelecimento(id);
         if (produtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-         List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
+        List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
 
         return dtos.isEmpty()
                 ? ResponseEntity.noContent().build()
@@ -144,7 +162,12 @@ public class ProdutoController {
     }
 
     @GetMapping("/mapa")
-    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(@RequestParam(required = false) Double latitude, @RequestParam(required = false) Double longitude, @RequestParam(required = false) Double distancia,  @RequestParam(required = false)  String nome, @RequestParam(required = false) String metodoPagamento){
+    public ResponseEntity<List<ProdutoMapaResponseDTO>> listarProdutos(
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false) Double distancia,
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) Long metodoPagamento){
         List<Produto> produtos = produtoMapaService.retornarProdutos(latitude, longitude, distancia, nome,metodoPagamento);
         if(produtos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -153,7 +176,7 @@ public class ProdutoController {
     }
     @PostMapping("/venda")
     public ResponseEntity<List<ProdutoVendaResponseDto>> listaProdutoVenda(@RequestBody List<ProdutoVendaDto> produtos){
-        List<Long> ids = produtos.stream().map(ProdutoVendaDto::getIdProduto).collect(Collectors.toList());
+        List<Long> ids = produtos.stream().map(ProdutoVendaDto::getIdProduto).toList();
         List<Produto> produtosExistentes = produtoService.buscarProdutosParaVenda(ids);
 
         if (produtosExistentes.isEmpty()){
@@ -167,6 +190,10 @@ public class ProdutoController {
                 if (entidade.getId().equals(dto.getId())){
                     dto.setNome(entidade.getNome());
                     dto.setPreco(entidade.getPreco());
+                    if(!entidade.getImagens().isEmpty()){
+                        dto.setImagem(entidade.getImagens().get(0).getNomeReferencia());
+                    }
+                    dto.setIdEstabelecimento(entidade.getSecao().getEstabelecimento().getId());
                     dto.setIdEstabelecimento(entidade.getSecao().getEstabelecimento().getId());
                 }
             }

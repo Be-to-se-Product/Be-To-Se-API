@@ -3,10 +3,13 @@ package com.be.two.c.apibetwoc.repository;
 import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
 
 import java.util.List;
 
@@ -38,4 +41,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findAllByIsAtivoTrue();
 
+    Page<Produto> findAll(Specification<Produto> specification, Pageable pageable);
 }

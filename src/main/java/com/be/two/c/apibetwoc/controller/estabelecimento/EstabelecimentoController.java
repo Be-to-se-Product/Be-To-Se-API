@@ -32,7 +32,7 @@ public class EstabelecimentoController {
     public ResponseEntity<List<EstabelecimentoComercianteResponseDTO>> listarPorComerciante(){
          List<Estabelecimento> estabelecimentos = estabelecimentoService.listarPorComerciante();
          if(estabelecimentos.isEmpty())return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(estabelecimentos.stream().map(e->EstabelecimentoMapper.toResponseEstabelecimentoComerciante(e,10,10)).toList());
+        return ResponseEntity.ok(estabelecimentos.stream().map(EstabelecimentoMapper::toResponseEstabelecimentoComerciante).toList());
     }
     @GetMapping
     public ResponseEntity<List<EstabelecimentoResponseDTO>> listarTodos() {
@@ -61,7 +61,7 @@ public class EstabelecimentoController {
     public ResponseEntity<EstabelecimentoComercianteResponseDTO> cadastrarEstabelecimento(@Valid @RequestBody EstabelecimentoCadastroDTO estabelecimento) {
         Estabelecimento estabelecimentoCriado = estabelecimentoService.cadastroEstabelecimento(estabelecimento);
         secaoService.cadastrarSecoes(estabelecimento.getSecao(),estabelecimentoCriado);
-        return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimentoComerciante(estabelecimentoCriado,10,10));
+        return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimentoComerciante(estabelecimentoCriado));
     }
 
     @PostMapping("/{id}/imagem")
