@@ -32,7 +32,7 @@ public class ConsumidorServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -119,7 +119,6 @@ public class ConsumidorServiceTest {
     @Test
     void testExisteConsumidorNaoExiste() {
         when(consumidorRepository.findById(1L)).thenReturn(Optional.empty());
-
         assertThrows(EntidadeNaoExisteException.class, () -> consumidorService.existeConsumidor(1L));
     }
 }
