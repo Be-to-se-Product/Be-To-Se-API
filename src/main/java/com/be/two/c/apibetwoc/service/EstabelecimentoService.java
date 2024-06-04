@@ -4,9 +4,11 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.AgendaMapper;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoCadastroDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
+import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import com.be.two.c.apibetwoc.service.arquivo.IStorage;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.util.PilhaObj;
@@ -38,7 +40,6 @@ public class EstabelecimentoService {
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final MetodoPagamentoRepository metodoPagamentoRepository;
 
-
     public Estabelecimento listarPorId(Long id) {
 
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Não existe nenhum estabelecimento com esse id"));
@@ -62,7 +63,7 @@ public class EstabelecimentoService {
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
         Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
         estabelecimento.setEndereco(endereco);
-        metodoPagamentoAceitoService
+         metodoPagamentoAceitoService
                 .cadastrarMetodosPagamentos(estabelecimento,
                         estabelecimentoCadastroDTO.getMetodoPagamento());
         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
@@ -70,6 +71,8 @@ public class EstabelecimentoService {
             List<Agenda> agenda = agendaService.cadastrarAgenda(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado);
             estabelecimentoCriado.setAgenda(agenda);
         }
+
+
         return estabelecimentoCriado;
     }
 

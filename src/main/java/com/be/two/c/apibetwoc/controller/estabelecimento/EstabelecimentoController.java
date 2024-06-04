@@ -60,7 +60,7 @@ public class EstabelecimentoController {
     @PostMapping
     public ResponseEntity<EstabelecimentoComercianteResponseDTO> cadastrarEstabelecimento(@Valid @RequestBody EstabelecimentoCadastroDTO estabelecimento) {
         Estabelecimento estabelecimentoCriado = estabelecimentoService.cadastroEstabelecimento(estabelecimento);
-        secaoService.cadastrarSecoes(estabelecimento.getSecao(),estabelecimentoCriado);
+        estabelecimentoCriado.setSecao(secaoService.cadastrarSecoes(estabelecimento.getSecao(),estabelecimentoCriado));
         return ResponseEntity.status(201).body(EstabelecimentoMapper.toResponseEstabelecimentoComerciante(estabelecimentoCriado));
     }
 

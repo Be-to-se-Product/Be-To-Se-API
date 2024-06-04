@@ -90,7 +90,10 @@ public class EstabelecimentoMapper {
         estabelecimentoResponseDTO.setNome(estabelecimento.getNome());
         estabelecimentoResponseDTO.setSegmento(estabelecimento.getSegmento());
         List<Produto> produtoList= new ArrayList<>();
-        estabelecimento.getSecao().forEach(e-> produtoList.addAll(e.getProduto()));
+        long qtdProduto= estabelecimento.getSecao().stream().filter(e->Objects.nonNull(e.getProduto())).count();
+        if(qtdProduto>0) {
+            estabelecimento.getSecao().forEach(e -> produtoList.addAll(e.getProduto()));
+        }
         Set<Long> idsPedidos= new HashSet<>();
          produtoList.forEach(e-> e.getItemVendas().forEach(j->{
              if(!Objects.equals(j.getPedido().getStatusDescricao(),StatusPedido.ENTREGUE)){
