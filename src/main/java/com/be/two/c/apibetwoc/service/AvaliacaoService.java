@@ -33,10 +33,10 @@ public class AvaliacaoService {
     private final UsuarioRepository usuarioRepository;
 
     public Avaliacao publicar(AvaliacaoRequestDTO avaliacaoRequestDTO){
-        Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
+        Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntidadeNaoExisteException::new);
 
         if(usuario.getConsumidor()==null){
-            throw new EntityNotFoundException();
+            throw new EntidadeNaoExisteException();
         }
 
         Produto produto = buscarProdutoPorId(avaliacaoRequestDTO.getProduto());
