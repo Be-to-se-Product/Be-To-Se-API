@@ -78,53 +78,61 @@ public class EstabelecimentoService {
 
     @Transactional
     public Estabelecimento atualizarEstabelecimento(EstabelecimentoAtualizarDTO estabelecimentoDto, Long id) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Entidade não encontrada"));
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoExisteException("Entidade não encontrada"));
+
         agendaRepository.deleteByEstabelecimentoId(id);
+
         List<MetodoPagamentoAceito> metodoPagamentosBanco = metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
         List<MetodoPagamento> metodoPagamentoFront = metodoPagamentoRepository.findByIdIn(estabelecimentoDto.getMetodoPagamento());
         List<MetodoPagamentoAceito> metodoPagamentoRemover = new ArrayList<>();
 
         for (MetodoPagamentoAceito metodoPagamentoBanco : metodoPagamentosBanco) {
-            if (metodoPagamentoFront.stream().noneMatch(e -> metodoPagamentoBanco.getMetodoPagamento().getId() == e.getId())) {
+            if (metodoPagamentoFront.stream().noneMatch(e -> metodoPagamentoBanco.getMetodoPagamento().getId().equals(e.getId()))) {
                 metodoPagamentoBanco.setIsAtivo(false);
                 metodoPagamentoRemover.add(metodoPagamentoBanco);
             }
         }
 
         metodoPagamentoAceitoRepository.saveAll(metodoPagamentoRemover);
+
         List<MetodoPagamentoAceito> metodoPagamentoSalvar = new ArrayList<>();
         for (MetodoPagamento metodoPagamento : metodoPagamentoFront) {
-            if (metodoPagamentosBanco.stream().noneMatch(e -> e.getId() == metodoPagamento.getId())) {
+            if (metodoPagamentosBanco.stream().noneMatch(e -> e.getMetodoPagamento().getId().equals(metodoPagamento.getId()))) {
                 MetodoPagamentoAceito metodoPagamentoAceito = new MetodoPagamentoAceito();
                 metodoPagamentoAceito.setEstabelecimento(estabelecimento);
                 metodoPagamentoAceito.setMetodoPagamento(metodoPagamento);
                 metodoPagamentoAceito.setIsAtivo(true);
+                metodoPagamentoSalvar.add(metodoPagamentoAceito);
             }
         }
 
         Set<MetodoPagamentoAceito> metodoPagamentoAceitoHashSet = new HashSet<>(metodoPagamentoSalvar);
-
         metodoPagamentoAceitoHashSet.addAll(metodoPagamentosBanco);
-        List<MetodoPagamentoAceito> metodos = metodoPagamentoAceitoHashSet.stream().toList();
+        List<MetodoPagamentoAceito> metodos = new ArrayList<>(metodoPagamentoAceitoHashSet);
+
         EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto, estabelecimento);
-        Estabelecimento estabelecimentoSalvo = estabelecimentoRepository.save(estabelecimento);
-        metodoPagamentoAceitoRepository.saveAll(metodos);
+
         Endereco endereco = enderecoRepository.findByEstabelecimentoId(id);
         endereco.setNumero(estabelecimentoDto.getEndereco().getNumero());
         endereco.setRua(estabelecimentoDto.getEndereco().getLogradouro());
         endereco.setBairro(estabelecimentoDto.getEndereco().getBairro());
         endereco.setCep(estabelecimentoDto.getEndereco().getCep());
-        List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream().map(e -> EstabelecimentoMapper.toSecao(e, estabelecimentoSalvo)).toList();
+        enderecoRepository.save(endereco);
+
+        List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream()
+                .map(e -> EstabelecimentoMapper.toSecao(e, estabelecimento))
+                .toList();
         secaoRepository.saveAll(secaoSalvar);
 
-        List<Agenda> agendaNova = agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream().map(AgendaMapper::toAgenda).toList());
-        estabelecimentoSalvo.setAgenda(agendaNova);
-        System.out.println(estabelecimento.getAgenda().size());
-        enderecoRepository.save(endereco);
-        estabelecimentoRepository.save(estabelecimentoSalvo);
+        List<Agenda> agendaNova = agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream()
+                .map(AgendaMapper::toAgenda)
+                .toList());
+        estabelecimento.setAgenda(agendaNova);
 
-        return estabelecimentoSalvo;
+        return estabelecimentoRepository.save(estabelecimento);
     }
+
 
     public void deletar(Long id) {
         if (!estabelecimentoRepository.existsById(id)) {
@@ -148,7 +156,7 @@ public class EstabelecimentoService {
         for (Estabelecimento estabelecimento : estabelecimentos) {
 
             if (estabelecimento.getMetodoPagamentoAceito() != null) {
-                estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(e -> e.getIsAtivo()).toList());
+                estabelecimento.setMetodoPagamentoAceito(estabelecimento.getMetodoPagamentoAceito().stream().filter(MetodoPagamentoAceito::getIsAtivo).toList());
             }
         }
         return estabelecimentos;
