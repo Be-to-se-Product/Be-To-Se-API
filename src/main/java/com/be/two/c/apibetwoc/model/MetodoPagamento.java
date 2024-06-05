@@ -15,7 +15,5 @@ public class MetodoPagamento {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String descricao;
-    @OneToMany(mappedBy = "metodoPagamento")
-    private List<MetodoPagamentoAceito> metodosPagamentoAceitos;
 
 }

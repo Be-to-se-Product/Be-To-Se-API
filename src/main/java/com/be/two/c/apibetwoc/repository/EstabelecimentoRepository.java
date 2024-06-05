@@ -21,4 +21,6 @@ public interface EstabelecimentoRepository extends JpaRepository<Estabelecimento
 
 
     List<Estabelecimento> findByComercianteUsuarioId(Long usuarioId);
+
+    List<Estabelecimento> findByComercianteUsuarioIdAndIsAtivoTrue(Long usuarioId);
 }

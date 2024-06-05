@@ -83,7 +83,7 @@ public class EstabelecimentoService {
 
         agendaRepository.deleteByEstabelecimentoId(id);
 
-        List<MetodoPagamentoAceito> metodoPagamentosBanco = metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
+        List<MetodoPagamentoAceito> metodoPagamentosBanco = metodoPagamentoAceitoRepository.findByEstabelecimentoIdAndIsAtivoTrue(id);
         List<MetodoPagamento> metodoPagamentoFront = metodoPagamentoRepository.findByIdIn(estabelecimentoDto.getMetodoPagamento());
         List<MetodoPagamentoAceito> metodoPagamentoRemover = new ArrayList<>();
 
@@ -107,9 +107,8 @@ public class EstabelecimentoService {
             }
         }
 
-        Set<MetodoPagamentoAceito> metodoPagamentoAceitoHashSet = new HashSet<>(metodoPagamentoSalvar);
-        metodoPagamentoAceitoHashSet.addAll(metodoPagamentosBanco);
-        List<MetodoPagamentoAceito> metodos = new ArrayList<>(metodoPagamentoAceitoHashSet);
+
+        metodoPagamentoAceitoRepository.saveAll(metodoPagamentoSalvar);
 
         EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto, estabelecimento);
 
@@ -152,7 +151,7 @@ public class EstabelecimentoService {
     public List<Estabelecimento> listarPorComerciante() {
         Long usuarioId = retornarIdUsuario();
 
-        List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioId(usuarioId);
+        List<Estabelecimento> estabelecimentos = estabelecimentoRepository.findByComercianteUsuarioIdAndIsAtivoTrue(usuarioId);
         for (Estabelecimento estabelecimento : estabelecimentos) {
 
             if (estabelecimento.getMetodoPagamentoAceito() != null) {
@@ -162,9 +161,11 @@ public class EstabelecimentoService {
         return estabelecimentos;
     }
 
+    @Transactional
     public void salvarImagem(MultipartFile imagem, Long id) {
         PilhaObj<ArquivoSaveDTO> arquivos = new PilhaObj<>(1);
         Estabelecimento estabelecimento = listarPorId(id);
+        imagemRepository.deleteByIdIn(estabelecimento.getImagens().stream().map(Imagem::getId).toList());
         Imagem imagemSalva = imagemService.cadastrarImagensEstabelecimento(imagem, TipoArquivo.IMAGEM, estabelecimento, arquivos);
         imagemRepository.save(imagemSalva);
     }

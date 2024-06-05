@@ -32,6 +32,6 @@ public class MetodoPagamentoAceitoService {
     }
 
     public List<MetodoPagamentoAceito> findByEstabelecimentoId(Long id){
-        return metodoPagamentoAceitoRepository.findByEstabelecimentoId(id);
+        return metodoPagamentoAceitoRepository.findByEstabelecimentoIdAndIsAtivoTrue(id);
     }
 }
