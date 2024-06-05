@@ -28,4 +28,8 @@ public class MetodoPagamentoAceito {
 
     @OneToMany(mappedBy = "metodoPagamentoAceito")
     List<Pedido> pedidos;
+
+    public MetodoPagamentoAceito(boolean b) {
+        isAtivo = b;
+    }
 }
