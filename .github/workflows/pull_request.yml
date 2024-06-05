@@ -15,6 +15,11 @@ jobs:
         with:
           distribution: "adopt"
           java-version: "17"
+      
+      - name: "Run Test with Maven"
+        run: mvn test -B
+        env:
+          SPRING_PROFILES_ACTIVE: "test"
           
       - name: "Build with Maven"
         run: mvn clean package -DskipTests 
