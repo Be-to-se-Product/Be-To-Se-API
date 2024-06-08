@@ -51,8 +51,7 @@ public class AvaliacaoService {
     }
     public List<Avaliacao> buscarAvaliacaoPorProduto(Long id){
         Produto produto = buscarProdutoPorId(id);
-        List<Avaliacao> avalicoes = produto.getAvaliacoes();
-        return avalicoes;
+        return  produto.getAvaliacoes();
     }
     private Avaliacao buscarPorId(Long id){
         Avaliacao avaliacao = avaliacaoRepository.findById(id).orElseThrow(

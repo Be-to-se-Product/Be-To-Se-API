@@ -18,7 +18,9 @@ public class ItemVendaMapper {
         return itemVenda;
     }
     public static ResponseItemVendaDto of(ItemVenda itemVenda){
-        ResponseItemVendaDto responseItemVendaDto = new ResponseItemVendaDto(itemVenda.getProduto().getId(),itemVenda.getQuantidade(), ProdutoMapper.toProdutoDetalhamento(itemVenda.getProduto()));
-        return responseItemVendaDto;
+        return new ResponseItemVendaDto(
+                itemVenda.getProduto().getId(),
+                itemVenda.getQuantidade(),
+                ProdutoMapper.toProdutoDetalhamento(itemVenda.getProduto()));
     }
 }

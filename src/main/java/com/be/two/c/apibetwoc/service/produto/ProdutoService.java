@@ -13,6 +13,7 @@ import com.be.two.c.apibetwoc.service.arquivo.IStorage;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.service.produto.mapper.ProdutoTagMapper;
+import com.be.two.c.apibetwoc.service.produto.specification.ProdutoSpecification;
 import com.be.two.c.apibetwoc.service.tag.mapper.TagMapper;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
@@ -20,6 +21,9 @@ import com.opencsv.*;
 import com.opencsv.exceptions.CsvException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -182,6 +186,15 @@ public class ProdutoService {
 
         List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoIdAndIsAtivoTrue(id);
         return produtos;
+    }
+
+    public Page<Produto> produtoPorEstabelecimento(Long id, Pageable pageable) {
+        Specification<Produto> specification = Specification.where(ProdutoSpecification.isAtivoByEstabelecimento(id));
+        if (!estabelecimentoRepository.existsById(id)) {
+            throw new EntidadeNaoExisteException("Entidade não existe");
+        }
+
+        return produtoRepository.findAll(specification,pageable);
     }
 
     public List<Produto> barraDePesquisa(Long id, String pesquisa) {

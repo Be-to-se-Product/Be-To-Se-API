@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MetodoPagamentoAceitoRepository extends JpaRepository<MetodoPagamentoAceito, Long> {
-    List<MetodoPagamentoAceito> findByEstabelecimentoId(Long id);
     List<MetodoPagamentoAceito> findByEstabelecimento(Estabelecimento estabelecimento);
 
 
