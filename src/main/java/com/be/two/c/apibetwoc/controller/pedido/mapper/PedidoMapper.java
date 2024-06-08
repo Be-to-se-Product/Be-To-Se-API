@@ -1,6 +1,7 @@
 package com.be.two.c.apibetwoc.controller.pedido.mapper;
 
 import com.be.two.c.apibetwoc.controller.pedido.dto.*;
+import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Pedido;
 import com.be.two.c.apibetwoc.model.StatusPedido;
 
@@ -15,7 +16,7 @@ public class PedidoMapper {
         return pedido;
     }
 
-    public static Pedido of(MetodoDto metodoDto){
+    public static Pedido of(MetodoDto metodoDto) {
         Pedido pedido = new Pedido();
         pedido.setIsPagamentoOnline(metodoDto.getIsPagamentoOnline());
         pedido.setDataHoraPedido(LocalDateTime.now());
@@ -37,20 +38,27 @@ public class PedidoMapper {
     }
 
     public static ResponsePedidoConsumidorDto ofResponseUsuario(Pedido pedido) {
+
+        EstabelecimentoResponsePedido estabelecimentoResponsePedido = null;
+
+        if(pedido.getMetodoPagamentoAceito().getEstabelecimento() !=null) {
+             estabelecimentoResponsePedido = new EstabelecimentoResponsePedido(pedido.getMetodoPagamentoAceito().getEstabelecimento().getNome(),
+                    new EnderecoResponsePedido(
+                            pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getRua(),
+                            pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getNumero(),
+                            pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getBairro()
+                    )
+            );
+        }
+
         return new ResponsePedidoConsumidorDto(
                 pedido.getId(),
                 pedido.getDataHoraPedido(),
                 pedido.getStatusDescricao(),
                 pedido.getIsPagamentoOnline(),
                 pedido.getMetodoPagamentoAceito().getMetodoPagamento().getDescricao(),
-                pedido.getItens().stream().map(ItemVendaMapper::of).toList(),
-                new EstabelecimentoResponsePedido(pedido.getMetodoPagamentoAceito().getEstabelecimento().getNome(),
-                        new EnderecoResponsePedido(
-                                pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getRua(),
-                                pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getNumero(),
-                                pedido.getMetodoPagamentoAceito().getEstabelecimento().getEndereco().getBairro()
-                        )
-                )
-        );
+                pedido.getItens().stream().map(ItemVendaMapper::of).toList(),estabelecimentoResponsePedido
+
+                );
     }
 }

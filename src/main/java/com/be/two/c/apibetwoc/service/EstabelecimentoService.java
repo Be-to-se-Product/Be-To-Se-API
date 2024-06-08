@@ -119,16 +119,20 @@ public class EstabelecimentoService {
         endereco.setCep(estabelecimentoDto.getEndereco().getCep());
         enderecoRepository.save(endereco);
 
-        List<Secao> secaoSalvar = estabelecimentoDto.getSecao().stream()
+        List<Secao> secaoSalvar = new ArrayList<>(estabelecimentoDto.getSecao().stream()
                 .map(e -> EstabelecimentoMapper.toSecao(e, estabelecimento))
-                .toList();
-        secaoRepository.saveAll(secaoSalvar);
+                .toList());
+
+
+       List<Secao> secao = secaoRepository.saveAll(secaoSalvar);
 
         List<Agenda> agendaNova = agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream()
                 .map(AgendaMapper::toAgenda)
                 .toList());
+
         estabelecimento.setAgenda(agendaNova);
 
+        estabelecimento.setSecao(secao);
         return estabelecimentoRepository.save(estabelecimento);
     }
 
