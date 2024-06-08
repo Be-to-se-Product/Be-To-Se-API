@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.service;
 
+import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoSecaoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.AgendaMapper;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoCadastroDTO;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -107,7 +110,6 @@ public class EstabelecimentoService {
             }
         }
 
-
         metodoPagamentoAceitoRepository.saveAll(metodoPagamentoSalvar);
 
         EstabelecimentoMapper.toEstabelecimento(estabelecimentoDto, estabelecimento);
@@ -119,12 +121,22 @@ public class EstabelecimentoService {
         endereco.setCep(estabelecimentoDto.getEndereco().getCep());
         enderecoRepository.save(endereco);
 
-        List<Secao> secaoSalvar = new ArrayList<>(estabelecimentoDto.getSecao().stream()
-                .map(e -> EstabelecimentoMapper.toSecao(e, estabelecimento))
-                .toList());
+        List<Secao> secoesExistentes = secaoRepository.findByEstabelecimentoId(id);
+        Map<Long, Secao> secoesExistentesPorId = secoesExistentes.stream()
+                .collect(Collectors.toMap(Secao::getId, Function.identity()));
 
+        List<Secao> secoesParaSalvar = new ArrayList<>();
+        for (EstabelecimentoSecaoAtualizarDTO secaoDto : estabelecimentoDto.getSecao()) {
+            Secao secao;
+            if (secoesExistentesPorId.containsKey(secaoDto.getId())) {
+                secao = secoesExistentesPorId.get(secaoDto.getId());
+            } else {
+                secao = EstabelecimentoMapper.toSecao(secaoDto, estabelecimento);
+            }
+            secoesParaSalvar.add(secao);
+        }
 
-       List<Secao> secao = secaoRepository.saveAll(secaoSalvar);
+        List<Secao> secoesSalvas = secaoRepository.saveAll(secoesParaSalvar);
 
         List<Agenda> agendaNova = agendaRepository.saveAll(estabelecimentoDto.getAgenda().stream()
                 .map(AgendaMapper::toAgenda)
@@ -132,9 +144,10 @@ public class EstabelecimentoService {
 
         estabelecimento.setAgenda(agendaNova);
 
-        estabelecimento.setSecao(secao);
+        estabelecimento.setSecao(secoesSalvas);
         return estabelecimentoRepository.save(estabelecimento);
     }
+
 
 
     public void deletar(Long id) {
