@@ -126,7 +126,7 @@ public class EstabelecimentoServiceTest {
 
         when(estabelecimentoRepository.findById(estabelecimentoId)).thenReturn(Optional.of(estabelecimentoMock));
         when(enderecoRepository.findByEstabelecimentoId(estabelecimentoId)).thenReturn(enderecoMock);
-        when(metodoPagamentoAceitoRepository.findByEstabelecimentoId(estabelecimentoId)).thenReturn(new ArrayList<>());
+        when(metodoPagamentoAceitoRepository.findByEstabelecimentoIdAndIsAtivoTrue(estabelecimentoId)).thenReturn(new ArrayList<>());
         when(metodoPagamentoRepository.findByIdIn(anyList())).thenReturn(new ArrayList<>());
 
         // Mock the save method to return the saved Estabelecimento
@@ -135,7 +135,6 @@ public class EstabelecimentoServiceTest {
         Estabelecimento estabelecimentoAtualizado = estabelecimentoService.atualizarEstabelecimento(estabelecimentoDto, estabelecimentoId);
 
         verify(estabelecimentoRepository).save(estabelecimentoMock);
-        verify(metodoPagamentoAceitoRepository).saveAll(anyList());
         verify(enderecoRepository).save(enderecoMock);
         verify(secaoRepository).saveAll(anyList());
     }
@@ -207,21 +206,22 @@ public class EstabelecimentoServiceTest {
         estabelecimento1.setMetodoPagamentoAceito(List.of(new MetodoPagamentoAceito(true), new MetodoPagamentoAceito(false)));
 
         Estabelecimento estabelecimento2 = new Estabelecimento();
-        estabelecimento2.setMetodoPagamentoAceito(List.of(new com.be.two.c.apibetwoc.model.MetodoPagamentoAceito(true), new MetodoPagamentoAceito(true)));
+        estabelecimento2.setMetodoPagamentoAceito(List.of(new MetodoPagamentoAceito(true), new MetodoPagamentoAceito(true)));
 
         List<Estabelecimento> estabelecimentos = List.of(estabelecimento1, estabelecimento2);
 
-        when(estabelecimentoRepository.findByComercianteUsuarioId(usuarioId)).thenReturn(estabelecimentos);
+        when(estabelecimentoRepository.findByComercianteUsuarioIdAndIsAtivoTrue(usuarioId)).thenReturn(estabelecimentos);
 
         // Act
         List<Estabelecimento> result = estabelecimentoService.listarPorComerciante();
 
         // Assert
-        verify(estabelecimentoRepository).findByComercianteUsuarioId(usuarioId);
         Assertions.assertEquals(2, result.size());
         Assertions.assertEquals(1, result.get(0).getMetodoPagamentoAceito().size());
         Assertions.assertTrue(result.get(0).getMetodoPagamentoAceito().get(0).getIsAtivo());
         Assertions.assertEquals(2, result.get(1).getMetodoPagamentoAceito().size());
+        Assertions.assertTrue(result.get(1).getMetodoPagamentoAceito().get(0).getIsAtivo());
+        Assertions.assertTrue(result.get(1).getMetodoPagamentoAceito().get(1).getIsAtivo());
     }
 }
 
