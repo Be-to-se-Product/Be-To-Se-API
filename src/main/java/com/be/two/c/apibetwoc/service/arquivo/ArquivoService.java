@@ -2,7 +2,6 @@ package com.be.two.c.apibetwoc.service.arquivo;
 
 import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
-import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.service.AutenticacaoService;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoReponseDTO;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
@@ -34,7 +33,7 @@ import java.util.*;
 public class ArquivoService implements IStorage {
   private final AutenticacaoService autenticacaoService;
     @Value("${server.servlet.context-path}")
-    private  String api;
+    private  final String api;
     private final HttpServletRequest request;
 
   Map<String, MediaType> tiposArquivosPermitidos = new HashMap<>() {{
@@ -61,7 +60,7 @@ public class ArquivoService implements IStorage {
     try {
       Files.delete(caminhoArquivo);
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
     }
   }
 
@@ -102,7 +101,7 @@ public class ArquivoService implements IStorage {
       Files.copy(file.getInputStream(), caminhoCompleto);
       return new ArquivoSaveDTO(file.getOriginalFilename(), tipoArquivo,formatterImagensURI(nomeArquivo), LocalDateTime.now());
     } catch (IOException e) {
-      throw new RuntimeException("Erro ao salvar o arquivo");
+      throw new RuntimeException(e.getMessage());
     }
 
   }
