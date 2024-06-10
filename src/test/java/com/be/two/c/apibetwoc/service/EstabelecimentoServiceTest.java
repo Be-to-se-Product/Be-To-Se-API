@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +66,7 @@ public class EstabelecimentoServiceTest {
     }
 
     @Test
-    void testCadastroEstabelecimento() {
+    void testCadastroEstabelecimento() throws IOException {
         EstabelecimentoCadastroDTO estabelecimentoDTO = getEstabelecimentoCadastroDTO();
 
         UsuarioDetalhes usuarioDetalhesMock = Mockito.mock(UsuarioDetalhes.class);

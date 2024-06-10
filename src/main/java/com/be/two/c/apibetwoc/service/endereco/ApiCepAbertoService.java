@@ -4,12 +4,14 @@ import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Endereco;
 import com.be.two.c.apibetwoc.util.ApiCepAberto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Profile({"test"})
 public class ApiCepAbertoService implements IEndereco {
 
     private final ApiCepAberto apiCepAberto;
