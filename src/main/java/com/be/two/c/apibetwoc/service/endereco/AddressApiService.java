@@ -19,7 +19,7 @@ import java.io.IOException;
 @Profile({"local","prod"})
 public class AddressApiService implements IEndereco {
 
-    private final OkHttpClient client;
+    private final OkHttpClient client = new OkHttpClient();
 
     @Override
     public Endereco returnAddressWithLatitudeAndLongitude(Endereco address) throws IOException {
@@ -30,8 +30,9 @@ public class AddressApiService implements IEndereco {
     }
 
     private AddressDto makeApiCall(String cep, String number) throws IOException {
-        String url = String.format("http://localhost:5000/adress?cep=%s&numero=%s", cep, number);
+        String url = String.format("http://10.18.37.72:5000/adress?cep=%s&numero=%s", cep, number);
 
+        System.out.println("URL da api " + url);
         Request request = new Request.Builder()
                 .url(url)
                 .build();
