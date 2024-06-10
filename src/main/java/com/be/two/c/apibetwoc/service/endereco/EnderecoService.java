@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.endereco;
 
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Endereco;
@@ -32,6 +32,7 @@ public class EnderecoService {
 
         return enderecoRepository.save(endereco);
     }
+
     public Endereco editar(String cep, Long id, String numero) {
         Optional<ApiCepAberto.Cep> cepOpt = apiCepAberto.searchByCep(cep);
         if (cepOpt.isEmpty()) throw new EntidadeNaoExisteException("O Cep pesquisado não pôde ser encontrado");
