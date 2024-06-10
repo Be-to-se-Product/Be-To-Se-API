@@ -1,7 +1,6 @@
 package com.be.two.c.apibetwoc.service.endereco;
 
 import com.be.two.c.apibetwoc.model.Endereco;
-import com.be.two.c.apibetwoc.service.endereco.dto.AddressDto;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
