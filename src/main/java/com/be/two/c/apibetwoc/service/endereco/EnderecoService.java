@@ -7,6 +7,7 @@ import com.be.two.c.apibetwoc.util.ApiCepAberto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -33,7 +34,7 @@ public class EnderecoService {
         return enderecoRepository.save(endereco);
     }
 
-    public Endereco cadastrar(Endereco endereco) {
+    public Endereco cadastrar(Endereco endereco) throws IOException {
         Endereco newEndereco = addressIntegrationService.returnAddressWithLatitudeAndLongitude(endereco);
         return enderecoRepository.save(newEndereco);
     }
@@ -54,7 +55,7 @@ public class EnderecoService {
         return enderecoRepository.save(endereco);
     }
 
-    public Endereco editar(Endereco endereco, Long id) {
+    public Endereco editar(Endereco endereco, Long id) throws IOException {
         buscarPorId(id);
         Endereco updatedAddress = addressIntegrationService.returnAddressWithLatitudeAndLongitude(endereco);
         updatedAddress.setId(id);
