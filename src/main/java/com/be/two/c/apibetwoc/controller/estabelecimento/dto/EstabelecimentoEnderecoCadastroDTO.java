@@ -25,7 +25,8 @@ public class EstabelecimentoEnderecoCadastroDTO {
 
     @NotBlank
     private String uf;
-
+    @NotBlank
+    private String rua;
 
     private double geolocalizacaoX;
     private double geolocalizacaoY;

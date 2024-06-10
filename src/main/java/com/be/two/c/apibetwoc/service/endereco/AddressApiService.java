@@ -21,7 +21,7 @@ public class AddressApiService implements IEndereco {
     private final OkHttpClient client;
 
     @Override
-    public Endereco returnAddress(Endereco address) {
+    public Endereco returnAddressWithLatitudeAndLongitude(Endereco address) {
 
         return null;
     }

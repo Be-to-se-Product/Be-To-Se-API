@@ -10,6 +10,7 @@ import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
 import com.be.two.c.apibetwoc.service.endereco.EnderecoService;
+import com.be.two.c.apibetwoc.service.endereco.mapper.EnderecoMapper;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
@@ -60,11 +61,17 @@ public class EstabelecimentoService {
     @Transactional
     public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
+
         Comerciante comercianteFind = Optional.ofNullable(usuario.getComerciante()).orElseThrow(EntityNotFoundException::new);
         Comerciante comerciante = comercianteRepository.findById(comercianteFind.getId()).orElseThrow(EntityNotFoundException::new);
+
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
-        Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
+
+//      Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
+
+        Endereco endereco = enderecoService.cadastrar(EnderecoMapper.toEndereco(estabelecimentoCadastroDTO.getEndereco()));
         estabelecimento.setEndereco(endereco);
+
          metodoPagamentoAceitoService
                 .cadastrarMetodosPagamentos(estabelecimento,
                         estabelecimentoCadastroDTO.getMetodoPagamento());

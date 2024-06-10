@@ -15,7 +15,7 @@ public class ApiCepAbertoService implements IEndereco {
     private final ApiCepAberto apiCepAberto;
 
     @Override
-    public Endereco returnAddress(Endereco address) {
+    public Endereco returnAddressWithLatitudeAndLongitude(Endereco address) {
         Optional<ApiCepAberto.Cep> cepOpt = apiCepAberto.searchByCep(address.getCep());
         if (cepOpt.isEmpty()) throw new EntidadeNaoExisteException("O Cep pesquisado não pôde ser encontrado");
         ApiCepAberto.Cep info = cepOpt.get();
