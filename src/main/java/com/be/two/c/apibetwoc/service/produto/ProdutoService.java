@@ -71,7 +71,7 @@ public class ProdutoService {
 
     public List<Produto> listarProdutos() {
         List<Produto> produtos = produtoRepository.findAllByIsAtivoTrue();
-        produtos.stream().forEach(e -> e.getImagens().forEach(p -> System.out.println(p.getNomeReferencia())));
+        produtos.forEach(e -> e.getImagens().forEach(p -> System.out.println(p.getNomeReferencia())));
         int n = produtos.size();
 
         for (int i = 0; i < n - 1; i++) {
@@ -90,12 +90,15 @@ public class ProdutoService {
     }
 
 
-    public List<Imagem> cadastrarImagens(List<MultipartFile> imagens, Long id) {
+
+    @Transactional
+    public void cadastrarImagens(List<MultipartFile> imagens, Long id) {
         Produto produto = produtoRepository.findById(id).orElseThrow(() -> new EntidadeNaoExisteException("Produto não existe"));
         PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
+        imagemRepository.deleteByIdIn(produto.getImagens().stream().map(Imagem::getId).toList());
         List<Imagem> imagensSalvasLocal = imagens.stream().map(element -> imagemService.cadastrarImagensProduto(element, TipoArquivo.IMAGEM, produto, imagensSalvas)).toList();
-        List<Imagem> imagensCadastradas = imagemRepository.saveAll(imagensSalvasLocal);
-        return imagensCadastradas;
+
+        imagemRepository.saveAll(imagensSalvasLocal);
     }
 
     public Produto cadastrarProduto(CadastroProdutoDto cadastroProdutoDto) {
@@ -121,7 +124,7 @@ public class ProdutoService {
         List<TagDTO> tagsDuplicadas = tagSalvar.stream()
                 .filter(tagDto -> Collections.frequency(tagSalvar, tagDto) > 0)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
 
         Produto produto = produtoRepository.findById(id)
@@ -169,12 +172,12 @@ public class ProdutoService {
     }
 
     public void statusProduto(boolean status, Long id) {
-        Produto produto = buscarPorId(id);
+       buscarPorId(id);
         produtoRepository.statusProduto(status, id);
     }
 
     public void statusPromocaoProduto(Long id, boolean status) {
-        Produto produto = buscarPorId(id);
+        buscarPorId(id);
         produtoRepository.statusPromocao(status, id);
     }
 
@@ -184,8 +187,7 @@ public class ProdutoService {
             throw new EntidadeNaoExisteException("Entidade não existe");
         }
 
-        List<Produto> produtos = produtoRepository.findBySecaoEstabelecimentoIdAndIsAtivoTrue(id);
-        return produtos;
+        return produtoRepository.findBySecaoEstabelecimentoIdAndIsAtivoTrue(id);
     }
 
     public Page<Produto> produtoPorEstabelecimento(Long id, Pageable pageable) {
@@ -322,9 +324,8 @@ public class ProdutoService {
 
             csvWriter.close();
             outputStreamWriter.close();
-            byte[] csvBytes = byteArrayOutputStream.toByteArray();
 
-            return csvBytes;
+            return byteArrayOutputStream.toByteArray();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
