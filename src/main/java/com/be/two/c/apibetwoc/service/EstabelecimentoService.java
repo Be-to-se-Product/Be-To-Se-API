@@ -75,12 +75,12 @@ public class EstabelecimentoService {
          metodoPagamentoAceitoService
                 .cadastrarMetodosPagamentos(estabelecimento,
                         estabelecimentoCadastroDTO.getMetodoPagamento());
-        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
+
+         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
         if (!estabelecimentoCadastroDTO.getAgenda().isEmpty()) {
             List<Agenda> agenda = agendaService.cadastrarAgenda(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado);
             estabelecimentoCriado.setAgenda(agenda);
         }
-
 
         return estabelecimentoCriado;
     }

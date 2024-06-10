@@ -21,13 +21,15 @@ public class AddressApiService implements IEndereco {
     private final OkHttpClient client;
 
     @Override
-    public Endereco returnAddressWithLatitudeAndLongitude(Endereco address) {
-
-        return null;
+    public Endereco returnAddressWithLatitudeAndLongitude(Endereco address) throws IOException {
+        AddressDto addressDto = makeApiCall(address.getCep(), address.getNumero());
+        address.setGeolocalizacaoX(addressDto.longitude);
+        address.setGeolocalizacaoY(addressDto.latitude);
+        return address;
     }
 
-    private AddressDto makeApiCall(String cep, Integer number) throws IOException {
-        String url = String.format("http://localhost:5000/adress?cep=%s&numero=%d", cep, number);
+    private AddressDto makeApiCall(String cep, String number) throws IOException {
+        String url = String.format("http://localhost:5000/adress?cep=%s&numero=%s", cep, number);
 
         Request request = new Request.Builder()
                 .url(url)
