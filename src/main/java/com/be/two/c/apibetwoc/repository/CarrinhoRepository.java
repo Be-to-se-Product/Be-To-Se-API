@@ -2,6 +2,7 @@ package com.be.two.c.apibetwoc.repository;
 
 import com.be.two.c.apibetwoc.model.Carrinho;
 import com.be.two.c.apibetwoc.model.Consumidor;
+import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.model.Produto;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,6 +25,8 @@ public interface CarrinhoRepository extends JpaRepository<Carrinho, Long> {
     List<Carrinho> carrinhoDoConsumidor(Consumidor id);
     @Query("INSERT INTO Carrinho c(c.quantidade, c.produto, c.consumidor, c.dataHoraAlocacao)VALUES(:quantidade, :produto, :consumidor, :dtH)")
     Carrinho cadastrarCarrinho(Integer quantidade, Produto produto, Consumidor consumidor, LocalDateTime dtH);
+    @Query("SELECT c FROM Carrinho c WHERE c.consumidor =:consumidor AND c.produto.secao.estabelecimento =:estabelecimento")
+    List<Carrinho> carrinhoDoConsumidorPorEstabelecimento(Estabelecimento estabelecimento, Consumidor consumidor);
 
     void deleteByIdIn(List<Long> idCarrinho);
 }

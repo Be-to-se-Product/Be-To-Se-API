@@ -27,6 +27,7 @@ public class CarrinhoMapper {
 
         dto.setId(carrinho.getId());
         dto.setNomeEmpresa(carrinho.getProduto().getSecao().getEstabelecimento().getNome());
+        dto.setIdEmpresa(carrinho.getProduto().getSecao().getEstabelecimento().getId());
         dto.setQuantidade(carrinho.getQuantidade());
         dto.setProduto(dtoProduto);
         return dto;

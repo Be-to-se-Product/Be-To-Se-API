@@ -3,12 +3,8 @@ package com.be.two.c.apibetwoc.service;
 import com.be.two.c.apibetwoc.controller.carrinho.dto.CarrinhoRequestDTO;
 import com.be.two.c.apibetwoc.controller.carrinho.mapper.CarrinhoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
-import com.be.two.c.apibetwoc.model.Carrinho;
-import com.be.two.c.apibetwoc.model.Consumidor;
-import com.be.two.c.apibetwoc.model.Produto;
-import com.be.two.c.apibetwoc.repository.CarrinhoRepository;
-import com.be.two.c.apibetwoc.repository.ConsumidorRepository;
-import com.be.two.c.apibetwoc.repository.ProdutoRepository;
+import com.be.two.c.apibetwoc.model.*;
+import com.be.two.c.apibetwoc.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +16,11 @@ import java.util.List;
 public class CarrinhoService {
 
     private final CarrinhoRepository carrinhoRepository;
-
     private final ConsumidorRepository consumidorRepository;
-
     private final ProdutoRepository produtoRepository;
+    private final AutenticacaoService autenticacaoService;
+    private final UsuarioRepository usuarioRepository;
+    private final EstabelecimentoRepository estabelecimentoRepository;
     public Carrinho adicionar(CarrinhoRequestDTO carrinho, LocalDateTime dtH){
 
         Consumidor consumidor = consumidorRepository.findById(carrinho.getConsumidor())
@@ -32,8 +29,13 @@ public class CarrinhoService {
                 .orElseThrow(() -> new EntidadeNaoExisteException("Produto não encontrado"));
         return carrinhoRepository.save(CarrinhoMapper.toCarrinho(carrinho,produto,consumidor));
     }
-    public List<Carrinho> carrinhoDoConsumidor(Long id){
-        Consumidor consumidor = consumidorRepository.findById(id).orElseThrow(
+    public List<Carrinho> carrinhoDoConsumidor(){
+
+        Long idUsuario = autenticacaoService.loadUsuarioDetails().getId();
+
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(EntidadeNaoExisteException::new);
+
+        Consumidor consumidor = consumidorRepository.findById(usuario.getConsumidor().getId()).orElseThrow(
                 ()->new EntidadeNaoExisteException("Consumidor não encontrado")
         );
         List<Carrinho> carrinho = carrinhoRepository.carrinhoDoConsumidor(consumidor);
@@ -58,5 +60,23 @@ public class CarrinhoService {
                 ()-> new EntidadeNaoExisteException("Carrinho não encontrado")
         );
         carrinhoRepository.deleteById(id);
+    }
+
+    public List<Carrinho> carrinhoDoConsumidorPorEstabelecimento(Long idEstabelecimento)
+    {
+
+        Long idUsuario = autenticacaoService.loadUsuarioDetails().getId();
+
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(EntidadeNaoExisteException::new);
+
+        Consumidor consumidor = consumidorRepository.findById(usuario.getConsumidor().getId()).orElseThrow(
+                ()->new EntidadeNaoExisteException("Consumidor não encontrado")
+        );
+
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(
+                ()->new EntidadeNaoExisteException("Consumidor não encontrado")
+        );
+
+        return carrinhoRepository.carrinhoDoConsumidorPorEstabelecimento(estabelecimento, consumidor);
     }
 }
