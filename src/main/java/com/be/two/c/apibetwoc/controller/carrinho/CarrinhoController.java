@@ -31,9 +31,11 @@ public class CarrinhoController {
         return ResponseEntity.ok(dtos);
     }
     @PostMapping
-    public ResponseEntity<Carrinho> adicionandoProduto(@Valid @RequestBody CarrinhoRequestDTO carrinho){
+    public ResponseEntity<CarrinhoResponseDTO> adicionandoProduto(@Valid @RequestBody CarrinhoRequestDTO carrinhoDto){
         LocalDateTime dtH = LocalDateTime.now();
-        return ResponseEntity.ok(carrinhoService.adicionar(carrinho,dtH));
+        Carrinho carrinho = carrinhoService.adicionar(carrinhoDto,dtH);
+        CarrinhoResponseDTO dto = CarrinhoMapper.toDto(carrinho);
+        return ResponseEntity.ok(dto);
     }
     @PatchMapping("/{id}")
     public ResponseEntity<Void> editarProduto(@PathVariable Long id, @RequestParam Integer quantidade){

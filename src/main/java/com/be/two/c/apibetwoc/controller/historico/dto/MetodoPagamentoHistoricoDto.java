@@ -1,4 +1,4 @@
-package com.be.two.c.apibetwoc.dto.historico;
+package com.be.two.c.apibetwoc.controller.historico.dto;
 
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 

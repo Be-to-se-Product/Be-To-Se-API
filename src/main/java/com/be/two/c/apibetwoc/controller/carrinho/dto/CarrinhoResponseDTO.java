@@ -15,4 +15,5 @@ public class CarrinhoResponseDTO {
     private Integer quantidade;
     private ProdutoCarrinhoResponseDTO produto;
     private String nomeEmpresa;
+    private Long idEmpresa;
 }

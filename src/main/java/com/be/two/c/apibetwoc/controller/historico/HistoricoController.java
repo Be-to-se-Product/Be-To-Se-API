@@ -1,6 +1,6 @@
 package com.be.two.c.apibetwoc.controller.historico;
 
-import com.be.two.c.apibetwoc.dto.historico.MetodoPagamentoHistoricoDto;
+import com.be.two.c.apibetwoc.controller.historico.dto.MetodoPagamentoHistoricoDto;
 import com.be.two.c.apibetwoc.model.MetodoPagamentoAceito;
 import com.be.two.c.apibetwoc.controller.historico.dto.TransacaoHistoricoDto;
 import com.be.two.c.apibetwoc.model.Transacao;
