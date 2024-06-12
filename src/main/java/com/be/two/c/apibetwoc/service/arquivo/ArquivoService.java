@@ -27,12 +27,13 @@ import java.time.LocalDateTime;
 import java.util.*;
 @Profile({"local","test"})
 
-@Service
 @RequiredArgsConstructor
+@Service
+
 public class ArquivoService implements IStorage {
   private final AutenticacaoService autenticacaoService;
     @Value("${server.servlet.context-path}")
-    private  String api;
+    private String api;
     private final HttpServletRequest request;
 
   Map<String, MediaType> tiposArquivosPermitidos = new HashMap<>() {{
