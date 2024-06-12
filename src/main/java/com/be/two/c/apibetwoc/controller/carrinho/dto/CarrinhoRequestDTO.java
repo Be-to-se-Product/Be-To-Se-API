@@ -15,6 +15,4 @@ public class CarrinhoRequestDTO {
     private Integer quantidade;
     @NotNull
     private Long produto;
-    @NotNull
-    private Long consumidor;
 }

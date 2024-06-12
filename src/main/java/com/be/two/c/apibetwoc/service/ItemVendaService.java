@@ -55,7 +55,10 @@ public class ItemVendaService {
         itemVendaRepository.saveAll(itensVendas);
         transacaoService.adicionar(pedido);
         if(pedidoCreate.getOrigem().equals("Carrinho")){
-            carrinhoService.carrinhoDoConsumidorPorEstabelecimento(pedidoCreate.getIdEstabelecimento());
+            List<Carrinho> carrinhos = carrinhoService.carrinhoDoConsumidorPorEstabelecimento(pedidoCreate.getIdEstabelecimento());
+            for (Carrinho c : carrinhos){
+                carrinhoService.removerProduto(c.getId());
+            }
         }
         return pedido;
     }
