@@ -34,7 +34,6 @@ public class ItemVendaService {
 
         Long idUsuario = autenticacaoService.loadUsuarioDetails().getId();
 
-
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(EntidadeNaoExisteException::new);
         Pedido pedido = pedidoService.cadastrar(pedidoCreate.getMetodo());
         for (ItemVendaCreateDto i : pedidoCreate.getItens()){
@@ -56,7 +55,10 @@ public class ItemVendaService {
         itemVendaRepository.saveAll(itensVendas);
         transacaoService.adicionar(pedido);
         if(pedidoCreate.getOrigem().equals("Carrinho")){
-            carrinhoService.esvaziarCarrinho(usuario.getConsumidor().getId());
+            List<Carrinho> carrinhos = carrinhoService.carrinhoDoConsumidorPorEstabelecimento(pedidoCreate.getIdEstabelecimento());
+            for (Carrinho c : carrinhos){
+                carrinhoService.removerProduto(c.getId());
+            }
         }
         return pedido;
     }

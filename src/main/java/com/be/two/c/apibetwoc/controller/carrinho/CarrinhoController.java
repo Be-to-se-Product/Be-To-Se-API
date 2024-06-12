@@ -1,6 +1,10 @@
 package com.be.two.c.apibetwoc.controller.carrinho;
 
 import com.be.two.c.apibetwoc.controller.carrinho.dto.CarrinhoRequestDTO;
+import com.be.two.c.apibetwoc.controller.carrinho.dto.CarrinhoResponseDTO;
+import com.be.two.c.apibetwoc.controller.carrinho.mapper.CarrinhoMapper;
+import com.be.two.c.apibetwoc.controller.produto.dto.ProdutoDetalhamentoDto;
+import com.be.two.c.apibetwoc.controller.produto.mapper.ProdutoMapper;
 import com.be.two.c.apibetwoc.model.Carrinho;
 import com.be.two.c.apibetwoc.service.CarrinhoService;
 import jakarta.validation.Valid;
@@ -17,17 +21,21 @@ public class CarrinhoController {
     @Autowired
     private CarrinhoService carrinhoService;
     @GetMapping
-    public ResponseEntity<List<Carrinho>> carrinhoDoConsumidor(@RequestParam Long id){
-        List<Carrinho> carrinho = carrinhoService.carrinhoDoConsumidor(id);
+    public ResponseEntity<List<CarrinhoResponseDTO>> carrinhoDoConsumidor(){
+        List<Carrinho> carrinho = carrinhoService.carrinhoDoConsumidor();
         if (carrinho.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(carrinho);
+        List<CarrinhoResponseDTO> dtos = carrinho.stream().map(CarrinhoMapper::toDto).toList();
+
+        return ResponseEntity.ok(dtos);
     }
     @PostMapping
-    public ResponseEntity<Carrinho> adicionandoProduto(@Valid @RequestBody CarrinhoRequestDTO carrinho){
+    public ResponseEntity<CarrinhoResponseDTO> adicionandoProduto(@Valid @RequestBody CarrinhoRequestDTO carrinhoDto){
         LocalDateTime dtH = LocalDateTime.now();
-        return ResponseEntity.ok(carrinhoService.adicionar(carrinho,dtH));
+        Carrinho carrinho = carrinhoService.adicionar(carrinhoDto,dtH);
+        CarrinhoResponseDTO dto = CarrinhoMapper.toDto(carrinho);
+        return ResponseEntity.ok(dto);
     }
     @PatchMapping("/{id}")
     public ResponseEntity<Void> editarProduto(@PathVariable Long id, @RequestParam Integer quantidade){

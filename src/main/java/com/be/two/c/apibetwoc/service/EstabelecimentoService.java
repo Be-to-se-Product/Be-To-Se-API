@@ -5,12 +5,12 @@ import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.AgendaMapper;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoAtualizarDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.dto.EstabelecimentoCadastroDTO;
 import com.be.two.c.apibetwoc.controller.estabelecimento.mapper.EstabelecimentoMapper;
-import com.be.two.c.apibetwoc.controller.secao.mapper.SecaoMapper;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
-import com.be.two.c.apibetwoc.service.arquivo.IStorage;
 import com.be.two.c.apibetwoc.service.arquivo.dto.ArquivoSaveDTO;
+import com.be.two.c.apibetwoc.service.endereco.EnderecoService;
+import com.be.two.c.apibetwoc.service.endereco.mapper.EnderecoMapper;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
 import com.be.two.c.apibetwoc.util.PilhaObj;
 import com.be.two.c.apibetwoc.util.TipoArquivo;
@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,22 +60,29 @@ public class EstabelecimentoService {
     }
 
     @Transactional
-    public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) {
+    public Estabelecimento cadastroEstabelecimento(EstabelecimentoCadastroDTO estabelecimentoCadastroDTO) throws IOException {
         Usuario usuario = usuarioRepository.findById(autenticacaoService.loadUsuarioDetails().getId()).orElseThrow(EntityNotFoundException::new);
+
         Comerciante comercianteFind = Optional.ofNullable(usuario.getComerciante()).orElseThrow(EntityNotFoundException::new);
         Comerciante comerciante = comercianteRepository.findById(comercianteFind.getId()).orElseThrow(EntityNotFoundException::new);
+
         Estabelecimento estabelecimento = EstabelecimentoMapper.toEstabelecimento(estabelecimentoCadastroDTO, comerciante);
-        Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
+
+//      Endereco endereco = enderecoService.cadastrar(estabelecimentoCadastroDTO.getEndereco().getCep(), estabelecimentoCadastroDTO.getEndereco().getNumero());
+
+
+        Endereco endereco = enderecoService.cadastrar(EnderecoMapper.toEndereco(estabelecimentoCadastroDTO.getEndereco()));
         estabelecimento.setEndereco(endereco);
+
          metodoPagamentoAceitoService
                 .cadastrarMetodosPagamentos(estabelecimento,
                         estabelecimentoCadastroDTO.getMetodoPagamento());
-        Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
+
+         Estabelecimento estabelecimentoCriado = estabelecimentoRepository.save(estabelecimento);
         if (!estabelecimentoCadastroDTO.getAgenda().isEmpty()) {
             List<Agenda> agenda = agendaService.cadastrarAgenda(estabelecimentoCadastroDTO.getAgenda(), estabelecimentoCriado);
             estabelecimentoCriado.setAgenda(agenda);
         }
-
 
         return estabelecimentoCriado;
     }

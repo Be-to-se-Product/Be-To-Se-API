@@ -1,6 +1,6 @@
 package com.be.two.c.apibetwoc.controller.carrinho.dto;
 
-import jakarta.validation.constraints.NotNull;
+import com.be.two.c.apibetwoc.controller.produto.dto.mapa.ProdutoCarrinhoResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CarrinhoRequestDTO {
-    @NotNull
+public class CarrinhoResponseDTO {
+    private Long id;
     private Integer quantidade;
-    @NotNull
-    private Long produto;
+    private ProdutoCarrinhoResponseDTO produto;
+    private String nomeEmpresa;
+    private Long idEmpresa;
 }

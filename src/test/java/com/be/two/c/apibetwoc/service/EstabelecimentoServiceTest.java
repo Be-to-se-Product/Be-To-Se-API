@@ -10,8 +10,8 @@ import com.be.two.c.apibetwoc.controller.usuario.dto.UsuarioDetalhes;
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.*;
 import com.be.two.c.apibetwoc.repository.*;
+import com.be.two.c.apibetwoc.service.endereco.EnderecoService;
 import com.be.two.c.apibetwoc.service.imagem.ImagemService;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +66,7 @@ public class EstabelecimentoServiceTest {
     }
 
     @Test
-    void testCadastroEstabelecimento() {
+    void testCadastroEstabelecimento() throws IOException {
         EstabelecimentoCadastroDTO estabelecimentoDTO = getEstabelecimentoCadastroDTO();
 
         UsuarioDetalhes usuarioDetalhesMock = Mockito.mock(UsuarioDetalhes.class);

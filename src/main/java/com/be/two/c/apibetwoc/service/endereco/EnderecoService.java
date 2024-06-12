@@ -1,13 +1,13 @@
-package com.be.two.c.apibetwoc.service;
+package com.be.two.c.apibetwoc.service.endereco;
 
 import com.be.two.c.apibetwoc.infra.EntidadeNaoExisteException;
 import com.be.two.c.apibetwoc.model.Endereco;
-import com.be.two.c.apibetwoc.model.Estabelecimento;
 import com.be.two.c.apibetwoc.repository.EnderecoRepository;
 import com.be.two.c.apibetwoc.util.ApiCepAberto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -16,6 +16,7 @@ public class EnderecoService {
 
     private final EnderecoRepository enderecoRepository;
     private final ApiCepAberto apiCepAberto;
+    private final IEndereco addressIntegrationService;
 
     public Endereco cadastrar(String cep,String numero) {
         Optional<ApiCepAberto.Cep> cepOpt = apiCepAberto.searchByCep(cep);
@@ -32,6 +33,12 @@ public class EnderecoService {
 
         return enderecoRepository.save(endereco);
     }
+
+    public Endereco cadastrar(Endereco endereco) throws IOException {
+        Endereco newEndereco = addressIntegrationService.returnAddressWithLatitudeAndLongitude(endereco);
+        return enderecoRepository.save(newEndereco);
+    }
+
     public Endereco editar(String cep, Long id, String numero) {
         Optional<ApiCepAberto.Cep> cepOpt = apiCepAberto.searchByCep(cep);
         if (cepOpt.isEmpty()) throw new EntidadeNaoExisteException("O Cep pesquisado não pôde ser encontrado");
@@ -46,6 +53,13 @@ public class EnderecoService {
         endereco.setId(id);
 
         return enderecoRepository.save(endereco);
+    }
+
+    public Endereco editar(Endereco endereco, Long id) throws IOException {
+        buscarPorId(id);
+        Endereco updatedAddress = addressIntegrationService.returnAddressWithLatitudeAndLongitude(endereco);
+        updatedAddress.setId(id);
+        return enderecoRepository.save(updatedAddress);
     }
 
     public Endereco buscarPorId(Long id){

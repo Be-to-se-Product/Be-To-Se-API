@@ -10,6 +10,7 @@ import com.be.two.c.apibetwoc.model.Endereco;
 import com.be.two.c.apibetwoc.model.TipoUsuario;
 import com.be.two.c.apibetwoc.model.Usuario;
 import com.be.two.c.apibetwoc.repository.ComercianteRepository;
+import com.be.two.c.apibetwoc.service.endereco.EnderecoService;
 import com.be.two.c.apibetwoc.service.usuario.UsuarioService;
 import org.junit.jupiter.api.Test;
 

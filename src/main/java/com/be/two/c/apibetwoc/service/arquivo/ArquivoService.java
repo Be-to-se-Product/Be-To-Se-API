@@ -33,7 +33,7 @@ import java.util.*;
 public class ArquivoService implements IStorage {
   private final AutenticacaoService autenticacaoService;
     @Value("${server.servlet.context-path}")
-    private  final String api;
+    private String api;
     private final HttpServletRequest request;
 
   Map<String, MediaType> tiposArquivosPermitidos = new HashMap<>() {{
