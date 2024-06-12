@@ -52,6 +52,7 @@ public class ProdutoMapper {
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
         produto.setIsAtivo(true);
+        produto.setIsPromocaoAtiva(false);
         produto.setSecao(secao);
         produto.setImagens(new ArrayList<>());
         return produto;
@@ -99,13 +100,21 @@ public class ProdutoMapper {
         produtoResponse.setCategoria(produto.getCategoria());
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
-
+        if(produto.getIsPromocaoAtiva() !=null && produto.getIsPromocaoAtiva()){
+            if(produto.getPrecoOferta()!=null) {
+                produtoResponse.setPrecoAtual(produto.getPrecoOferta());
+            }
         produtoResponse.setPrecoAntigo(produto.getPreco());
-
-        produtoResponse.setPrecoAtual(produto.getPreco());
-        if(produto.getPrecoOferta()!=null) {
-            produtoResponse.setPrecoAtual(produto.getPrecoOferta());
         }
+        else{
+            if(produto.getPrecoOferta()!=null) {
+                produtoResponse.setPrecoAtual(produto.getPreco());
+            }
+            produtoResponse.setPrecoAntigo(produto.getPreco());
+        }
+
+
+
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(AvaliacaoMapaResponse::getQtdEstrela).average().orElse(0));
         if(produto.getSecao() != null) produtoResponse.setEstabelecimento(toEstabelecimentoResponse(produto.getSecao().getEstabelecimento(),x,y));
         produtoResponse.setImagens(produto.getImagens().stream().map(Imagem::getNomeReferencia).toList());

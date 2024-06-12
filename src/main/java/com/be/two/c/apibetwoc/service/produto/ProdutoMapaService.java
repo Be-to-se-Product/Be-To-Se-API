@@ -15,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutoMapaService{
 
-    private final ImagemService imagemService;
     private final EstabelecimentoRepository estabelecimentoRepository;
     private final ProdutoRepository produtoRepository;
 

@@ -52,7 +52,6 @@ public class ProdutoService {
 
     public Produto buscarPorId(Long id) {
         Produto produto =  produtoRepository.findById(id).orElseThrow(EntidadeNaoExisteException::new);
-
        List<Imagem>  imagems =  produto.getImagens();
         produto.setImagens(imagems);
        return produto;
@@ -97,7 +96,6 @@ public class ProdutoService {
         PilhaObj<ArquivoSaveDTO> imagensSalvas = new PilhaObj<>(imagens.size());
         imagemRepository.deleteByIdIn(produto.getImagens().stream().map(Imagem::getId).toList());
         List<Imagem> imagensSalvasLocal = imagens.stream().map(element -> imagemService.cadastrarImagensProduto(element, TipoArquivo.IMAGEM, produto, imagensSalvas)).toList();
-
         imagemRepository.saveAll(imagensSalvasLocal);
     }
 
@@ -182,7 +180,6 @@ public class ProdutoService {
     }
 
     public List<Produto> produtoPorEstabelecimento(Long id) {
-
         if (!estabelecimentoRepository.existsById(id)) {
             throw new EntidadeNaoExisteException("Entidade não existe");
         }

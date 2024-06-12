@@ -10,7 +10,6 @@ public class EnderecoMapper {
         endereco.setNumero(estabelecimentoEnderecoCadastroDTO.getNumero());
         endereco.setCep(estabelecimentoEnderecoCadastroDTO.getCep());
         endereco.setRua(estabelecimentoEnderecoCadastroDTO.getRua());
-        endereco.setLogradouro(estabelecimentoEnderecoCadastroDTO.getLogradouro());
         return endereco;
     }
 }

@@ -19,13 +19,13 @@ import java.io.IOException;
 @Profile({"local","prod"})
 public class AddressApiService implements IEndereco {
 
-    private final OkHttpClient client;
+    private final OkHttpClient client = new OkHttpClient();
 
     @Override
     public Endereco returnAddressWithLatitudeAndLongitude(Endereco address) throws IOException {
         AddressDto addressDto = makeApiCall(address.getCep(), address.getNumero());
-        address.setGeolocalizacaoX(addressDto.longitude);
-        address.setGeolocalizacaoY(addressDto.latitude);
+        address.setGeolocalizacaoX(addressDto.latitude);
+        address.setGeolocalizacaoY(addressDto.longitude);
         return address;
     }
 
