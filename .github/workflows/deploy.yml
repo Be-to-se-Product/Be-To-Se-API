@@ -31,7 +31,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: "Build Docker image"
-        run: docker build . -t pedrorocs/be-to-se-api
+        run: docker build . -t pedrorocs/be-to-se-api:main
 
       - name: "Push Docker image"
-        run: docker push pedrorocs/be-to-se-api
+        run: docker push pedrorocs/be-to-se-api:main
