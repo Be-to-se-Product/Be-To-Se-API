@@ -108,7 +108,7 @@ public class ProdutoController {
         if (produtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(ProdutoMapper::toProdutoDetalhamento).toList();
+        List<ProdutoDetalhamentoDto> dtos = produtos.stream().map(e->ProdutoMapper.toProdutoDetalhamento(e,true)).toList();
 
         return dtos.isEmpty()
                 ? ResponseEntity.noContent().build()
@@ -190,6 +190,10 @@ public class ProdutoController {
                 if (entidade.getId().equals(dto.getId())){
                     dto.setNome(entidade.getNome());
                     dto.setPreco(entidade.getPreco());
+
+                    if(entidade.getIsPromocaoAtiva()){
+                        dto.setPreco(entidade.getPrecoOferta());
+                    }
                     if(!entidade.getImagens().isEmpty()){
                         dto.setImagem(entidade.getImagens().get(0).getNomeReferencia());
                     }

@@ -45,10 +45,7 @@ public class ItemVendaService {
             itemVenda.setConsumidor(consumidor);
             itemVenda.setProduto(produto);
             itemVenda.setPedido(pedido);
-            if(produto.getIsPromocaoAtiva()!=null) {
                 itemVenda.setPromocaoAtiva(produto.getIsPromocaoAtiva());
-            }
-            
             itensVendas.add(itemVenda);
         }
         pedido.setItens(itensVendas);
