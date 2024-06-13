@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ProdutoMapper {
         produto.setPrecoOferta(cadastroProdutoDto.getPrecoOferta());
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
-        produto.setIsAtivo(true);
+        produto.setAtivo(true);
         produto.setTags(List.of());
         produto.setSecao(secao);
         return produto;
@@ -51,8 +52,8 @@ public class ProdutoMapper {
         produto.setPrecoOferta(cadastroProdutoDto.getPrecoOferta());
         produto.setCodigoBarras(cadastroProdutoDto.getCodigoBarras());
         produto.setCategoria(cadastroProdutoDto.getCategoria());
-        produto.setIsAtivo(true);
-        produto.setIsPromocaoAtiva(false);
+        produto.setAtivo(true);
+        produto.setPromocaoAtiva(false);
         produto.setSecao(secao);
         produto.setImagens(new ArrayList<>());
         return produto;
@@ -82,7 +83,8 @@ public class ProdutoMapper {
         produtoResponse.setAvaliacao(avaliacao);
         produtoResponse.setPrecoAntigo(produto.getPreco());
         produtoResponse.setPrecoAtual(produto.getPreco());
-        if(produto.getPrecoOferta()!=null) {
+        if(produto.getIsPromocaoAtiva()){
+            produtoResponse.setPrecoAntigo(produto.getPreco());
             produtoResponse.setPrecoAtual(produto.getPrecoOferta());
         }
         produtoResponse.setMediaAvaliacao(avaliacao.stream().mapToDouble(AvaliacaoMapaResponse::getQtdEstrela).average().orElse(0));
@@ -100,18 +102,19 @@ public class ProdutoMapper {
         produtoResponse.setCategoria(produto.getCategoria());
         produtoResponse.setDescricao(produto.getDescricao());
         produtoResponse.setAvaliacao(avaliacao);
-        if(produto.getIsPromocaoAtiva() !=null && produto.getIsPromocaoAtiva()){
-            if(produto.getPrecoOferta()!=null) {
-                produtoResponse.setPrecoAtual(produto.getPrecoOferta());
-            }
-        produtoResponse.setPrecoAntigo(produto.getPreco());
+
+
+        boolean isPromocaoAtiva = produto.getIsPromocaoAtiva();
+        Double precoOferta = produto.getPrecoOferta();
+        Double preco = produto.getPreco();
+
+        if (isPromocaoAtiva && precoOferta != null) {
+            produtoResponse.setPrecoAtual(precoOferta);
+        } else {
+            produtoResponse.setPrecoAtual(preco);
         }
-        else{
-            if(produto.getPrecoOferta()!=null) {
-                produtoResponse.setPrecoAtual(produto.getPreco());
-            }
-            produtoResponse.setPrecoAntigo(produto.getPreco());
-        }
+
+        produtoResponse.setPrecoAntigo(preco);
 
 
 
@@ -208,9 +211,55 @@ public class ProdutoMapper {
         }
         produtoDto.setNome(produto.getNome());
         produtoDto.setCodigoSku(produto.getCodigoSku());
-        produtoDto.setPreco(produto.getPreco());
+
+
+        if(produto.getIsPromocaoAtiva()){
+            produtoDto.setPreco(produto.getPrecoOferta());
+            produtoDto.setPrecoOferta(produto.getPreco());
+        }
+        else{
+            produtoDto.setPreco(produto.getPreco());
+            produtoDto.setPrecoOferta(produto.getPrecoOferta());
+        }
+
         produtoDto.setDescricao(produto.getDescricao());
-        produtoDto.setPrecoOferta(produto.getPrecoOferta());
+
+        produtoDto.setCodigoBarras(produto.getCodigoBarras());
+        produtoDto.setIsAtivo(produto.getIsAtivo());
+        produtoDto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
+        if (produto.getTags() != null) {
+            List<Tag> tags = produto.getTags().stream().map(ProdutoTag::getTag).toList();
+            produtoDto.setTags(tags.stream().map(TagMapper::toTagResponse).toList());
+        }
+        produtoDto.setEstabelecimento(toProdutoEstabeleciementoResponse(produto.getSecao().getEstabelecimento()));
+
+        return produtoDto;
+    }
+    public static ProdutoDetalhamentoDto toProdutoDetalhamento(Produto produto,boolean isEstabelecimento) {
+        ProdutoDetalhamentoDto produtoDto = new ProdutoDetalhamentoDto();
+        produtoDto.setId(produto.getId());
+        if (produto.getImagens() != null) {
+            produtoDto.setImagens(produto.getImagens().stream().map(Imagem::getNomeReferencia).toList());
+        }
+        produtoDto.setCategoria(produto.getCategoria());
+        if (produto.getSecao() != null) {
+            produtoDto.setSecao(toProdutoSecaoResponse(produto.getSecao()));
+        }
+        produtoDto.setNome(produto.getNome());
+        produtoDto.setCodigoSku(produto.getCodigoSku());
+
+
+        if(produto.getIsPromocaoAtiva() && !isEstabelecimento){
+            produtoDto.setPreco(produto.getPrecoOferta());
+            produtoDto.setPrecoOferta(produto.getPreco());
+        }
+        else{
+            produtoDto.setPreco(produto.getPreco());
+            produtoDto.setPrecoOferta(produto.getPrecoOferta());
+        }
+
+        produtoDto.setDescricao(produto.getDescricao());
+
         produtoDto.setCodigoBarras(produto.getCodigoBarras());
         produtoDto.setIsAtivo(produto.getIsAtivo());
         produtoDto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
@@ -233,7 +282,7 @@ public class ProdutoMapper {
         produto.setPreco(produto.getPreco());
         produto.setCodigoBarras(produto.getCodigoBarras());
         produto.setCategoria(produto.getCategoria());
-        produto.setIsPromocaoAtiva(produto.getIsPromocaoAtiva());
+        produto.setPromocaoAtiva(produto.getIsPromocaoAtiva());
         produto.setSecao(secao);
         return produto;
     }

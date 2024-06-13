@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,10 @@ import java.io.IOException;
 @Profile({"local","prod"})
 public class AddressApiService implements IEndereco {
 
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client ;
 
+    @Value("${api.maps.url}")
+    private String api;
     @Override
     public Endereco returnAddressWithLatitudeAndLongitude(Endereco address) throws IOException {
         AddressDto addressDto = makeApiCall(address.getCep(), address.getNumero());
@@ -30,7 +33,7 @@ public class AddressApiService implements IEndereco {
     }
 
     private AddressDto makeApiCall(String cep, String number) throws IOException {
-        String url = String.format("http://10.18.37.72:5000/adress?cep=%s&numero=%s", cep, number);
+        String url = String.format("%s/adress?cep=%s&numero=%s",api,cep, number);
 
         System.out.println("URL da api " + url);
         Request request = new Request.Builder()
