@@ -30,12 +30,15 @@ public class HistoricoVendaService {
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final EstabelecimentoService estabelecimentoService;
 
+
     public Page<Transacao> getHistoricoVenda(int page, int size, Long id) {
         Pageable pageable = PageRequest.of(page, size);
-        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNotAndPedidoStatusDescricaoNot(pageable,
+        return transacaoRepository.findAllByPedidoMetodoPagamentoAceitoEstabelecimentoIdAndPedidoStatusDescricaoNotAndPedidoStatusDescricaoNot(
+                pageable,
                 id,
                 StatusPedido.PENDENTE,
-                StatusPedido.AGUARDANDO_RETIRADA);
+                StatusPedido.AGUARDANDO_RETIRADA
+        );
     }
 
     public Page<Transacao> getHistoricoPorFiltro(LocalDate de,
@@ -46,16 +49,16 @@ public class HistoricoVendaService {
                                                  Integer size,
                                                  Long id) {
         Pageable pageable = PageRequest.of(page, size);
-
-
         StatusPedido statusPedido = status != null ? getStatusPedido(status) : null;
-        Specification<Transacao> specification = Specification
-                .where(TransacaoSpecification.comId(id)
-                        .and(TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento))
-                        .and(TransacaoSpecification.comStatus(statusPedido))
-                        .and(TransacaoSpecification.entreDatas(de, ate))
-                        .and(TransacaoSpecification.comStatusDiferente(StatusPedido.PENDENTE))
-                        .and(TransacaoSpecification.comStatusDiferente(StatusPedido.AGUARDANDO_RETIRADA)));
+
+        Specification<Transacao> specification = Specification.where(
+                        TransacaoSpecification.comId(id))
+                .and(TransacaoSpecification.comMetodoPagamento(nomeMetodoPagamento))
+                .and(TransacaoSpecification.comStatus(statusPedido))
+                .and(TransacaoSpecification.entreDatas(de, ate))
+                .and(TransacaoSpecification.comStatusDiferente(StatusPedido.PENDENTE))
+                .and(TransacaoSpecification.comStatusDiferente(StatusPedido.AGUARDANDO_RETIRADA));
+
         return transacaoRepository.findAll(specification, pageable);
     }
 
