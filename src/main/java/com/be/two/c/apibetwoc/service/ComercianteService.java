@@ -35,7 +35,7 @@ public class ComercianteService {
         Usuario usuario = usuarioService.editar(dto.getEmail(), id);
         Comerciante c = buscarPorId(usuario.getComerciante().getId());
         usuario.setTipoUsuario(TipoUsuario.COMERCIANTE);
-        Endereco endereco = enderecoService.editar(dto.getCep(), id, dto.getNumero());
+        Endereco endereco = enderecoService.editar(dto,id);
         Comerciante comerciante = ComercianteMapper.of(dto);
         comerciante.setUsuario(usuario);
         comerciante.setEndereco(endereco);

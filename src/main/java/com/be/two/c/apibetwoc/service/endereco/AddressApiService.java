@@ -35,7 +35,6 @@ public class AddressApiService implements IEndereco {
     private AddressDto makeApiCall(String cep, String number) throws IOException {
         String url = String.format("%s/adress?cep=%s&numero=%s",api,cep, number);
 
-        System.out.println("URL da api " + url);
         Request request = new Request.Builder()
                 .url(url)
                 .build();

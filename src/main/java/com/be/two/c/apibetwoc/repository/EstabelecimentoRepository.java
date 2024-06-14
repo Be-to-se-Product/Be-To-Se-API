@@ -18,7 +18,7 @@ public interface EstabelecimentoRepository extends JpaRepository<Estabelecimento
             "JOIN s.produto p  " +
             "WHERE (6371 * acos(cos(radians(?1)) * cos(radians(e.endereco.geolocalizacaoX))" +
             " * cos(radians(e.endereco.geolocalizacaoY) - radians(?2)) + sin(radians(?1)) *" +
-            " sin(radians(e.endereco.geolocalizacaoX)))) < ?3 and e.isAtivo=true")
+            " sin(radians(e.endereco.geolocalizacaoX)))) < ?3 and e.isAtivo=true and p.isAtivo=true")
     List<Integer> buscarPorLocalizacao(Double latitude, Double longitude, Double distancia);
 
 
