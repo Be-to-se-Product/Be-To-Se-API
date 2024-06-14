@@ -21,9 +21,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root 
       - CLOUDINARY_URL=cloudinary://286466729378585:BiDoj5xRS_IqzMs4dKjKNaROU-I@dhxtkrrpp
+      - API_MAPS_URL=http://localhost:5000
     networks:
       - default
-    entrypoint: ["java", "-jar","-Dspring.profiles.active=local","/app/app.jar"]
+    entrypoint: ["java", "-jar","-Dspring.profiles.active=prod","/app/app.jar"]
     depends_on:
       - db
     ports:

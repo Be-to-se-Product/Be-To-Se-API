@@ -272,7 +272,19 @@ public class ProdutoMapper {
         return produtoDto;
     }
 
-
+    public static Produto toProduto(Produto produto, Secao secao, CadastroProdutoDto produtoAtualizacao) {
+        produto.setNome(produtoAtualizacao.getNome());
+        produto.setCodigoSku(produtoAtualizacao.getCodigoSku());
+        produto.setPreco(produtoAtualizacao.getPreco());
+        produto.setDescricao(produtoAtualizacao.getDescricao());
+        produto.setPrecoOferta(produto.getPrecoOferta());
+        produto.setPreco(produto.getPreco());
+        produto.setCodigoBarras(produto.getCodigoBarras());
+        produto.setCategoria(produto.getCategoria());
+        produto.setPromocaoAtiva(produto.getIsPromocaoAtiva());
+        produto.setSecao(secao);
+        return produto;
+    }
     public static Produto toProduto(Produto produto, Secao secao, ProdutoAtualizarDTO produtoAtualizacao, Long id) {
         produto.setNome(produtoAtualizacao.getNome());
         produto.setCodigoSku(produtoAtualizacao.getCodigoSku());

@@ -134,7 +134,7 @@ public class ProdutoService {
 
         produtoTagRepository.deleteAllByProdutoId(id);
         produtoTagRepository.saveAll(produtoTagsSalvar);
-        return produtoRepository.save(ProdutoMapper.toProduto(cadastroProdutoDto, secao, id));
+        return produtoRepository.save(ProdutoMapper.toProduto(produto, secao,cadastroProdutoDto));
 
     }
 
