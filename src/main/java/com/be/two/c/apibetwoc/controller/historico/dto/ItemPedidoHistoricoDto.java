@@ -6,12 +6,14 @@ public record ItemPedidoHistoricoDto(
         Long id,
         String nome,
         int quantidade,
-        Double preco
+        Double preco,
+        String imagem
 ) {
     public ItemPedidoHistoricoDto(ItemVenda itemVenda) {
         this(itemVenda.getProduto().getId(),
                 itemVenda.getProduto().getNome(),
                 itemVenda.getQuantidade(),
-                itemVenda.getProduto().getPreco());
+                itemVenda.getProduto().getPreco(),
+                itemVenda.getProduto().getImagens().get(0).getNomeImagem());
     }
 }

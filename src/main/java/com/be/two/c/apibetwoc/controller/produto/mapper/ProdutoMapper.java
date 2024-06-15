@@ -273,6 +273,7 @@ public class ProdutoMapper {
     }
 
     public static Produto toProduto(Produto produto, Secao secao, CadastroProdutoDto produtoAtualizacao) {
+        produto.setId(produto.getId());
         produto.setNome(produtoAtualizacao.getNome());
         produto.setCodigoSku(produtoAtualizacao.getCodigoSku());
         produto.setPreco(produtoAtualizacao.getPreco());
