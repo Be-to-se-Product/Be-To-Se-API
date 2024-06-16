@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class    CadastroProdutoDto {
+public class CadastroProdutoDto {
     @NotBlank
     private String nome;
     @NotBlank
