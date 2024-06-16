@@ -13,14 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.HTML;
 import java.time.LocalDate;
 import java.util.List;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,6 @@ public class HistoricoVendaService {
     private final TransacaoRepository transacaoRepository;
     private final MetodoPagamentoAceitoRepository metodoPagamentoAceitoRepository;
     private final EstabelecimentoService estabelecimentoService;
-
 
     public Page<Transacao> getHistoricoVenda(int page, int size, Long id) {
         Pageable pageable = PageRequest.of(page, size);

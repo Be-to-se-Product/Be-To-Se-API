@@ -8,6 +8,7 @@ import com.be.two.c.apibetwoc.service.venda.HistoricoVendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,13 +40,12 @@ public class HistoricoController {
 
     @GetMapping("/filtro/{id}")
     public ResponseEntity<Page<TransacaoHistoricoDto>> getHistoricoPorFiltro(@PathVariable Long id,
-                                                                             @RequestParam(required = false) LocalDate de,
-                                                                             @RequestParam(required = false) LocalDate ate,
+                                                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate de,
+                                                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ate,
                                                                              @RequestParam(required = false) String status,
                                                                              @RequestParam(required = false) String metodoPagamento,
-                                                                             @RequestParam(required = false,defaultValue = "0") int page,
-                                                                             @RequestParam(required = false,defaultValue = "10")  int size) {
-
+                                                                             @RequestParam(required = false, defaultValue = "0") int page,
+                                                                             @RequestParam(required = false, defaultValue = "10") int size) {
         Page<Transacao> transacoes = historicoVendaService
                 .getHistoricoPorFiltro(de, ate, status, metodoPagamento, page, size, id);
         if (transacoes.isEmpty()) {

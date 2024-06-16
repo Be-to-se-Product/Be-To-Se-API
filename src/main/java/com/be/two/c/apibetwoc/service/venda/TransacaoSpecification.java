@@ -4,7 +4,6 @@ import com.be.two.c.apibetwoc.model.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class TransacaoSpecification {
 
@@ -13,6 +12,7 @@ public class TransacaoSpecification {
             if (id == null) {
                 return criteriaBuilder.conjunction();
             }
+            criteriaQuery.distinct(true);  // Adiciona DISTINCT aqui
             return criteriaBuilder.equal(root
                     .join("pedido")
                     .join("metodoPagamentoAceito")
@@ -26,6 +26,7 @@ public class TransacaoSpecification {
             if (dataUm == null || dataDois == null) {
                 return criteriaBuilder.conjunction();
             }
+            criteriaQuery.distinct(true);  // Adiciona DISTINCT aqui
             return criteriaBuilder.between(root
                     .join("pedido")
                     .get("dataHoraPedido"), dataUm.atStartOfDay(), dataDois.atTime(23, 59, 59));
@@ -37,6 +38,7 @@ public class TransacaoSpecification {
             if (status == null) {
                 return criteriaBuilder.conjunction();
             }
+            query.distinct(true);  // Adiciona DISTINCT aqui
             return criteriaBuilder.equal(root
                     .join("pedido")
                     .get("statusDescricao"), status);
@@ -48,6 +50,7 @@ public class TransacaoSpecification {
             if (nomeMetodoPagamento == null) {
                 return criteriaBuilder.conjunction();
             }
+            query.distinct(true);  // Adiciona DISTINCT aqui
             return criteriaBuilder.equal(root
                     .join("pedido")
                     .join("metodoPagamentoAceito")
@@ -61,6 +64,7 @@ public class TransacaoSpecification {
             if (statusPedido == null) {
                 return criteriaBuilder.conjunction();
             }
+            query.distinct(true);  // Adiciona DISTINCT aqui
             return criteriaBuilder.notEqual(root
                     .join("pedido")
                     .get("statusDescricao"), statusPedido);
