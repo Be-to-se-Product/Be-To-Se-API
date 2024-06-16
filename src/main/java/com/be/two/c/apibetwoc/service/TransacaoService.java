@@ -30,6 +30,7 @@ public class TransacaoService {
         transacao.setPedido(pedido);
         transacao.setValor(total);
         transacao.setEstornado(false);
+        transacao.setTaxa(total * 0.15);
         transacao.setDataTransacao(LocalDate.now());
         transacaoRepository.save(transacao);
     }
