@@ -1,5 +1,6 @@
 package com.be.two.c.apibetwoc.controller.historico.dto;
 
+import com.be.two.c.apibetwoc.model.Imagem;
 import com.be.two.c.apibetwoc.model.ItemVenda;
 
 public record ItemPedidoHistoricoDto(
@@ -14,6 +15,6 @@ public record ItemPedidoHistoricoDto(
                 itemVenda.getProduto().getNome(),
                 itemVenda.getQuantidade(),
                 itemVenda.getProduto().getPreco(),
-                itemVenda.getProduto().getImagens().get(0).getNomeImagem());
+                itemVenda.getProduto().getImagens().stream().map(Imagem::getNomeReferencia).toList().stream().findFirst().get());
     }
 }
