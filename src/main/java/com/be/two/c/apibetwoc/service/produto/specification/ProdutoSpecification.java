@@ -3,6 +3,7 @@ package com.be.two.c.apibetwoc.service.produto.specification;
 import com.be.two.c.apibetwoc.model.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,7 +15,11 @@ import java.util.List;
 public class ProdutoSpecification {
 
     public static Specification<Produto> filtrarIds(List<Integer> ids){
-        return (root, criterialQuery, criteriaBuilder) -> root.get("id").in(ids);
+        return (root, criterialQuery, criteriaBuilder) -> {
+            Predicate idPredicate = root.get("id").in(ids);
+            Predicate statusPredicate = criteriaBuilder.equal(root.get("isAtivo"), true);
+            return criteriaBuilder.and(idPredicate, statusPredicate);
+        };
     }
     public static Specification<Produto> name(String name){
 
